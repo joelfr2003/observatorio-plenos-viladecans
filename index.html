@@ -1,154 +1,2084 @@
-<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#14283f"><meta name="description" content="Consulta las sesiones y votaciones del pleno municipal de Viladecans."><link rel="manifest" href="./manifest.webmanifest"><link rel="icon" href="./icons/icon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="./icons/icon-192.png"><title>Observatorio de plenos · Viladecans</title><style id="css">
-:root{--bg:#f3f5f8;--sf:#fff;--fg:#14202e;--mut:#5b6b7c;--bd:#dde3ea;--ac:#1f3a5f;--ok:#1e7e4a;--ko:#b42318;--ab:#b7791f;--hd:#14283f;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1318;--sf:#171d25;--fg:#e8edf3;--mut:#93a1b1;--bd:#2a3340;--ac:#7fb0ee;--ok:#4ccb86;--ko:#ff8478;--ab:#e5b04d;--hd:#0b1017}}
-*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
-body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.5 -apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
-header{background:var(--hd);color:#fff;padding:18px 16px 0}.in{max-width:1000px;margin:0 auto}
-h1{font:600 19px/1.2 Georgia,"Times New Roman",serif;margin:0}.sub{color:#9fb3c8;font-size:12px;margin:3px 0 14px}
-.kp{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}.kp div{flex:1;min-width:80px;background:rgba(255,255,255,.08);border-radius:8px;padding:8px 12px}
-.kp b{display:block;font-size:19px;font-weight:600}.kp span{font-size:11px;color:#9fb3c8;text-transform:uppercase;letter-spacing:.05em}
-nav{display:flex;gap:2px;overflow-x:auto}nav button{background:none;border:0;color:#9fb3c8;padding:10px 14px;font:inherit;font-weight:600;cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap}
-nav button.on{color:#fff;border-color:#fff}
-main{max-width:1000px;margin:0 auto;padding:16px}
-#fb{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
-.chips{display:flex;gap:6px;flex-wrap:wrap}.chips button{border-radius:16px;padding:4px 13px;font-size:13px}
-.card{background:var(--sf);border:1px solid var(--bd);border-radius:8px;margin-bottom:14px;overflow:hidden}
-.ch{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;padding:11px 14px;border-bottom:1px solid var(--bd)}
-.ch h2{margin:0;font-size:15px}.ch small{color:var(--mut);font-weight:400}
-.w{overflow-x:auto}table{border-collapse:collapse;width:100%;min-width:680px}
-th{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--mut);text-align:left;padding:8px 12px;background:var(--bg);font-weight:600}
-td{padding:9px 12px;border-top:1px solid var(--bd);vertical-align:top}.n{text-align:center;font-variant-numeric:tabular-nums}
-.ok{color:var(--ok)}.ko{color:var(--ko)}.ab{color:var(--ab)}b.ok,b.ko,b.ab,.tag{font-weight:600}
-.tag{display:inline-block;font-size:11px;padding:1px 8px;border-radius:10px;border:1px solid currentColor;white-space:nowrap}.tag.c{color:var(--ac)}
-.pt{font-size:12px;min-width:170px}
-.bar{display:flex;height:9px;border-radius:5px;overflow:hidden;background:var(--bd);min-width:120px}.bar i{display:block}.f{background:var(--ok)}.c{background:var(--ko)}.a{background:var(--ab)}
-tr.cl{cursor:pointer}tr.cl:hover td,tr.sl td{background:var(--bg)}
-.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:0}.col{padding:12px 14px;border-top:1px solid var(--bd);max-height:420px;overflow-y:auto}
-.col h3{margin:0 0 8px;font-size:14px}.it{padding:7px 0;border-top:1px solid var(--bd);font-size:13px}.it small{color:var(--mut)}
-.g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}.g2 .card{margin:0;padding:14px}
-.dot{display:inline-block;width:15px;height:15px;border-radius:50%;margin:2px}.sw{padding:12px 14px}
-input,select,textarea,button{font:inherit;color:var(--fg);background:var(--sf);border:1px solid var(--bd);border-radius:6px;padding:7px 10px}
-button{cursor:pointer}button.p,button.sel{background:var(--ac);color:var(--sf);border-color:var(--ac)}
-.r{display:flex;gap:8px;flex-wrap:wrap;padding:12px 14px}.r .x{flex:1;min-width:150px}.r input[type=number]{width:80px}
-textarea{width:calc(100% - 28px);margin:0 14px;min-height:120px;font:12px monospace}
-.m{color:var(--mut);padding:10px 14px 0;margin:0;font-size:12px}.e{color:var(--mut);text-align:center;padding:26px}a{color:var(--ac)}
-</style></head><body><template id="tpl"><header><div class="in">
-<h1>Observatorio de plenos municipales · Viladecans</h1>
-<div class="sub">Votaciones por sesión, órgano, legislatura y grupo político</div>
-<div class="kp" id="kp"></div>
-<nav><button id="t-plenos" onclick="show('plenos')">Plenos</button><button id="t-partidos" onclick="show('partidos')">Partidos</button><button id="t-consistorio" onclick="show('consistorio')">Consistorio</button><button id="t-datos" onclick="show('datos')">Datos</button></nav>
-</div></header>
-<main>
-<div id="fb"></div>
-<section id="v-plenos"><div class="r" style="padding:0 0 12px"><input id="sq" class="x" placeholder="Buscar por asunto o partido…" oninput="rp()"></div><div id="pl"></div></section>
-<section id="v-partidos" hidden><div id="pa"></div></section>
-<section id="v-consistorio" hidden><div id="co"></div></section>
-<section id="v-datos" hidden>
-<div class="card" id="authCard"><div class="ch"><h2>Administración del observatorio</h2><small id="authState">Consulta pública</small></div><p class="m" id="sts">Conectando con la base de datos…</p><div id="loginBox"><p class="m">Inicia sesión con la cuenta autorizada para añadir y modificar sesiones.</p><form class="r" onsubmit="login(event)"><input id="adminEmail" type="email" autocomplete="username" placeholder="Correo electrónico" required><input id="adminPassword" type="password" autocomplete="current-password" placeholder="Contraseña" required><button class="p" type="submit">Entrar</button></form></div><div id="sessionBox" hidden class="r"><span id="signedAs" class="x"></span><button onclick="logout()">Cerrar sesión</button></div></div>
-<div id="adminEditor" hidden>
-<div class="card"><div class="ch"><h2>Añadir sesión</h2></div><div class="r">
-<input type="date" id="pf"><select id="pt"><option>Ordinario</option><option>Extraordinario</option><option>VIQUAL</option><option>VIMED</option></select><input id="pu" class="x" placeholder="Enlace al acta (opcional)"><button class="p" onclick="addP()">Añadir</button></div></div>
-<div class="card"><div class="ch"><h2>Añadir votación</h2></div><div class="r">
-<select id="vp"></select><input id="vn" placeholder="Punto" style="width:80px"><input id="va" class="x" placeholder="Asunto">
-<input type="number" id="vf" placeholder="Sí" min="0"><input type="number" id="vc" placeholder="No" min="0"><input type="number" id="vb" placeholder="Abst." min="0">
-<input id="vq" class="x" placeholder="Partidos: PSC:si, ERC:no, PP:abst" style="flex-basis:100%"><button class="p" onclick="addV()">Añadir</button></div></div>
-<div class="card"><div class="ch"><h2>Añadir grupo municipal a una legislatura</h2></div><div class="r">
-<select id="gl"></select><input id="gp" placeholder="Partido" style="width:110px"><input type="number" id="gn" placeholder="Concejales" min="0" style="width:105px"><input id="gr" class="x" placeholder="Representantes (separados por comas)"><button class="p" onclick="addG()">Añadir</button></div>
-<p class="m" style="padding-bottom:12px">Si el grupo ya existe en esa legislatura, se sustituye.</p></div>
-<div class="card"><div class="ch"><h2>Importar / exportar JSON</h2></div>
-<p class="m">Admite una lista de sesiones o un objeto {"plenos":[…],"legislaturas":[{"id":"2023-2027","grupos":[{"partido":"PSC","concejales":11,"representantes":["…"]}]}]}. La sesión se identifica por fecha y tipo (Ordinario, Extraordinario, VIQUAL o VIMED).</p><br>
-<textarea id="ij"></textarea><div class="r"><input type="file" id="if" accept=".json"><button class="p" onclick="imp()">Importar</button><button onclick="exp()">Exportar</button><button onclick="demo()">Ejemplo ficticio</button><button onclick="clr()">Borrar todo</button></div></div>
-</div></section></main></template><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="./js/config.js"></script><script id="app">
-document.body.insertBefore($("tpl").content.cloneNode(true),document.body.firstChild);
-var K="plenos-viladecans",K2="leg-viladecans",LG="",TP="",PS="",PK=[],tab="plenos";
-var L={favor:"A favor",contra:"En contra",abst:"Abstención"},CL={favor:"ok",contra:"ko",abst:"ab"},CT=["Ordinario","Extraordinario","VIQUAL","VIMED"];
-var PAL=["#1f5fa8","#c0392b","#2e8b57","#d68910","#7d3c98","#117a8b","#8e6e53","#5d6d7e","#b03a77","#4a7c1f"];
-var DEF=[["2011-2015","2011-06-11","2015-06-12"],["2015-2019","2015-06-13","2019-06-14"],["2019-2023","2019-06-15","2023-06-16"],["2023-2027","2023-06-17","2027-06-30"]];
-function ld(k,d){try{return JSON.parse(localStorage.getItem(k)||"null")||d}catch(e){return d}}
-var D=ld(K,[]),G=ld(K2,[]),IS_ADMIN=false,CURRENT_USER=null,SUPA=null,CHANNEL=null,SAVING=false;
-DEF.forEach(function(d){if(!G.some(function(g){return g.id==d[0]}))G.push({id:d[0],nombre:"Legislatura "+d[0],inicio:d[1],fin:d[2],grupos:[]})});
-function st(t){var e=$("sts");if(e)e.textContent=t}
-function sv(){try{localStorage.setItem(K,JSON.stringify(D));localStorage.setItem(K2,JSON.stringify(G))}catch(e){};if(!IS_ADMIN||!SUPA){st("No se ha guardado en la nube: inicia sesión como administrador.");return}saveCloud()}
-async function saveCloud(){if(SAVING)return;SAVING=true;st("Guardando cambios en la base de datos…");var r=await SUPA.from("observatorio_data").update({plenos:D,legislaturas:G,updated_at:new Date().toISOString()}).eq("id",1);SAVING=false;if(r.error){st("Error al guardar: "+r.error.message);return}st("Cambios guardados y publicados para todos los usuarios.")}
-async function loadCloud(showStatus){if(!SUPA)return;var r=await SUPA.from("observatorio_data").select("plenos,legislaturas,updated_at").eq("id",1).single();if(r.error){st("No se pudieron cargar los datos. Comprueba que has ejecutado supabase-schema.sql. "+r.error.message);return}D=r.data.plenos||[];G=r.data.legislaturas||[];DEF.forEach(function(d){if(!G.some(function(g){return g.id==d[0]}))G.push({id:d[0],nombre:"Legislatura "+d[0],inicio:d[1],fin:d[2],grupos:[]})});try{localStorage.setItem(K,JSON.stringify(D));localStorage.setItem(K2,JSON.stringify(G))}catch(e){};render();if(showStatus!==false)st("Datos sincronizados · última actualización: "+(r.data.updated_at?new Date(r.data.updated_at).toLocaleString("es-ES"):"sin fecha"))}
-async function refreshAuth(session){CURRENT_USER=session&&session.user?session.user:null;IS_ADMIN=false;if(CURRENT_USER){var a=await SUPA.from("observatorio_admins").select("user_id").eq("user_id",CURRENT_USER.id).maybeSingle();IS_ADMIN=!!(a.data&&!a.error)}$("loginBox").hidden=!!CURRENT_USER&&IS_ADMIN;$("sessionBox").hidden=!CURRENT_USER;$("adminEditor").hidden=!IS_ADMIN;$("authState").textContent=IS_ADMIN?"Administrador conectado":(CURRENT_USER?"Cuenta sin permisos de administrador":"Consulta pública");$("signedAs").textContent=CURRENT_USER?CURRENT_USER.email:"";if(CURRENT_USER&&!IS_ADMIN)st("Esta cuenta no tiene permisos de administración.");else if(IS_ADMIN)st("Sesión de administrador activa.");render()}
-async function login(e){e.preventDefault();var email=$("adminEmail").value,password=$("adminPassword").value;st("Iniciando sesión…");var r=await SUPA.auth.signInWithPassword({email:email,password:password});if(r.error){st("No se pudo iniciar sesión: "+r.error.message);return}$("adminPassword").value="";await refreshAuth(r.data.session);if(!IS_ADMIN){await SUPA.auth.signOut();await refreshAuth(null)}}
-async function logout(){await SUPA.auth.signOut();await refreshAuth(null)}
-function bootSupabase(){if(!window.supabase||!window.OBS_CONFIG||!OBS_CONFIG.url||!OBS_CONFIG.anonKey||OBS_CONFIG.anonKey.indexOf("PEGA_AQUI")===0){st("Falta configurar js/config.js con la URL y la clave pública de Supabase.");return}SUPA=window.supabase.createClient(OBS_CONFIG.url,OBS_CONFIG.anonKey);SUPA.auth.getSession().then(function(r){refreshAuth(r.data.session);loadCloud()});SUPA.auth.onAuthStateChange(function(ev,session){setTimeout(function(){refreshAuth(session)},0)});CHANNEL=SUPA.channel("observatorio-live").on("postgres_changes",{event:"UPDATE",schema:"public",table:"observatorio_data",filter:"id=eq.1"},function(){if(!SAVING)loadCloud(false)}).subscribe()}
-function $(i){return document.getElementById(i)}
-function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
-function res(v){if(v.resultado)return v.resultado;return (+v.favor||0)>(+v.contra||0)?"Aprobado":"Rechazado"}
-function fd(s){var p=s.split("-");return p.length==3?p[2]+"/"+p[1]+"/"+p[0]:s}
-function cat(p){var t=(p.tipo||"").toLowerCase();return t.indexOf("viqual")>-1?"VIQUAL":t.indexOf("vimed")>-1?"VIMED":t.indexOf("extra")>-1?"Extraordinario":"Ordinario"}
-function legOf(f){var g=G.filter(function(x){return f>=x.inicio&&f<=x.fin})[0];return g?g.id:""}
-function col(n){var h=0;for(var i=0;i<n.length;i++)h=(h*31+n.charCodeAt(i))%1000;return PAL[h%PAL.length]}
-function nv(x){var s=String(x).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim();if(/^(si|s$|f|a favor)/.test(s))return"favor";if(/^(n|c|en contra)/.test(s))return"contra";if(/^(ab|a$)/.test(s))return"abst";return""}
-function pq(t){var o={};String(t||"").split(",").forEach(function(x){var a=x.split(":");if(a.length>1&&a[0].trim()&&nv(a[1]))o[a[0].trim()]=nv(a[1])});return o}
-function pts(v){var p=v.partidos;if(!p)return"";var g={favor:[],contra:[],abst:[]};Object.keys(p).forEach(function(k){var s=nv(p[k]);if(g[s])g[s].push(k)});
-  return["favor","contra","abst"].filter(function(s){return g[s].length}).map(function(s){return'<b class="'+CL[s]+'">'+L[s]+':</b> '+g[s].map(esc).join(", ")}).join("<br>")}
-function fp(){return D.filter(function(p){return(!LG||legOf(p.fecha)==LG)&&(!TP||cat(p)==TP)})}
-function stats(){var m={};fp().forEach(function(p){(p.votaciones||[]).forEach(function(v){var q=v.partidos||{};Object.keys(q).forEach(function(k){var s=nv(q[k]);if(!s)return;var e=m[k]||(m[k]={favor:[],contra:[],abst:[]});e[s].push({f:p.fecha,c:cat(p),n:v.punto,a:v.asunto,r:res(v)})})})});return m}
-function tot(e){return e.favor.length+e.contra.length+e.abst.length}
-function pc(n,t){return t?Math.round(n*100/t):0}
-function show(t){tab=t;["plenos","partidos","consistorio","datos"].forEach(function(x){$("v-"+x).hidden=x!=t;$("t-"+x).className=x==t?"on":""});$("fb").hidden=(t=="datos"||t=="consistorio");render()}
-function setL(v){LG=v;render()}function setT(v){TP=v;render()}
-function rf(){var h='<select onchange="setL(this.value)"><option value="">Todas las legislaturas</option>'+G.slice().sort(function(a,b){return b.id.localeCompare(a.id)}).map(function(g){return'<option value="'+esc(g.id)+'"'+(g.id==LG?" selected":"")+">"+esc(g.nombre)+"</option>"}).join("")+"</select>";
-  h+='<div class="chips">'+[""].concat(CT).map(function(c){var n=D.filter(function(p){return(!LG||legOf(p.fecha)==LG)&&(!c||cat(p)==c)}).length;return'<button class="'+(TP==c?"sel":"")+'" onclick="setT(\''+c+'\')">'+(c||"Todos")+" ("+n+")</button>"}).join("")+"</div>";$("fb").innerHTML=h}
-function rk(){var f=fp(),n=0;f.forEach(function(p){n+=(p.votaciones||[]).length});
-  $("kp").innerHTML=[[f.length,"Sesiones"],[n,"Votaciones"],[Object.keys(stats()).length,"Partidos"],[LG||"Todas","Legislatura"]].map(function(x){return"<div><b>"+esc(x[0])+"</b><span>"+x[1]+"</span></div>"}).join("")}
-function rp(){var q=$("sq").value.toLowerCase().trim(),h="";
-  fp().forEach(function(p){var i=D.indexOf(p),vs=(p.votaciones||[]).map(function(v,j){return{v:v,j:j}}).filter(function(o){return!q||(o.v.asunto||"").toLowerCase().indexOf(q)>-1||Object.keys(o.v.partidos||{}).join(" ").toLowerCase().indexOf(q)>-1});
-    if(q&&!vs.length)return;
-    var rows=vs.map(function(o){var v=o.v,r=res(v),k=/aprob/i.test(r)?"ok":"ko";
-      return"<tr><td>"+esc(v.punto)+"</td><td>"+esc(v.asunto)+'</td><td class="n">'+(v.favor==null?"":v.favor)+'</td><td class="n">'+(v.contra==null?"":v.contra)+'</td><td class="n">'+(v.abst==null?"":v.abst)+'</td><td><span class="tag '+k+'">'+esc(r)+'</span></td><td class="pt">'+pts(v)+'</td><td><button onclick="dv('+i+","+o.j+')">✕</button></td></tr>'}).join("");
-    h+='<div class="card"><div class="ch"><h2>'+esc(fd(p.fecha))+' <span class="tag c">'+cat(p)+"</span> <small>· "+legOf(p.fecha)+" · "+(p.votaciones||[]).length+' votaciones</small></h2><span>'+(p.url?'<a href="'+esc(p.url)+'" target="_blank" rel="noopener">Ver acta</a> ':"")+(IS_ADMIN?'<button onclick="dp('+i+')">Eliminar</button>':'')+'</span></div><div class="w"><table><tr><th>Punto</th><th>Asunto</th><th class="n">Sí</th><th class="n">No</th><th class="n">Abst.</th><th>Resultado</th><th>Voto por partido</th><th></th></tr>'+(rows||'<tr><td colspan="8" class="e">Sin votaciones registradas</td></tr>')+"</table></div></div>"});
-  $("pl").innerHTML=h||'<div class="card"><div class="e">No hay sesiones con estos filtros. Ve a «Datos» para añadir actas o cargar el ejemplo.</div></div>'}
-function rt(){var m=stats();PK=Object.keys(m).sort(function(a,b){return tot(m[b])-tot(m[a])||a.localeCompare(b)});
-  if(!PK.length){$("pa").innerHTML='<div class="card"><div class="e">Sin votos por partido con estos filtros.</div></div>';return}
-  if(PS&&!m[PS])PS="";
-  var h='<div class="card"><div class="ch"><h2>Votaciones de un partido</h2><select onchange="PS=this.value;rt()"><option value="">Selecciona un partido…</option>'+PK.map(function(k){return'<option'+(k==PS?" selected":"")+">"+esc(k)+"</option>"}).join("")+"</select></div>";
-  if(PS){var e=m[PS],t=tot(e);h+='<div class="cols">'+["favor","contra","abst"].map(function(s){
-    return'<div class="col"><h3 class="'+CL[s]+'">'+L[s]+" · "+e[s].length+" ("+pc(e[s].length,t)+"%)</h3>"+(e[s].length?e[s].slice().sort(function(a,b){return b.f.localeCompare(a.f)}).map(function(x){return'<div class="it"><small>'+esc(fd(x.f))+" · "+x.c+" · punto "+esc(x.n)+"</small><br>"+esc(x.a)+' <span class="tag '+(/aprob/i.test(x.r)?"ok":"ko")+'">'+esc(x.r)+"</span></div>"}).join(""):'<div class="e">Ninguna</div>')+"</div>"}).join("")+"</div>"}
-  else h+='<div class="e">Elige un partido para ver en qué votó a favor, en contra o se abstuvo.</div>';
-  h+='</div><div class="card"><div class="ch"><h2>Resumen por grupo</h2><small>Pulsa una fila para seleccionarlo</small></div><div class="w"><table><tr><th>Partido</th><th class="n">Votaciones</th><th class="n ok">A favor</th><th class="n ko">En contra</th><th class="n ab">Abst.</th><th>Distribución</th></tr>';
-  PK.forEach(function(k,i){var e=m[k],t=tot(e);h+='<tr class="cl'+(k==PS?" sl":"")+'" onclick="PS=PK['+i+'];rt()"><td><b>'+esc(k)+'</b></td><td class="n">'+t+"</td>"+["favor","contra","abst"].map(function(s){return'<td class="n"><b class="'+CL[s]+'">'+e[s].length+"</b> <small>("+pc(e[s].length,t)+"%)</small></td>"}).join("")
-    +'<td><div class="bar"><i class="f" style="width:'+pc(e.favor.length,t)+'%"></i><i class="c" style="width:'+pc(e.contra.length,t)+'%"></i><i class="a" style="width:'+pc(e.abst.length,t)+'%"></i></div></td></tr>'});
-  $("pa").innerHTML=h+"</table></div></div>"}
-function dots(g){var h="";(g.grupos||[]).forEach(function(x){for(var i=0;i<(+x.concejales||0);i++)h+='<span class="dot" style="background:'+col(x.partido)+'" title="'+esc(x.partido)+'"></span>'});return h||'<small class="m" style="padding:0">Composición sin definir</small>'}
-function seats(g){var n=0;(g.grupos||[]).forEach(function(x){n+=+x.concejales||0});return n}
-function ent(i){LG=G[i].id;render()}
-function rc(){var h="";
-  if(!LG){h='<div class="g2">'+G.slice().sort(function(a,b){return b.id.localeCompare(a.id)}).map(function(g){var n=D.filter(function(p){return legOf(p.fecha)==g.id}).length;
-    return'<div class="card"><h2 style="margin:0 0 2px;font-size:16px">'+esc(g.nombre)+'</h2><small style="color:var(--mut)">'+esc(fd(g.inicio))+" – "+esc(fd(g.fin))+" · "+seats(g)+" concejales · "+n+' sesiones</small><div style="margin:8px 0">'+dots(g)+'</div><button class="p" onclick="ent('+G.indexOf(g)+')">Entrar en la legislatura</button></div>'}).join("")+"</div>"}
-  else{var g=G.filter(function(x){return x.id==LG})[0],gi=G.indexOf(g),ps=D.filter(function(p){return legOf(p.fecha)==LG}),nvv=0;ps.forEach(function(p){nvv+=(p.votaciones||[]).length});
-    h='<div class="card"><div class="ch"><h2>'+esc(g.nombre)+" <small>· "+esc(fd(g.inicio))+" – "+esc(fd(g.fin))+'</small></h2><span><button onclick="setL(\'\')">← Todas</button> <button class="p" onclick="show(\'plenos\')">Ver sesiones</button> <button class="p" onclick="show(\'partidos\')">Ver partidos</button></span></div>'
-    +'<div class="sw">'+dots(g)+'</div><p class="m" style="padding-bottom:12px">'+seats(g)+" concejales · "+ps.length+" sesiones ("+CT.map(function(c){return c+": "+ps.filter(function(p){return cat(p)==c}).length}).join(", ")+") · "+nvv+' votaciones</p></div>'
-    +'<div class="card"><div class="ch"><h2>Grupos y representantes</h2></div><div class="w"><table><tr><th>Grupo</th><th class="n">Concejales</th><th>Representantes</th><th></th></tr>'
-    +((g.grupos||[]).length?(g.grupos).map(function(x,j){return'<tr><td><span class="dot" style="background:'+col(x.partido)+'"></span> <b>'+esc(x.partido)+'</b></td><td class="n">'+esc(x.concejales)+"</td><td>"+(x.representantes||[]).map(esc).join(", ")+'</td><td><button onclick="dg('+gi+","+j+')">✕</button></td></tr>'}).join(""):'<tr><td colspan="4" class="e">Añade los grupos desde «Datos».</td></tr>')+"</table></div></div>"}
-  $("co").innerHTML=h}
-function render(){D.sort(function(a,b){return b.fecha.localeCompare(a.fecha)});
-  $("vp").innerHTML=D.map(function(p,i){return'<option value="'+i+'">'+esc(fd(p.fecha))+" · "+cat(p)+"</option>"}).join("");
-  $("gl").innerHTML=G.map(function(g){return"<option value=\""+esc(g.id)+'">'+esc(g.nombre)+"</option>"}).join("");
-  rf();rk();rp();rt();rc()}
-function addP(){if(!IS_ADMIN)return;var f=$("pf").value,t=$("pt").value;if(!f)return;if(!D.some(function(p){return p.fecha==f&&cat(p)==t}))D.push({fecha:f,tipo:t,url:$("pu").value,votaciones:[]});sv();render()}
-function addV(){if(!IS_ADMIN)return;var p=D[+$("vp").value];if(!p||!$("va").value)return;p.votaciones.push({punto:$("vn").value,asunto:$("va").value,favor:+$("vf").value||0,contra:+$("vc").value||0,abst:+$("vb").value||0,partidos:pq($("vq").value)});["vn","va","vf","vc","vb","vq"].forEach(function(i){$(i).value=""});sv();render()}
-function addG(){if(!IS_ADMIN)return;var g=G.filter(function(x){return x.id==$("gl").value})[0],n=$("gp").value.trim();if(!g||!n)return;g.grupos=(g.grupos||[]).filter(function(x){return x.partido!=n});g.grupos.push({partido:n,concejales:+$("gn").value||0,representantes:$("gr").value.split(",").map(function(s){return s.trim()}).filter(Boolean)});g.grupos.sort(function(a,b){return b.concejales-a.concejales});["gp","gn","gr"].forEach(function(i){$(i).value=""});sv();render()}
-function dg(i,j){if(!IS_ADMIN)return;G[i].grupos.splice(j,1);sv();render()}
-function dv(i,j){if(!IS_ADMIN)return;D[i].votaciones.splice(j,1);sv();render()}
-function dp(i){if(!IS_ADMIN)return;if(confirm("¿Eliminar esta sesión?")){D.splice(i,1);sv();render()}}
-function merge(a){if(!IS_ADMIN)return;a.forEach(function(n){if(!n.fecha)return;var p=D.filter(function(x){return x.fecha==n.fecha&&cat(x)==cat(n)})[0];
-  if(!p)D.push({fecha:n.fecha,tipo:n.tipo||"Ordinario",url:n.url||"",votaciones:n.votaciones||[]});
-  else(n.votaciones||[]).forEach(function(v){if(!p.votaciones.some(function(w){return w.punto==v.punto&&w.asunto==v.asunto}))p.votaciones.push(v)})});sv();render()}
-function imp(){if(!IS_ADMIN)return;try{var a=JSON.parse($("ij").value);if(Array.isArray(a))merge(a);else{(a.legislaturas||[]).forEach(function(n){var g=G.filter(function(x){return x.id==n.id})[0];if(g)Object.assign(g,n);else G.push(Object.assign({nombre:"Legislatura "+n.id,grupos:[]},n))});merge(a.plenos||[])}$("ij").value=""}catch(e){alert("JSON no válido")}}
-$("if").onchange=function(e){var f=e.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(){$("ij").value=r.result;imp()};r.readAsText(f)};
-function exp(){$("ij").value=JSON.stringify({plenos:D,legislaturas:G},null,1)}
-function clr(){if(!IS_ADMIN)return;if(confirm("¿Borrar todos los datos?")){D=[];G.forEach(function(g){g.grupos=[]});LG=TP=PS="";sv();render()}}
-function demo(){if(!IS_ADMIN)return;var P={PSC:"favor",ERC:"favor",PP:"contra",Vox:"contra"};
-  merge([{fecha:"2026-01-29",tipo:"Ordinario",votaciones:[{punto:"1",asunto:"Aprobación del acta anterior (ejemplo)",favor:15,contra:0,abst:6,partidos:{PSC:"favor",ERC:"favor",PP:"abst",Vox:"abst"}},{punto:"2",asunto:"Moción de ejemplo",favor:9,contra:11,abst:1,partidos:{PSC:"favor",ERC:"contra",PP:"contra",Vox:"abst"}}]},
-  {fecha:"2026-02-12",tipo:"VIQUAL",votaciones:[{punto:"1",asunto:"Cuentas anuales VIQUAL (ejemplo)",favor:16,contra:9,abst:0,partidos:P}]},
-  {fecha:"2026-03-05",tipo:"VIMED",votaciones:[{punto:"1",asunto:"Plan de actuación VIMED (ejemplo)",favor:11,contra:5,abst:9,partidos:{PSC:"favor",ERC:"abst",PP:"contra",Vox:"abst"}}]}]);
-  var g=G.filter(function(x){return x.id=="2023-2027"})[0];if(!g.grupos.length){g.grupos=[{partido:"PSC",concejales:11,representantes:["Ejemplo A","Ejemplo B"]},{partido:"ERC",concejales:5,representantes:["Ejemplo C"]},{partido:"PP",concejales:5,representantes:["Ejemplo D"]},{partido:"Vox",concejales:4,representantes:["Ejemplo E"]}];sv();render()}}
-var SEED={plenos:[],legislaturas:[]};
-function ap(a){(a.legislaturas||[]).forEach(function(n){var g=G.filter(function(x){return x.id==n.id})[0];if(!g)G.push(Object.assign({nombre:"Legislatura "+n.id,grupos:[]},n));else if(!(g.grupos||[]).length&&(n.grupos||[]).length)g.grupos=n.grupos});merge(a.plenos||[])}
-var T0="plenos";try{T0=sessionStorage.getItem("tab")||"plenos"}catch(e){}
-show(T0);bootSupabase();</script><script>if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("./sw.js").catch(function(e){console.warn("SW",e)})})}</script></body></html>
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#070b14">
+  <meta name="description" content="Observatorio Político y Electoral de Viladecans. Consulta de plenos, votaciones, matriz de afinidad y simulador D'Hondt.">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="./icons/icon-192.png">
+  <title>Observatorio Político & Electoral · Viladecans</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#edf7ff',
+              100: '#d6edff',
+              500: '#0088ff',
+              600: '#0066cc',
+              900: '#070b14',
+              950: '#04070e'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Font & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Supabase CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- Optional Config Load -->
+  <script src="./js/config.js" onerror="console.log('js/config.js no encontrado. Modo local activo.')"></script>
+
+  <style>
+    :root {
+      --bg-dark: #070b14;
+      --panel-bg: rgba(15, 23, 42, 0.75);
+    }
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg-dark);
+      color: #e2e8f0;
+      overflow-x: hidden;
+    }
+    .font-mono-code { font-family: 'JetBrains Mono', monospace; }
+    
+    /* Glassmorphism styling */
+    .glass-panel {
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .glass-card {
+      background: rgba(30, 41, 59, 0.4);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      transition: all 0.2s ease-in-out;
+    }
+    .glass-card:hover {
+      border-color: rgba(59, 130, 246, 0.3);
+      box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Radial hemicycle seat hover styles */
+    .seat-node {
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+    }
+    .seat-node:hover {
+      transform: scale(1.35);
+      filter: drop-shadow(0 0 8px currentColor);
+    }
+    
+    /* Custom Scrollbars */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.6); }
+    ::-webkit-scrollbar-thumb { background: rgba(51, 65, 85, 0.8); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(94, 234, 212, 0.5); }
+
+    /* Custom heatmap hover cells */
+    .affinity-cell {
+      transition: transform 0.15s ease, border-color 0.15s ease;
+    }
+    .affinity-cell:hover {
+      transform: scale(1.06);
+      z-index: 10;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col bg-[#070b14] text-slate-100 antialiased selection:bg-blue-600 selection:text-white">
+
+  <!-- Floating Non-blocking Toast Container -->
+  <div id="toastContainer" class="fixed top-4 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none"></div>
+
+  <!-- ================= TOP HEADER & COMMAND CENTER NAV ================= -->
+  <header class="sticky top-0 z-40 border-b border-slate-800/80 bg-[#070b14]/90 backdrop-blur-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16 gap-4">
+        
+        <!-- Brand & Title -->
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-cyan-400 p-0.5 shadow-lg shadow-blue-500/20 flex items-center justify-center">
+            <div class="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
+              <i data-lucide="landmark" class="w-5 h-5 text-cyan-400"></i>
+            </div>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h1 class="text-base font-bold text-white tracking-tight">Observatorio Político</h1>
+              <span class="text-xs px-2 py-0.5 rounded-full bg-cyan-950 text-cyan-400 border border-cyan-800/50 font-semibold uppercase tracking-wider">Viladecans</span>
+            </div>
+            <p class="text-xs text-slate-400 hidden sm:block">Inteligencia Político-Electoral & Análisis del Consistorio Municipal</p>
+          </div>
+        </div>
+
+        <!-- Controls: Legislature & Live Status -->
+        <div class="flex items-center gap-3">
+          <!-- Legislature selector -->
+          <div class="flex items-center bg-slate-900 border border-slate-700/60 rounded-lg px-2.5 py-1 text-xs">
+            <i data-lucide="calendar" class="w-3.5 h-3.5 text-slate-400 mr-2"></i>
+            <select id="legSelect" onchange="setLegislature(this.value)" class="bg-transparent text-slate-200 font-medium border-none focus:outline-none focus:ring-0 cursor-pointer">
+              <!-- Dynamically populated -->
+            </select>
+          </div>
+
+          <!-- Supabase status badge -->
+          <div id="cloudStatusBadge" class="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-mono border bg-slate-900 border-slate-800 text-slate-400">
+            <span id="cloudStatusDot" class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+            <span id="cloudStatusText">Almacenamiento Local</span>
+          </div>
+
+          <!-- Quick Admin Button -->
+          <button onclick="switchTab('datos')" id="headerAdminBtn" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition">
+            <i data-lucide="shield-lock" class="w-3.5 h-3.5 text-indigo-400"></i>
+            <span id="headerAdminText">Acceso Admin</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Main Navigation Tabs -->
+      <nav class="flex space-x-1 overflow-x-auto pb-0.5 border-t border-slate-800/60 pt-1 no-scrollbar">
+        <button onclick="switchTab('dashboard')" id="tab-dashboard" class="nav-tab text-xs font-semibold px-4 py-2.5 rounded-t-lg transition flex items-center gap-2 border-b-2 border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-900/40">
+          <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+          <span>Dashboard Ejecutivo</span>
+        </button>
+        <button onclick="switchTab('hemiciclo')" id="tab-hemiciclo" class="nav-tab text-xs font-semibold px-4 py-2.5 rounded-t-lg transition flex items-center gap-2 border-b-2 border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-900/40">
+          <i data-lucide="pie-chart" class="w-4 h-4"></i>
+          <span>Hemiciclo & Coaliciones</span>
+        </button>
+        <button onclick="switchTab('afinidad')" id="tab-afinidad" class="nav-tab text-xs font-semibold px-4 py-2.5 rounded-t-lg transition flex items-center gap-2 border-b-2 border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-900/40">
+          <i data-lucide="git-merge" class="w-4 h-4"></i>
+          <span>Matriz de Afinidad</span>
+        </button>
+        <button onclick="switchTab('dhondt')" id="tab-dhondt" class="nav-tab text-xs font-semibold px-4 py-2.5 rounded-t-lg transition flex items-center gap-2 border-b-2 border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-900/40">
+          <i data-lucide="calculator" class="w-4 h-4"></i>
+          <span>Simulador Electoral D'Hondt</span>
+        </button>
+        <button onclick="switchTab('plenos')" id="tab-plenos" class="nav-tab text-xs font-semibold px-4 py-2.5 rounded-t-lg transition flex items-center gap-2 border-b-2 border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-900/40">
+          <i data-lucide="file-text" class="w-4 h-4"></i>
+          <span>Explorador de Sesiones</span>
+        </button>
+        <button onclick="switchTab('partidos')" id="tab-partidos" class="nav-tab text-xs font-semibold px-4 py-2.5 rounded-t-lg transition flex items-center gap-2 border-b-2 border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-900/40">
+          <i data-lucide="users" class="w-4 h-4"></i>
+          <span>Grupos y Consistorio</span>
+        </button>
+        <button onclick="switchTab('datos')" id="tab-datos" class="nav-tab text-xs font-semibold px-4 py-2.5 rounded-t-lg transition flex items-center gap-2 border-b-2 border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-900/40">
+          <i data-lucide="database" class="w-4 h-4"></i>
+          <span>Administración y Datos</span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ================= MAIN CONTENT CONTAINER ================= -->
+  <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+
+    <!-- KPI STRIP (Global stats) -->
+    <div id="kpiStrip" class="grid grid-cols-2 md:grid-cols-5 gap-3 sm:gap-4">
+      <!-- Populated via JS -->
+    </div>
+
+    <!-- TAB 1: EXECUTIVE DASHBOARD -->
+    <section id="view-dashboard" class="tab-view space-y-6">
+      
+      <!-- Top Grid: Consensus Meter & Voting Distribution -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Consensus gauge & Insights -->
+        <div class="glass-panel rounded-2xl p-5 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-sm font-bold text-slate-200 uppercase tracking-wider flex items-center gap-2">
+                <i data-lucide="activity" class="w-4 h-4 text-emerald-400"></i> Índice de Consenso Plenario
+              </h3>
+              <span class="text-xs px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 font-mono border border-emerald-800/40" id="consensusGrade">Alto</span>
+            </div>
+            <p class="text-xs text-slate-400 mb-4">Porcentaje de mociones plenarias aprobadas por unanimidad o con amplia mayoría.</p>
+            
+            <div class="relative flex items-center justify-center my-4">
+              <div class="w-44 h-44">
+                <canvas id="consensusChart"></canvas>
+              </div>
+              <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
+                <span class="text-3xl font-extrabold text-white font-mono-code" id="consensusPct">0%</span>
+                <span class="text-[10px] text-slate-400 uppercase tracking-widest mt-0.5">Unanimidad</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2 text-center pt-3 border-t border-slate-800 text-xs">
+            <div class="bg-slate-900/60 p-2 rounded-lg border border-slate-800">
+              <span class="text-slate-400 text-[11px] block">Aprobadas</span>
+              <span class="font-bold text-emerald-400 text-sm" id="dashboardApprovedCnt">0</span>
+            </div>
+            <div class="bg-slate-900/60 p-2 rounded-lg border border-slate-800">
+              <span class="text-slate-400 text-[11px] block">Rechazadas</span>
+              <span class="font-bold text-rose-400 text-sm" id="dashboardRejectedCnt">0</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Voting Distribution Chart -->
+        <div class="glass-panel rounded-2xl p-5 lg:col-span-2 flex flex-col justify-between">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h3 class="text-sm font-bold text-slate-200 uppercase tracking-wider flex items-center gap-2">
+                <i data-lucide="bar-chart-3" class="w-4 h-4 text-blue-400"></i> Sentido de Voto Acumulado por Grupo
+              </h3>
+              <p class="text-xs text-slate-400">Distribución de votos (A favor / En contra / Abstención) en la legislatura activa.</p>
+            </div>
+          </div>
+          <div class="h-64 relative w-full">
+            <canvas id="partyVotesChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Grid: Area Breakdown & Recent Feed -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Session breakdown chart -->
+        <div class="glass-panel rounded-2xl p-5">
+          <h3 class="text-sm font-bold text-slate-200 uppercase tracking-wider mb-1 flex items-center gap-2">
+            <i data-lucide="layers" class="w-4 h-4 text-indigo-400"></i> Distribución de Sesiones
+          </h3>
+          <p class="text-xs text-slate-400 mb-4">Tipología de plenos (Ordinario, Extraordinario, empresas VIQUAL/VIMED).</p>
+          <div class="h-56 relative">
+            <canvas id="sessionTypeChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Latest Motions feed -->
+        <div class="glass-panel rounded-2xl p-5 lg:col-span-2">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-sm font-bold text-slate-200 uppercase tracking-wider flex items-center gap-2">
+              <i data-lucide="clock" class="w-4 h-4 text-cyan-400"></i> Últimas Votaciones Registradas
+            </h3>
+            <button onclick="switchTab('plenos')" class="text-xs text-cyan-400 hover:text-cyan-300 font-semibold flex items-center gap-1">
+              Ver todas <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+          <div id="recentMotionsFeed" class="space-y-3">
+            <!-- Injected via JS -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: HEMICICLO & COALICIONES -->
+    <section id="view-hemiciclo" class="tab-view space-y-6 hidden">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Interactive 25-Seat Radial Hemicycle (7 Cols) -->
+        <div class="glass-panel rounded-2xl p-6 lg:col-span-7 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <div>
+                <h3 class="text-base font-bold text-white flex items-center gap-2">
+                  <i data-lucide="landmark" class="w-5 h-5 text-indigo-400"></i> Composición del Pleno Municipal
+                </h3>
+                <p class="text-xs text-slate-400">25 escaños corporativos de Viladecans. Umbral de mayoría absoluta: <strong>13 escaños</strong>.</p>
+              </div>
+              <span class="text-xs font-mono px-3 py-1 bg-indigo-950 border border-indigo-800 text-indigo-300 rounded-lg">
+                Mayoría: 13 / 25
+              </span>
+            </div>
+
+            <!-- SVG Semi-circle Container -->
+            <div class="relative w-full flex items-center justify-center my-4 py-4 min-h-[290px]">
+              <svg id="hemicycleSvg" viewBox="0 0 500 280" class="w-full max-w-lg h-auto drop-shadow-xl">
+                <!-- Outer guide line -->
+                <path d="M 50 250 A 200 200 0 0 1 450 250" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="2" stroke-dasharray="4 4" />
+                <!-- Majority dividing marker -->
+                <line x1="250" y1="30" x2="250" y2="70" stroke="#f59e0b" stroke-width="2" stroke-dasharray="3 3" />
+                <text x="250" y="22" text-anchor="middle" fill="#f59e0b" font-size="10" font-weight="bold" font-family="sans-serif">MAYORÍA ABSOLUTA (13)</text>
+                
+                <!-- Dynamic Seat Nodes Group -->
+                <g id="hemicycleSeatsGroup"></g>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Party legend bar -->
+          <div id="hemicycleLegend" class="flex flex-wrap items-center justify-center gap-3 pt-4 border-t border-slate-800 text-xs">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+        <!-- Coalition / Pact Simulator (5 Cols) -->
+        <div class="glass-panel rounded-2xl p-6 lg:col-span-5 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-base font-bold text-white flex items-center gap-2">
+                <i data-lucide="shield-check" class="w-5 h-5 text-amber-400"></i> Simulador de Pactos y Gobernabilidad
+              </h3>
+              <button onclick="resetCoalition()" class="text-xs text-slate-400 hover:text-white underline">Reiniciar</button>
+            </div>
+            <p class="text-xs text-slate-400 mb-4">Combina grupos municipales para comprobar si forman mayoría absoluta o bloques de votación.</p>
+
+            <!-- Live Majority Progress Meter -->
+            <div class="bg-slate-900/80 rounded-xl p-4 border border-slate-800 mb-6">
+              <div class="flex justify-between items-end mb-2">
+                <div>
+                  <span class="text-xs text-slate-400 uppercase tracking-wider block font-semibold">Suma de Escaños</span>
+                  <div class="flex items-baseline gap-1">
+                    <span class="text-3xl font-extrabold font-mono-code text-white" id="coalitionSeatsCount">0</span>
+                    <span class="text-xs text-slate-400">/ 25 escaños</span>
+                  </div>
+                </div>
+                <div id="coalitionStatusBadge" class="px-3 py-1 rounded-full text-xs font-bold bg-slate-800 text-slate-400 border border-slate-700">
+                  Sin selección
+                </div>
+              </div>
+
+              <!-- Progress bar -->
+              <div class="relative w-full h-4 bg-slate-800 rounded-full overflow-hidden mb-1">
+                <!-- 13 seat marker line -->
+                <div class="absolute top-0 bottom-0 left-[52%] w-0.5 bg-amber-400 z-10 shadow-[0_0_8px_#f59e0b]"></div>
+                <!-- Dynamic progress fill -->
+                <div id="coalitionBarFill" class="h-full bg-gradient-to-r from-blue-600 to-emerald-500 transition-all duration-300 w-0"></div>
+              </div>
+              <div class="flex justify-between text-[10px] text-slate-500 font-mono">
+                <span>0</span>
+                <span class="text-amber-400 font-bold">13 (Mayoría)</span>
+                <span>25</span>
+              </div>
+            </div>
+
+            <!-- Party Checkboxes list -->
+            <div id="coalitionPartyList" class="space-y-2.5 max-h-64 overflow-y-auto pr-1">
+              <!-- Dynamically populated party toggles -->
+            </div>
+          </div>
+
+          <div class="mt-6 p-3 rounded-xl bg-blue-950/40 border border-blue-800/40 text-xs text-blue-200 flex items-start gap-2.5">
+            <i data-lucide="info" class="w-4 h-4 text-blue-400 shrink-0 mt-0.5"></i>
+            <span>En el pleno de Viladecans, alcanzar <strong>13 escaños</strong> garantiza la aprobación del Presupuesto Municipal y la aprobación definitiva del POUM.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: MATRIZ DE AFINIDAD POLÍTICA -->
+    <section id="view-afinidad" class="tab-view space-y-6 hidden">
+      <div class="glass-panel rounded-2xl p-6">
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6">
+          <div>
+            <h3 class="text-lg font-bold text-white flex items-center gap-2">
+              <i data-lucide="git-merge" class="w-5 h-5 text-indigo-400"></i> Matriz de Coincidencia de Voto (% Afinidad)
+            </h3>
+            <p class="text-xs text-slate-400 mt-1">Porcentaje de votaciones plenarias en las que cada par de grupos municipales coincidió en la misma postura (Sí-Sí, No-No, Abst-Abst).</p>
+          </div>
+
+          <div class="flex items-center gap-2 bg-slate-900 p-1.5 rounded-lg border border-slate-800 text-xs">
+            <span class="text-slate-400 px-2">Escala:</span>
+            <span class="px-2 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-800">&lt;40% Baja</span>
+            <span class="px-2 py-0.5 rounded bg-blue-950 text-blue-300 border border-blue-800">40-70% Media</span>
+            <span class="px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">&gt;70% Alta</span>
+          </div>
+        </div>
+
+        <!-- Heatmap Grid Container -->
+        <div class="overflow-x-auto">
+          <div id="affinityMatrixContainer" class="min-w-[600px]">
+            <!-- Rendered via JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Alignment insights box -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="glass-panel rounded-2xl p-5">
+          <h4 class="text-sm font-bold text-emerald-400 mb-2 flex items-center gap-2">
+            <i data-lucide="check-circle-2" class="w-4 h-4"></i> Mayor Coincidencia Detectada
+          </h4>
+          <p class="text-xs text-slate-300 leading-relaxed" id="highestAffinityText">Analizando histórico de votaciones...</p>
+        </div>
+        <div class="glass-panel rounded-2xl p-5">
+          <h4 class="text-sm font-bold text-rose-400 mb-2 flex items-center gap-2">
+            <i data-lucide="x-circle" class="w-4 h-4"></i> Mayor Discrepancia / Oposición
+          </h4>
+          <p class="text-xs text-slate-300 leading-relaxed" id="lowestAffinityText">Analizando histórico de votaciones...</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: SIMULADOR ELECTORAL D'HONDT -->
+    <section id="view-dhondt" class="tab-view space-y-6 hidden">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Controls & Party Input sliders (5 cols) -->
+        <div class="glass-panel rounded-2xl p-6 lg:col-span-5 space-y-5">
+          <div>
+            <h3 class="text-base font-bold text-white flex items-center gap-2">
+              <i data-lucide="calculator" class="w-5 h-5 text-cyan-400"></i> Simulación Electoral D'Hondt
+            </h3>
+            <p class="text-xs text-slate-400 mt-1">Ajusta los porcentajes de voto de cada candidatura para simular la asignación de los 25 concejales de Viladecans.</p>
+          </div>
+
+          <!-- Electoral Threshold Control -->
+          <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800 flex items-center justify-between text-xs">
+            <span class="text-slate-300 font-medium">Barrera Electoral Mínima:</span>
+            <div class="flex items-center gap-1 font-mono">
+              <span id="thresholdVal" class="font-bold text-cyan-400">5.0%</span>
+              <span class="text-slate-500">(LOREG Municipal)</span>
+            </div>
+          </div>
+
+          <!-- Party percentage sliders -->
+          <div id="dhondtInputs" class="space-y-4 max-h-[380px] overflow-y-auto pr-2">
+            <!-- Dynamically generated inputs -->
+          </div>
+
+          <div class="flex gap-2 pt-2">
+            <button onclick="resetDhondtInputs()" class="flex-1 py-2 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition">
+              Restablecer Valores
+            </button>
+            <button onclick="normalizeDhondtInputs()" class="px-3 py-2 rounded-lg text-xs font-semibold bg-cyan-950 text-cyan-300 border border-cyan-800 hover:bg-cyan-900 transition">
+              Normalizar a 100%
+            </button>
+          </div>
+        </div>
+
+        <!-- Allocation Results & Chart Preview (7 cols) -->
+        <div class="glass-panel rounded-2xl p-6 lg:col-span-7 flex flex-col justify-between space-y-6">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-base font-bold text-white flex items-center gap-2">
+                <i data-lucide="award" class="w-5 h-5 text-emerald-400"></i> Reparto Resultado de Escaños
+              </h3>
+              <span class="text-xs text-slate-400 font-mono" id="dhondtTotalVoteSum">Suma Votos: 100%</span>
+            </div>
+
+            <!-- Simulated Councilors Table -->
+            <div class="overflow-x-auto rounded-xl border border-slate-800 bg-slate-950/60 mb-6">
+              <table class="w-full text-left text-xs">
+                <thead class="bg-slate-900 text-slate-400 font-semibold border-b border-slate-800">
+                  <tr>
+                    <th class="p-3">Partido</th>
+                    <th class="p-3 text-right">% Voto</th>
+                    <th class="p-3 text-center">Estado Barrera</th>
+                    <th class="p-3 text-center">Escaños</th>
+                    <th class="p-3 text-right">Variación vs Actual</th>
+                  </tr>
+                </thead>
+                <tbody id="dhondtResultsTable" class="divide-y divide-slate-800/60">
+                  <!-- Injected via JS -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Comparison Bar Chart -->
+            <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Comparativa de Escaños (Simulación vs Composición Actual)</h4>
+            <div class="h-48 relative">
+              <canvas id="dhondtChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 5: EXPLORADOR DE SESIONES Y VOTACIONES -->
+    <section id="view-plenos" class="tab-view space-y-6 hidden">
+      
+      <!-- Filters and Search Bar -->
+      <div class="glass-panel rounded-2xl p-4 flex flex-col md:flex-row items-center gap-3">
+        <!-- Search input -->
+        <div class="relative flex-grow w-full">
+          <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-3"></i>
+          <input type="text" id="searchInput" oninput="renderPlenosList()" placeholder="Buscar por asunto, moción o partido..." 
+            class="w-full bg-slate-900 border border-slate-700/80 rounded-xl pl-10 pr-4 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500">
+        </div>
+
+        <!-- Filter Chips -->
+        <div class="flex items-center gap-2 overflow-x-auto w-full md:w-auto pb-1 md:pb-0" id="sessionTypeChips">
+          <!-- Populated via JS -->
+        </div>
+      </div>
+
+      <!-- Plenary Sessions Feed -->
+      <div id="plenosListContainer" class="space-y-4">
+        <!-- Injected via JS -->
+      </div>
+    </section>
+
+    <!-- TAB 6: GRUPOS MUNICIPALES Y CONSISTORIO -->
+    <section id="view-partidos" class="tab-view space-y-6 hidden">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="partyCardsGrid">
+        <!-- Dynamic Party Profile Cards -->
+      </div>
+    </section>
+
+    <!-- TAB 7: ADMINISTRACIÓN & NUBE SUPABASE -->
+    <section id="view-datos" class="tab-view space-y-6 hidden">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Auth & Status Panel (4 Cols) -->
+        <div class="glass-panel rounded-2xl p-6 lg:col-span-4 space-y-5">
+          <div class="flex items-center justify-between">
+            <h3 class="text-base font-bold text-white flex items-center gap-2">
+              <i data-lucide="lock" class="w-5 h-5 text-indigo-400"></i> Autenticación Supabase
+            </h3>
+            <span id="authState" class="text-xs px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700 font-mono">Consulta pública</span>
+          </div>
+
+          <!-- Non-blocking status notification line -->
+          <div class="p-3 bg-slate-900/90 rounded-xl border border-slate-800 text-xs">
+            <span class="text-slate-400 block text-[10px] uppercase font-semibold mb-0.5">Estado de Conexión:</span>
+            <p id="sts" class="text-slate-200 font-medium">Cargando observatorio...</p>
+          </div>
+
+          <!-- Login Form -->
+          <div id="loginBox" class="space-y-3">
+            <p class="text-xs text-slate-400">Inicia sesión con tu cuenta de administrador autorizada para modificar datos en la nube.</p>
+            <form onsubmit="login(event)" class="space-y-3">
+              <div>
+                <label class="text-[11px] font-semibold text-slate-400 block mb-1">Correo Electrónico</label>
+                <input type="email" id="adminEmail" placeholder="admin@viladecans.cat" required autocomplete="username"
+                  class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500">
+              </div>
+              <div>
+                <label class="text-[11px] font-semibold text-slate-400 block mb-1">Contraseña</label>
+                <input type="password" id="adminPassword" placeholder="••••••••" required autocomplete="current-password"
+                  class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500">
+              </div>
+              <button type="submit" class="w-full py-2.5 rounded-lg text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white transition shadow-lg shadow-blue-600/30">
+                Iniciar Sesión Administrador
+              </button>
+            </form>
+          </div>
+
+          <!-- Logged-in Session Box -->
+          <div id="sessionBox" hidden class="space-y-3">
+            <div class="p-3 bg-slate-900 rounded-lg border border-slate-800 text-xs">
+              <span class="text-slate-400 block text-[10px]">Cuenta Activa:</span>
+              <span id="signedAs" class="font-mono text-emerald-400 font-bold block truncate"></span>
+            </div>
+            <button onclick="logout()" class="w-full py-2 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-rose-400 border border-slate-700 transition">
+              Cerrar Sesión
+            </button>
+          </div>
+        </div>
+
+        <!-- Data Management & Editor Panel (8 Cols) -->
+        <div class="glass-panel rounded-2xl p-6 lg:col-span-8 space-y-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="text-base font-bold text-white flex items-center gap-2">
+                <i data-lucide="database" class="w-5 h-5 text-cyan-400"></i> Gestión de la Base de Datos
+              </h3>
+              <p class="text-xs text-slate-400">Importación, exportación JSON y administración manual de plenarios.</p>
+            </div>
+          </div>
+
+          <!-- Quick Action Buttons -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <button onclick="demo()" class="p-3 rounded-xl bg-slate-900 border border-slate-800 hover:border-cyan-500/50 text-left transition group">
+              <i data-lucide="sparkles" class="w-5 h-5 text-cyan-400 mb-2 group-hover:scale-110 transition-transform"></i>
+              <span class="text-xs font-bold block text-white">Cargar Demo</span>
+              <span class="text-[10px] text-slate-400">Votaciones ejemplo</span>
+            </button>
+
+            <button onclick="exp()" class="p-3 rounded-xl bg-slate-900 border border-slate-800 hover:border-emerald-500/50 text-left transition group">
+              <i data-lucide="download" class="w-5 h-5 text-emerald-400 mb-2 group-hover:scale-110 transition-transform"></i>
+              <span class="text-xs font-bold block text-white">Exportar JSON</span>
+              <span class="text-[10px] text-slate-400">Descargar copia</span>
+            </button>
+
+            <label class="p-3 rounded-xl bg-slate-900 border border-slate-800 hover:border-amber-500/50 text-left transition cursor-pointer group">
+              <i data-lucide="upload" class="w-5 h-5 text-amber-400 mb-2 group-hover:scale-110 transition-transform"></i>
+              <span class="text-xs font-bold block text-white">Importar JSON</span>
+              <span class="text-[10px] text-slate-400">Cargar archivo</span>
+              <input type="file" id="if" accept=".json" class="hidden">
+            </label>
+
+            <button onclick="clr()" class="p-3 rounded-xl bg-slate-900 border border-slate-800 hover:border-rose-500/50 text-left transition group">
+              <i data-lucide="trash-2" class="w-5 h-5 text-rose-400 mb-2 group-hover:scale-110 transition-transform"></i>
+              <span class="text-xs font-bold block text-white">Vaciar Datos</span>
+              <span class="text-[10px] text-slate-400">Reiniciar registros</span>
+            </button>
+          </div>
+
+          <!-- JSON Text Editor -->
+          <div class="space-y-2">
+            <div class="flex justify-between items-center">
+              <label class="text-xs font-bold text-slate-300">Editor Directo JSON</label>
+              <button onclick="imp()" class="text-xs text-blue-400 hover:text-blue-300 font-semibold">Procesar e Importar</button>
+            </div>
+            <textarea id="ij" rows="6" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs font-mono-code text-slate-300 focus:outline-none focus:border-blue-500" placeholder='Admite [{"fecha":"2026-01-29","tipo":"Ordinario","votaciones":[]}] o {"plenos":[],"legislaturas":[]}'></textarea>
+          </div>
+
+          <!-- Admin Editor Section (Visible when authenticated as admin) -->
+          <div id="adminEditor" hidden class="pt-6 border-t border-slate-800 space-y-6">
+            
+            <!-- 1. Add Session -->
+            <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800 space-y-3">
+              <h4 class="text-xs font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
+                <i data-lucide="plus-circle" class="w-4 h-4"></i> Añadir Nueva Sesión
+              </h4>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <input type="date" id="pf" class="bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white">
+                <select id="pt" class="bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white">
+                  <option>Ordinario</option>
+                  <option>Extraordinario</option>
+                  <option>VIQUAL</option>
+                  <option>VIMED</option>
+                </select>
+                <input id="pu" placeholder="URL al Acta PDF (opcional)" class="bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white">
+              </div>
+              <button onclick="addP()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold transition">
+                Añadir Sesión
+              </button>
+            </div>
+
+            <!-- 2. Add Motion Point -->
+            <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800 space-y-3">
+              <h4 class="text-xs font-bold uppercase tracking-wider text-cyan-400 flex items-center gap-1.5">
+                <i data-lucide="vote" class="w-4 h-4"></i> Añadir Votación a Sesión
+              </h4>
+              <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+                <select id="vp" class="bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white sm:col-span-2"></select>
+                <input id="vn" placeholder="Punto (Ej: 1)" class="bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white">
+                <input id="va" placeholder="Asunto de la moción" class="bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white sm:col-span-4">
+              </div>
+              <div class="grid grid-cols-3 gap-3">
+                <input type="number" id="vf" placeholder="Votos Sí" min="0" class="bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-emerald-400">
+                <input type="number" id="vc" placeholder="Votos No" min="0" class="bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-rose-400">
+                <input type="number" id="vb" placeholder="Votos Abst." min="0" class="bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-amber-400">
+              </div>
+              <input id="vq" placeholder="Voto partidos: PSC:si, ERC:no, PP:abst, VOX:contra" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white">
+              <button onclick="addV()" class="px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-white rounded-lg text-xs font-bold transition">
+                Añadir Votación
+              </button>
+            </div>
+
+            <!-- 3. Add Municipal Group -->
+            <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800 space-y-3">
+              <h4 class="text-xs font-bold uppercase tracking-wider text-indigo-400 flex items-center gap-1.5">
+                <i data-lucide="users" class="w-4 h-4"></i> Añadir o Actualizar Grupo Municipal
+              </h4>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <select id="gl" class="bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white"></select>
+                <input id="gp" placeholder="Nombre Grupo (Ej: PSC)" class="bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white">
+                <input type="number" id="gn" placeholder="Concejales" min="0" class="bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white">
+              </div>
+              <input id="gr" placeholder="Representantes (separados por comas)" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white">
+              <button onclick="addG()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-bold transition">
+                Guardar Grupo
+              </button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="border-t border-slate-800/80 bg-[#04070e] text-slate-500 text-xs py-6 mt-12">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-2">
+        <i data-lucide="shield" class="w-4 h-4 text-cyan-500"></i>
+        <span>Observatorio Político y Electoral de Viladecans · Consistorio Municipal</span>
+      </div>
+      <div class="flex items-center gap-4 text-[11px]">
+        <span id="footerSyncStatus">Cargado en modo resiliente</span>
+        <span>•</span>
+        <span>25 escaños corporativos</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ================= APPLICATION ENGINE JAVASCRIPT ================= -->
+  <script id="app">
+    // Core Storage Keys & State
+    var K = "plenos-viladecans";
+    var K2 = "leg-viladecans";
+    var LG = "";
+    var TP = "";
+    var PS = "";
+    var PK = [];
+    var tab = "dashboard";
+
+    var L = { favor: "A favor", contra: "En contra", abst: "Abstención" };
+    var CL = { favor: "ok", contra: "ko", abst: "ab" };
+    var CT = ["Ordinario", "Extraordinario", "VIQUAL", "VIMED"];
+    
+    // Official Viladecans Party Palette
+    var PARTIES_CONFIG = {
+      "PSC": { name: "PSC-CP", color: "#E30613" },
+      "ERC": { name: "ERC-AM", color: "#FFB236" },
+      "PP": { name: "PP", color: "#0055A5" },
+      "VOX": { name: "VOX", color: "#63BE21" },
+      "VECP": { name: "Viladecans En Comú Podem", color: "#673AB7" },
+      "Cs": { name: "Ciutadans", color: "#EB6109" },
+      "CUP": { name: "CUP", color: "#FCD116" }
+    };
+
+    var DEF = [
+      ["2011-2015", "2011-06-11", "2015-06-12"],
+      ["2015-2019", "2015-06-13", "2019-06-14"],
+      ["2019-2023", "2019-06-15", "2023-06-16"],
+      ["2023-2027", "2023-06-17", "2027-06-30"]
+    ];
+
+    function ld(k, d) {
+      try {
+        return JSON.parse(localStorage.getItem(k) || "null") || d;
+      } catch (e) {
+        return d;
+      }
+    }
+
+    var D = ld(K, []);
+    var G = ld(K2, []);
+    var IS_ADMIN = false;
+    var CURRENT_USER = null;
+    var SUPA = null;
+    var CHANNEL = null;
+    var SAVING = false;
+
+    // Chart instances
+    var chartConsensus = null;
+    var chartPartyVotes = null;
+    var chartSessionType = null;
+    var chartDhondt = null;
+
+    // Interactive coalition simulator set
+    var coalitionSelectedParties = new Set(["PSC"]);
+
+    // Dynamic state for D'Hondt inputs
+    var dhondtVotePercentages = {
+      "PSC": 39.5,
+      "ERC": 18.2,
+      "PP": 12.8,
+      "VOX": 11.4,
+      "VECP": 8.9,
+      "CUP": 4.1,
+      "Cs": 2.5
+    };
+
+    // Ensure Default Legislatures
+    DEF.forEach(function(d) {
+      if (!G.some(function(g) { return g.id === d[0]; })) {
+        G.push({ id: d[0], nombre: "Legislatura " + d[0], inicio: d[1], fin: d[2], grupos: [] });
+      }
+    });
+
+    // Populate default 2023-2027 groups if empty
+    var leg23 = G.find(function(x) { return x.id === "2023-2027"; });
+    if (leg23 && (!leg23.grupos || !leg23.grupos.length)) {
+      leg23.grupos = [
+        { partido: "PSC", concejales: 12, representantes: ["Olga Morales Segura", "Richard Calle", "Gemma Badia"] },
+        { partido: "ERC", concejales: 5, representantes: ["Bàrbara Lligadas", "Josep Maria Canudas"] },
+        { partido: "PP", concejales: 3, representantes: ["Fernando Moya", "Josefa Redondo"] },
+        { partido: "VOX", concejales: 3, representantes: ["Ana María de la Cruz", "Carlos Martínez"] },
+        { partido: "VECP", concejales: 2, representantes: ["Encarna García", "Ramon Espejo"] }
+      ];
+    }
+
+    // Populate seed demo sessions if dataset is empty
+    if (!D.length) {
+      D = [
+        {
+          fecha: "2026-02-26",
+          tipo: "Ordinario",
+          url: "https://www.viladecans.cat/es/plens",
+          votaciones: [
+            { punto: "1", asunto: "Aprobación inicial del Plan de Ordenación Urbanística Municipal (POUM) en sector Llevant", favor: 14, contra: 8, abst: 3, partidos: { PSC: "favor", VECP: "favor", ERC: "contra", PP: "contra", VOX: "abst" } },
+            { punto: "2", asunto: "Moción para ampliación de frecuencias del servicio de autobús urbano y lanzadera Rodalies", favor: 25, contra: 0, abst: 0, partidos: { PSC: "favor", ERC: "favor", PP: "favor", VOX: "favor", VECP: "favor" } },
+            { punto: "3", asunto: "Modificación de ordenanzas fiscales sobre el Impuesto de Bienes Inmuebles (IBI) 2026", favor: 12, contra: 11, abst: 2, partidos: { PSC: "favor", ERC: "contra", PP: "contra", VOX: "contra", VECP: "abst" } }
+          ]
+        },
+        {
+          fecha: "2026-01-29",
+          tipo: "Ordinario",
+          url: "https://www.viladecans.cat/es/plens",
+          votaciones: [
+            { punto: "1", asunto: "Presupuestos Generales del Ayuntamiento de Viladecans para el ejercicio 2026", favor: 14, contra: 11, abst: 0, partidos: { PSC: "favor", VECP: "favor", ERC: "contra", PP: "contra", VOX: "contra" } },
+            { punto: "2", asunto: "Convenio de colaboración en el consorcio de promoción económica y ocupación", favor: 22, contra: 0, abst: 3, partidos: { PSC: "favor", ERC: "favor", VECP: "favor", PP: "favor", VOX: "abst" } }
+          ]
+        },
+        {
+          fecha: "2025-12-18",
+          tipo: "VIQUAL",
+          url: "https://www.viladecans.cat",
+          votaciones: [
+            { punto: "1", asunto: "Aprobación del estado de cuentas de la empresa pública municipal VIQUAL S.A.", favor: 17, contra: 3, abst: 5, partidos: { PSC: "favor", ERC: "favor", VECP: "favor", PP: "abst", VOX: "contra" } }
+          ]
+        }
+      ];
+      try { localStorage.setItem(K, JSON.stringify(D)); } catch(e){}
+    }
+
+    // Helper functions
+    function $(i) { return document.getElementById(i); }
+    function esc(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function(c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+    function fd(s) { var p = String(s).split("-"); return p.length === 3 ? p[2] + "/" + p[1] + "/" + p[0] : s; }
+    function cat(p) { var t = (p.tipo || "").toLowerCase(); return t.indexOf("viqual") > -1 ? "VIQUAL" : t.indexOf("vimed") > -1 ? "VIMED" : t.indexOf("extra") > -1 ? "Extraordinario" : "Ordinario"; }
+    function legOf(f) { var g = G.filter(function(x) { return f >= x.inicio && f <= x.fin; })[0]; return g ? g.id : ""; }
+    function res(v) { if (v.resultado) return v.resultado; return (+v.favor || 0) > (+v.contra || 0) ? "Aprobado" : "Rechazado"; }
+
+    // Toast notification manager (Non-blocking replacement for alert)
+    function notify(msg, type) {
+      type = type || 'info';
+      var colors = {
+        success: 'bg-emerald-950 border-emerald-800 text-emerald-200',
+        error: 'bg-rose-950 border-rose-800 text-rose-200',
+        info: 'bg-slate-900 border-slate-700 text-slate-200'
+      };
+      var icon = type === 'success' ? 'check-circle' : type === 'error' ? 'alert-triangle' : 'info';
+
+      var toastContainer = $("toastContainer");
+      if (!toastContainer) return;
+
+      var toast = document.createElement("div");
+      toast.className = "p-3 rounded-xl border shadow-xl flex items-center gap-3 text-xs transition-all duration-300 transform translate-y-2 pointer-events-auto " + (colors[type] || colors.info);
+      toast.innerHTML = '<i data-lucide="' + icon + '" class="w-4 h-4 shrink-0"></i><span class="flex-grow">' + esc(msg) + '</span>';
+
+      toastContainer.appendChild(toast);
+      lucide.createIcons();
+
+      setTimeout(function() {
+        toast.classList.add("opacity-0", "-translate-y-2");
+        setTimeout(function() { toast.remove(); }, 300);
+      }, 4000);
+    }
+
+    // Status Indicator Update
+    function st(t) {
+      var e = $("sts");
+      if (e) e.textContent = t;
+      var f = $("footerSyncStatus");
+      if (f) f.textContent = t;
+    }
+
+    // Storage Save Routine
+    function sv() {
+      try {
+        localStorage.setItem(K, JSON.stringify(D));
+        localStorage.setItem(K2, JSON.stringify(G));
+      } catch (e) {}
+      
+      if (!IS_ADMIN || !SUPA) {
+        st("Guardado en local. Inicia sesión como admin para sincronizar en la nube.");
+        return;
+      }
+      saveCloud();
+    }
+
+    async function saveCloud() {
+      if (SAVING) return;
+      SAVING = true;
+      st("Guardando cambios en la nube Supabase...");
+      var r = await SUPA.from("observatorio_data").update({ plenos: D, legislaturas: G, updated_at: new Date().toISOString() }).eq("id", 1);
+      SAVING = false;
+      if (r.error) {
+        st("Error al guardar en Supabase: " + r.error.message);
+        notify("Error en sincronización Supabase: " + r.error.message, "error");
+        return;
+      }
+      st("Datos sincronizados en la nube Supabase.");
+      notify("Cambios guardados y publicados con éxito", "success");
+    }
+
+    async function loadCloud(showStatus) {
+      if (!SUPA) return;
+      var r = await SUPA.from("observatorio_data").select("plenos,legislaturas,updated_at").eq("id", 1).single();
+      if (r.error) {
+        st("Modo local activo. " + r.error.message);
+        return;
+      }
+      D = r.data.plenos || [];
+      G = r.data.legislaturas || [];
+      DEF.forEach(function(d) {
+        if (!G.some(function(g) { return g.id === d[0]; })) G.push({ id: d[0], nombre: "Legislatura " + d[0], inicio: d[1], fin: d[2], grupos: [] });
+      });
+      try {
+        localStorage.setItem(K, JSON.stringify(D));
+        localStorage.setItem(K2, JSON.stringify(G));
+      } catch (e) {}
+      render();
+      if (showStatus !== false) {
+        st("Datos sincronizados con la nube · " + (r.data.updated_at ? new Date(r.data.updated_at).toLocaleString("es-ES") : "actualizado"));
+      }
+    }
+
+    async function refreshAuth(session) {
+      CURRENT_USER = session && session.user ? session.user : null;
+      IS_ADMIN = false;
+      if (CURRENT_USER && SUPA) {
+        var a = await SUPA.from("observatorio_admins").select("user_id").eq("user_id", CURRENT_USER.id).maybeSingle();
+        IS_ADMIN = !!(a.data && !a.error);
+      }
+      
+      var loginBox = $("loginBox");
+      if (loginBox) loginBox.hidden = !!CURRENT_USER && IS_ADMIN;
+      var sessionBox = $("sessionBox");
+      if (sessionBox) sessionBox.hidden = !CURRENT_USER;
+      var adminEditor = $("adminEditor");
+      if (adminEditor) adminEditor.hidden = !IS_ADMIN;
+      
+      var authState = $("authState");
+      if (authState) authState.textContent = IS_ADMIN ? "Administrador Activo" : (CURRENT_USER ? "Cuenta Lectura" : "Consulta Pública");
+      var signedAs = $("signedAs");
+      if (signedAs) signedAs.textContent = CURRENT_USER ? CURRENT_USER.email : "";
+
+      var headerAdminText = $("headerAdminText");
+      if (headerAdminText) headerAdminText.textContent = IS_ADMIN ? "Admin Activo" : "Acceso Admin";
+
+      if (CURRENT_USER && !IS_ADMIN) st("Cuenta sin permisos de administración.");
+      else if (IS_ADMIN) st("Sesión de administración activa.");
+      render();
+    }
+
+    async function login(e) {
+      e.preventDefault();
+      var email = $("adminEmail").value;
+      var password = $("adminPassword").value;
+      
+      if (!SUPA) {
+        st("Configura js/config.js para autenticación de Supabase.");
+        notify("Atención: Supabase no está configurado.", "info");
+        return;
+      }
+      
+      st("Iniciando sesión...");
+      var r = await SUPA.auth.signInWithPassword({ email: email, password: password });
+      if (r.error) {
+        st("Error de inicio de sesión: " + r.error.message);
+        notify("Acceso denegado: " + r.error.message, "error");
+        return;
+      }
+      $("adminPassword").value = "";
+      await refreshAuth(r.data.session);
+      notify("Sesión iniciada correctamente", "success");
+    }
+
+    async function logout() {
+      if (SUPA) await SUPA.signOut();
+      await refreshAuth(null);
+      notify("Sesión cerrada", "info");
+    }
+
+    function bootSupabase() {
+      var dot = $("cloudStatusDot");
+      var text = $("cloudStatusText");
+
+      if (typeof window.supabase === 'undefined') {
+        st("Modo local (Sin librería Supabase)");
+        if (dot) dot.className = "w-2 h-2 rounded-full bg-slate-500";
+        if (text) text.textContent = "Almacenamiento Local";
+        render();
+        return;
+      }
+
+      if (!window.OBS_CONFIG || !OBS_CONFIG.url || !OBS_CONFIG.anonKey || OBS_CONFIG.anonKey.indexOf("PEGA_AQUI") === 0 || OBS_CONFIG.anonKey.includes("TU_CLAVE")) {
+        st("Consulta pública local. Edita js/config.js para activar la nube.");
+        if (dot) dot.className = "w-2 h-2 rounded-full bg-amber-500";
+        if (text) text.textContent = "Modo Local";
+        render();
+        return;
+      }
+
+      try {
+        SUPA = window.supabase.createClient(OBS_CONFIG.url, OBS_CONFIG.anonKey);
+        if (dot) dot.className = "w-2 h-2 rounded-full bg-emerald-500 animate-pulse";
+        if (text) text.textContent = "Supabase Nube";
+
+        SUPA.auth.getSession().then(function(r) {
+          refreshAuth(r.data ? r.data.session : null);
+          loadCloud();
+        }).catch(function(err) {
+          st("Error al conectar con Supabase. Usando modo local.");
+        });
+
+        SUPA.auth.onAuthStateChange(function(ev, session) {
+          setTimeout(function() { refreshAuth(session); }, 0);
+        });
+
+        CHANNEL = SUPA.channel("observatorio-live").on("postgres_changes", {
+          event: "UPDATE", schema: "public", table: "observatorio_data", filter: "id=eq.1"
+        }, function() {
+          if (!SAVING) loadCloud(false);
+        }).subscribe();
+      } catch (e) {
+        st("Modo local activo: " + e.message);
+        render();
+      }
+    }
+
+    // Party Vote Parsing Helpers
+    function nv(x) {
+      var s = String(x).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+      if (/^(si|s$|f|a favor)/.test(s)) return "favor";
+      if (/^(n|c|en contra)/.test(s)) return "contra";
+      if (/^(ab|a$)/.test(s)) return "abst";
+      return "";
+    }
+
+    function pq(t) {
+      var o = {};
+      String(t || "").split(",").forEach(function(x) {
+        var a = x.split(":");
+        if (a.length > 1 && a[0].trim() && nv(a[1])) {
+          o[a[0].trim()] = nv(a[1]);
+        }
+      });
+      return o;
+    }
+
+    function fp() {
+      return D.filter(function(p) {
+        return (!LG || legOf(p.fecha) === LG) && (!TP || cat(p) === TP);
+      });
+    }
+
+    function getPartyListForCurrentLeg() {
+      var leg = G.find(function(l) { return l.id === (LG || "2023-2027"); });
+      if (leg && leg.grupos && leg.grupos.length) {
+        return leg.grupos;
+      }
+      return [
+        { partido: "PSC", concejales: 12 },
+        { partido: "ERC", concejales: 5 },
+        { partido: "PP", concejales: 3 },
+        { partido: "VOX", concejales: 3 },
+        { partido: "VECP", concejales: 2 }
+      ];
+    }
+
+    // Navigation Tab Switcher
+    function switchTab(t) {
+      tab = t;
+      document.querySelectorAll(".nav-tab").forEach(function(btn) {
+        btn.classList.remove("border-blue-500", "text-blue-400", "bg-slate-900/80");
+        btn.classList.add("border-transparent", "text-slate-400");
+      });
+      var activeBtn = $("tab-" + t);
+      if (activeBtn) {
+        activeBtn.classList.remove("border-transparent", "text-slate-400");
+        activeBtn.classList.add("border-blue-500", "text-blue-400", "bg-slate-900/80");
+      }
+
+      document.querySelectorAll(".tab-view").forEach(function(view) {
+        view.classList.add("hidden");
+      });
+      var viewEl = $("view-" + t);
+      if (viewEl) viewEl.classList.remove("hidden");
+
+      renderCurrentTab();
+    }
+
+    function setLegislature(v) {
+      LG = v;
+      render();
+    }
+
+    function setSessionFilter(v) {
+      TP = v;
+      renderPlenosList();
+    }
+
+    function renderApp() {
+      populateLegislatureSelect();
+      renderKPIs();
+      renderCurrentTab();
+    }
+
+    function renderCurrentTab() {
+      if (tab === "dashboard") renderDashboardTab();
+      else if (tab === "hemiciclo") renderHemicicloTab();
+      else if (tab === "afinidad") renderAfinidadTab();
+      else if (tab === "dhondt") renderDhondtTab();
+      else if (tab === "plenos") renderPlenosList();
+      else if (tab === "partidos") renderGruposTab();
+      else if (tab === "datos") renderDatosTab();
+    }
+
+    function populateLegislatureSelect() {
+      var select = $("legSelect");
+      if (!select) return;
+      var opts = '<option value="">Todas las legislaturas</option>';
+      G.slice().sort(function(a, b) { return b.id.localeCompare(a.id); }).forEach(function(g) {
+        opts += '<option value="' + esc(g.id) + '"' + (g.id === LG ? ' selected' : '') + '>' + esc(g.nombre) + '</option>';
+      });
+      select.innerHTML = opts;
+    }
+
+    // ================= KPI STRIP =================
+    function renderKPIs() {
+      var sessions = fp();
+      var totalMotions = 0;
+      var approvedMotions = 0;
+      var unanimousMotions = 0;
+
+      sessions.forEach(function(s) {
+        (s.votaciones || []).forEach(function(v) {
+          totalMotions++;
+          if ((+v.favor || 0) > (+v.contra || 0)) approvedMotions++;
+          if ((+v.contra || 0) === 0 && (+v.abst || 0) === 0) unanimousMotions++;
+        });
+      });
+
+      var consensusRate = totalMotions > 0 ? Math.round((unanimousMotions / totalMotions) * 100) : 0;
+      var passRate = totalMotions > 0 ? Math.round((approvedMotions / totalMotions) * 100) : 0;
+
+      var container = $("kpiStrip");
+      if (!container) return;
+
+      container.innerHTML = `
+        <div class="glass-card p-3.5 rounded-xl flex items-center gap-3">
+          <div class="w-9 h-9 rounded-lg bg-blue-950 border border-blue-800 flex items-center justify-center shrink-0">
+            <i data-lucide="file-check" class="w-4 h-4 text-blue-400"></i>
+          </div>
+          <div>
+            <span class="text-[10px] text-slate-400 font-semibold uppercase tracking-wider block">Sesiones</span>
+            <span class="text-xl font-extrabold text-white font-mono-code">${sessions.length}</span>
+          </div>
+        </div>
+
+        <div class="glass-card p-3.5 rounded-xl flex items-center gap-3">
+          <div class="w-9 h-9 rounded-lg bg-indigo-950 border border-indigo-800 flex items-center justify-center shrink-0">
+            <i data-lucide="vote" class="w-4 h-4 text-indigo-400"></i>
+          </div>
+          <div>
+            <span class="text-[10px] text-slate-400 font-semibold uppercase tracking-wider block">Votaciones</span>
+            <span class="text-xl font-extrabold text-white font-mono-code">${totalMotions}</span>
+          </div>
+        </div>
+
+        <div class="glass-card p-3.5 rounded-xl flex items-center gap-3">
+          <div class="w-9 h-9 rounded-lg bg-emerald-950 border border-emerald-800 flex items-center justify-center shrink-0">
+            <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i>
+          </div>
+          <div>
+            <span class="text-[10px] text-slate-400 font-semibold uppercase tracking-wider block">Aprobación</span>
+            <span class="text-xl font-extrabold text-emerald-400 font-mono-code">${passRate}%</span>
+          </div>
+        </div>
+
+        <div class="glass-card p-3.5 rounded-xl flex items-center gap-3">
+          <div class="w-9 h-9 rounded-lg bg-amber-950 border border-amber-800 flex items-center justify-center shrink-0">
+            <i data-lucide="handshake" class="w-4 h-4 text-amber-400"></i>
+          </div>
+          <div>
+            <span class="text-[10px] text-slate-400 font-semibold uppercase tracking-wider block">Unanimidad</span>
+            <span class="text-xl font-extrabold text-amber-400 font-mono-code">${consensusRate}%</span>
+          </div>
+        </div>
+
+        <div class="glass-card p-3.5 rounded-xl flex items-center gap-3 col-span-2 md:col-span-1">
+          <div class="w-9 h-9 rounded-lg bg-cyan-950 border border-cyan-800 flex items-center justify-center shrink-0">
+            <i data-lucide="users" class="w-4 h-4 text-cyan-400"></i>
+          </div>
+          <div>
+            <span class="text-[10px] text-slate-400 font-semibold uppercase tracking-wider block">Concejales</span>
+            <span class="text-xl font-extrabold text-white font-mono-code">25</span>
+          </div>
+        </div>
+      `;
+      lucide.createIcons();
+    }
+
+    // ================= TAB 1: EXECUTIVE DASHBOARD =================
+    function renderDashboardTab() {
+      var sessions = fp();
+      var totalMotions = 0;
+      var approvedCount = 0;
+      var rejectedCount = 0;
+      var unanimousCount = 0;
+
+      var partyStats = {};
+
+      sessions.forEach(function(s) {
+        (s.votaciones || []).forEach(function(v) {
+          totalMotions++;
+          var pass = (+v.favor || 0) > (+v.contra || 0);
+          if (pass) approvedCount++; else rejectedCount++;
+          if ((+v.contra || 0) === 0 && (+v.abst || 0) === 0) unanimousCount++;
+
+          var pVotes = v.partidos || {};
+          Object.keys(pVotes).forEach(function(pKey) {
+            if (!partyStats[pKey]) partyStats[pKey] = { favor: 0, contra: 0, abst: 0 };
+            var voteVal = nv(pVotes[pKey]);
+            if (voteVal === "favor") partyStats[pKey].favor++;
+            else if (voteVal === "contra") partyStats[pKey].contra++;
+            else partyStats[pKey].abst++;
+          });
+        });
+      });
+
+      var consensusPct = totalMotions > 0 ? Math.round((unanimousCount / totalMotions) * 100) : 0;
+      if ($("consensusPct")) $("consensusPct").textContent = consensusPct + "%";
+      if ($("dashboardApprovedCnt")) $("dashboardApprovedCnt").textContent = approvedCount;
+      if ($("dashboardRejectedCnt")) $("dashboardRejectedCnt").textContent = rejectedCount;
+
+      var gradeBadge = $("consensusGrade");
+      if (gradeBadge) {
+        if (consensusPct >= 50) { gradeBadge.textContent = "Muy Alto"; gradeBadge.className = "text-xs px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-800/40 font-mono"; }
+        else if (consensusPct >= 25) { gradeBadge.textContent = "Moderado"; gradeBadge.className = "text-xs px-2 py-0.5 rounded bg-blue-950 text-blue-400 border border-blue-800/40 font-mono"; }
+        else { gradeBadge.textContent = "Polarizado"; gradeBadge.className = "text-xs px-2 py-0.5 rounded bg-rose-950 text-rose-400 border border-rose-800/40 font-mono"; }
+      }
+
+      // Chart 1: Consensus Gauge
+      if (chartConsensus) chartConsensus.destroy();
+      var ctx1 = $("consensusChart");
+      if (ctx1) {
+        chartConsensus = new Chart(ctx1.getContext("2d"), {
+          type: 'doughnut',
+          data: {
+            labels: ['Unanimidad', 'Mayoría / Disputado'],
+            datasets: [{
+              data: [unanimousCount, totalMotions - unanimousCount],
+              backgroundColor: ['#10b981', '#334155'],
+              borderWidth: 0
+            }]
+          },
+          options: {
+            cutout: '78%',
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } }
+          }
+        });
+      }
+
+      // Chart 2: Party Stacked Bar
+      if (chartPartyVotes) chartPartyVotes.destroy();
+      var partyLabels = Object.keys(partyStats);
+      var ctx2 = $("partyVotesChart");
+      if (ctx2) {
+        chartPartyVotes = new Chart(ctx2.getContext("2d"), {
+          type: 'bar',
+          data: {
+            labels: partyLabels,
+            datasets: [
+              { label: 'A Favor', data: partyLabels.map(function(p){ return partyStats[p].favor; }), backgroundColor: '#10b981' },
+              { label: 'En Contra', data: partyLabels.map(function(p){ return partyStats[p].contra; }), backgroundColor: '#f43f5e' },
+              { label: 'Abstención', data: partyLabels.map(function(p){ return partyStats[p].abst; }), backgroundColor: '#f59e0b' }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              x: { stacked: true, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } },
+              y: { stacked: true, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } }
+            },
+            plugins: { legend: { labels: { color: '#e2e8f0', font: { size: 11 } } } }
+          }
+        });
+      }
+
+      // Chart 3: Session Types Pie
+      if (chartSessionType) chartSessionType.destroy();
+      var typeCounts = { "Ordinario": 0, "Extraordinario": 0, "VIQUAL": 0, "VIMED": 0 };
+      sessions.forEach(function(s) {
+        var t = cat(s);
+        if (typeCounts[t] !== undefined) typeCounts[t]++; else typeCounts["Ordinario"]++;
+      });
+      var ctx3 = $("sessionTypeChart");
+      if (ctx3) {
+        chartSessionType = new Chart(ctx3.getContext("2d"), {
+          type: 'pie',
+          data: {
+            labels: Object.keys(typeCounts),
+            datasets: [{
+              data: Object.values(typeCounts),
+              backgroundColor: ['#3b82f6', '#8b5cf6', '#06b6d4', '#10b981'],
+              borderWidth: 0
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { position: 'right', labels: { color: '#e2e8f0', font: { size: 11 } } } }
+          }
+        });
+      }
+
+      // Recent Motions feed
+      var feedContainer = $("recentMotionsFeed");
+      if (feedContainer) {
+        var feedHtml = "";
+        var count = 0;
+        sessions.forEach(function(s) {
+          (s.votaciones || []).forEach(function(v) {
+            if (count >= 4) return;
+            count++;
+            var passed = (+v.favor || 0) > (+v.contra || 0);
+            feedHtml += `
+              <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800 flex items-start justify-between gap-3">
+                <div>
+                  <div class="flex items-center gap-2 mb-1">
+                    <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-300">${fd(s.fecha)}</span>
+                    <span class="text-[10px] font-semibold px-2 py-0.5 rounded ${passed ? 'bg-emerald-950 text-emerald-400 border border-emerald-800/40' : 'bg-rose-950 text-rose-400 border border-rose-800/40'}">
+                      ${passed ? 'APROBADO' : 'RECHAZADO'}
+                    </span>
+                    <span class="text-[10px] text-slate-400">Punto ${esc(v.punto)}</span>
+                  </div>
+                  <h4 class="text-xs font-semibold text-slate-200 line-clamp-1">${esc(v.asunto)}</h4>
+                </div>
+                <div class="flex items-center gap-2 font-mono text-xs shrink-0">
+                  <span class="text-emerald-400">👍 ${v.favor || 0}</span>
+                  <span class="text-rose-400">👎 ${v.contra || 0}</span>
+                  <span class="text-amber-400">✋ ${v.abst || 0}</span>
+                </div>
+              </div>
+            `;
+          });
+        });
+        feedContainer.innerHTML = feedHtml || '<p class="text-xs text-slate-500 py-4 text-center">Sin votaciones registradas en esta legislatura.</p>';
+      }
+    }
+
+    // ================= TAB 2: HEMICICLO & COALICIONES =================
+    function renderHemicicloTab() {
+      var partyList = getPartyListForCurrentLeg();
+      var svgGroup = $("hemicycleSeatsGroup");
+      if (!svgGroup) return;
+      svgGroup.innerHTML = "";
+
+      var totalSeats = 25;
+      var partySeatsExpanded = [];
+
+      partyList.forEach(function(p) {
+        var pConf = PARTIES_CONFIG[p.partido] || { color: "#64748B", name: p.partido };
+        for (var i = 0; i < (+p.concejales || 0); i++) {
+          partySeatsExpanded.push({
+            party: p.partido,
+            color: pConf.color,
+            name: pConf.name
+          });
+        }
+      });
+
+      while (partySeatsExpanded.length < totalSeats) {
+        partySeatsExpanded.push({ party: "Vacante", color: "#64748B", name: "Vacante" });
+      }
+
+      var innerRadius = 110;
+      var outerRadius = 160;
+      var cx = 250, cy = 250;
+      var seatIndex = 0;
+
+      // Inner Row (10 seats)
+      for (var i = 0; i < 10; i++) {
+        var angle = Math.PI - ((i + 0.5) / 10) * Math.PI;
+        var x = cx + innerRadius * Math.cos(angle);
+        var y = cy - innerRadius * Math.sin(angle);
+        var seatData = partySeatsExpanded[seatIndex] || { color: "#64748B", party: "Ind" };
+
+        createSeatNode(svgGroup, x, y, seatData, seatIndex + 1);
+        seatIndex++;
+      }
+
+      // Outer Row (15 seats)
+      for (var j = 0; j < 15; j++) {
+        var angle2 = Math.PI - ((j + 0.5) / 15) * Math.PI;
+        var x2 = cx + outerRadius * Math.cos(angle2);
+        var y2 = cy - outerRadius * Math.sin(angle2);
+        var seatData2 = partySeatsExpanded[seatIndex] || { color: "#64748B", party: "Ind" };
+
+        createSeatNode(svgGroup, x2, y2, seatData2, seatIndex + 1);
+        seatIndex++;
+      }
+
+      // Party Legend
+      var legendContainer = $("hemicycleLegend");
+      if (legendContainer) {
+        legendContainer.innerHTML = partyList.map(function(p) {
+          var cfg = PARTIES_CONFIG[p.partido] || { color: "#64748B" };
+          return `
+            <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-900 border border-slate-800">
+              <span class="w-3 h-3 rounded-full" style="background-color: ${cfg.color}"></span>
+              <span class="font-bold text-white">${esc(p.partido)}</span>
+              <span class="text-slate-400 font-mono">(${p.concejales})</span>
+            </div>
+          `;
+        }).join("");
+      }
+
+      renderCoalitionToggles();
+      updateCoalitionMeter();
+    }
+
+    function createSeatNode(svgGroup, x, y, seatData, seatNum) {
+      var circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+      circle.setAttribute("cx", x);
+      circle.setAttribute("cy", y);
+      circle.setAttribute("r", "11");
+      circle.setAttribute("fill", seatData.color);
+      circle.setAttribute("class", "seat-node");
+      circle.setAttribute("stroke", "#070b14");
+      circle.setAttribute("stroke-width", "2");
+
+      var title = document.createElementNS("http://www.w3.org/2000/svg", "title");
+      title.textContent = "Escaño #" + seatNum + " · " + seatData.party;
+      circle.appendChild(title);
+
+      svgGroup.appendChild(circle);
+    }
+
+    function renderCoalitionToggles() {
+      var partyList = getPartyListForCurrentLeg();
+      var container = $("coalitionPartyList");
+      if (!container) return;
+
+      container.innerHTML = partyList.map(function(p) {
+        var cfg = PARTIES_CONFIG[p.partido] || { color: "#64748B", name: p.partido };
+        var isChecked = coalitionSelectedParties.has(p.partido);
+
+        return `
+          <label class="flex items-center justify-between p-3 rounded-xl bg-slate-900/80 border ${isChecked ? 'border-blue-500/60 bg-blue-950/20' : 'border-slate-800'} cursor-pointer hover:border-slate-700 transition">
+            <div class="flex items-center gap-3">
+              <input type="checkbox" onchange="toggleCoalitionParty('${p.partido}')" ${isChecked ? 'checked' : ''} 
+                class="w-4 h-4 rounded text-blue-600 focus:ring-0 cursor-pointer">
+              <span class="w-3 h-3 rounded-full" style="background-color: ${cfg.color}"></span>
+              <div>
+                <span class="text-xs font-bold text-white block">${esc(p.partido)}</span>
+                <span class="text-[10px] text-slate-400">${esc(cfg.name)}</span>
+              </div>
+            </div>
+            <span class="text-xs font-mono font-bold text-white">${p.concejales} esc.</span>
+          </label>
+        `;
+      }).join("");
+    }
+
+    function toggleCoalitionParty(party) {
+      if (coalitionSelectedParties.has(party)) coalitionSelectedParties.delete(party);
+      else coalitionSelectedParties.add(party);
+      renderHemicicloTab();
+    }
+
+    function resetCoalition() {
+      coalitionSelectedParties.clear();
+      renderHemicicloTab();
+    }
+
+    function updateCoalitionMeter() {
+      var partyList = getPartyListForCurrentLeg();
+      var totalSum = 0;
+      partyList.forEach(function(p) {
+        if (coalitionSelectedParties.has(p.partido)) {
+          totalSum += (+p.concejales || 0);
+        }
+      });
+
+      if ($("coalitionSeatsCount")) $("coalitionSeatsCount").textContent = totalSum;
+      var pct = Math.min(100, Math.round((totalSum / 25) * 100));
+      if ($("coalitionBarFill")) $("coalitionBarFill").style.width = pct + "%";
+
+      var badge = $("coalitionStatusBadge");
+      if (badge) {
+        if (totalSum >= 13) {
+          badge.textContent = "Mayoría Absoluta (" + totalSum + "/25)";
+          badge.className = "px-3 py-1 rounded-full text-xs font-bold bg-emerald-950 text-emerald-400 border border-emerald-800";
+        } else if (totalSum > 0) {
+          badge.textContent = "Gobierno en Minoría (" + totalSum + "/25)";
+          badge.className = "px-3 py-1 rounded-full text-xs font-bold bg-amber-950 text-amber-400 border border-amber-800";
+        } else {
+          badge.textContent = "Sin selección";
+          badge.className = "px-3 py-1 rounded-full text-xs font-bold bg-slate-800 text-slate-400 border border-slate-700";
+        }
+      }
+    }
+
+    // ================= TAB 3: MATRIZ DE AFINIDAD POLÍTICA =================
+    function renderAfinidadTab() {
+      var sessions = fp();
+      var parties = getPartyListForCurrentLeg().map(function(g) { return g.partido; });
+
+      var matrix = {};
+      parties.forEach(function(p1) {
+        matrix[p1] = {};
+        parties.forEach(function(p2) { matrix[p1][p2] = { same: 0, total: 0 }; });
+      });
+
+      sessions.forEach(function(s) {
+        (s.votaciones || []).forEach(function(v) {
+          var pVotes = v.partidos || {};
+          parties.forEach(function(p1) {
+            parties.forEach(function(p2) {
+              if (pVotes[p1] && pVotes[p2]) {
+                var v1 = nv(pVotes[p1]);
+                var v2 = nv(pVotes[p2]);
+                if (v1 && v2) {
+                  matrix[p1][p2].total++;
+                  if (v1 === v2) matrix[p1][p2].same++;
+                }
+              }
+            });
+          });
+        });
+      });
+
+      var container = $("affinityMatrixContainer");
+      if (!container) return;
+
+      var html = '<table class="w-full text-center border-collapse"><thead><tr><th class="p-2 text-left text-xs text-slate-400">Partido</th>';
+      parties.forEach(function(p) { html += '<th class="p-2 text-xs font-bold text-slate-200">' + esc(p) + '</th>'; });
+      html += '</tr></thead><tbody>';
+
+      var highestPair = { p1: '', p2: '', pct: -1 };
+      var lowestPair = { p1: '', p2: '', pct: 101 };
+
+      parties.forEach(function(p1) {
+        html += '<tr><td class="p-2 text-left font-bold text-xs text-slate-200 border-t border-slate-800">' + esc(p1) + '</td>';
+        parties.forEach(function(p2) {
+          var data = matrix[p1][p2];
+          var pct = data.total > 0 ? Math.round((data.same / data.total) * 100) : 0;
+
+          if (p1 !== p2 && data.total > 0) {
+            if (pct > highestPair.pct) highestPair = { p1: p1, p2: p2, pct: pct };
+            if (pct < lowestPair.pct) lowestPair = { p1: p1, p2: p2, pct: pct };
+          }
+
+          var bgClass = "bg-slate-900/40 text-slate-400";
+          if (p1 === p2) bgClass = "bg-slate-800/80 text-slate-300 font-bold";
+          else if (pct >= 70) bgClass = "bg-emerald-950/80 text-emerald-400 font-bold border border-emerald-800/50";
+          else if (pct >= 40) bgClass = "bg-blue-950/60 text-blue-300 border border-blue-800/40";
+          else bgClass = "bg-rose-950/50 text-rose-400 border border-rose-800/40";
+
+          html += '<td class="p-2 border border-slate-800/80 text-xs font-mono affinity-cell ' + bgClass + '">' + (data.total > 0 ? pct + '%' : '-') + '</td>';
+        });
+        html += '</tr>';
+      });
+      html += '</tbody></table>';
+      container.innerHTML = html;
+
+      if ($("highestAffinityText")) {
+        $("highestAffinityText").innerHTML = highestPair.p1 ? 
+          `Los partidos <strong>${highestPair.p1}</strong> y <strong>${highestPair.p2}</strong> registran una coincidencia de voto del <span class="text-emerald-400 font-bold font-mono">${highestPair.pct}%</span>.` :
+          "Sin datos suficientes.";
+      }
+
+      if ($("lowestAffinityText")) {
+        $("lowestAffinityText").innerHTML = lowestPair.p1 ? 
+          `Los partidos <strong>${lowestPair.p1}</strong> y <strong>${lowestPair.p2}</strong> presentan la mayor discrepancia, coincidiendo solo el <span class="text-rose-400 font-bold font-mono">${lowestPair.pct}%</span> del tiempo.` :
+          "Sin datos suficientes.";
+      }
+    }
+
+    // ================= TAB 4: SIMULADOR ELECTORAL D'HONDT =================
+    function renderDhondtTab() {
+      renderDhondtInputs();
+      computeDhondtSeats();
+    }
+
+    function renderDhondtInputs() {
+      var container = $("dhondtInputs");
+      if (!container) return;
+
+      container.innerHTML = Object.keys(dhondtVotePercentages).map(function(party) {
+        var cfg = PARTIES_CONFIG[party] || { color: "#64748B", name: party };
+        var val = dhondtVotePercentages[party];
+        return `
+          <div class="space-y-1">
+            <div class="flex justify-between items-center text-xs">
+              <span class="font-bold text-white flex items-center gap-1.5">
+                <span class="w-2.5 h-2.5 rounded-full" style="background-color: ${cfg.color}"></span> ${party}
+              </span>
+              <span class="font-mono text-cyan-400 font-bold">${val}%</span>
+            </div>
+            <input type="range" min="0" max="60" step="0.5" value="${val}" 
+              oninput="updateDhondtVote('${party}', this.value)" 
+              class="w-full accent-cyan-400 bg-slate-800 h-1.5 rounded-lg cursor-pointer">
+          </div>
+        `;
+      }).join("");
+    }
+
+    function updateDhondtVote(party, val) {
+      dhondtVotePercentages[party] = parseFloat(val);
+      renderDhondtTab();
+    }
+
+    function resetDhondtInputs() {
+      dhondtVotePercentages = { "PSC": 39.5, "ERC": 18.2, "PP": 12.8, "VOX": 11.4, "VECP": 8.9, "CUP": 4.1, "Cs": 2.5 };
+      renderDhondtTab();
+    }
+
+    function normalizeDhondtInputs() {
+      var sum = 0;
+      Object.keys(dhondtVotePercentages).forEach(function(p) { sum += dhondtVotePercentages[p]; });
+      if (sum === 0) return;
+      Object.keys(dhondtVotePercentages).forEach(function(p) {
+        dhondtVotePercentages[p] = Math.round((dhondtVotePercentages[p] / sum) * 1000) / 10;
+      });
+      renderDhondtTab();
+    }
+
+    function computeDhondtSeats() {
+      var totalSeats = 25;
+      var threshold = 5.0;
+
+      var sumVotes = 0;
+      Object.keys(dhondtVotePercentages).forEach(function(p) { sumVotes += dhondtVotePercentages[p]; });
+      if ($("dhondtTotalVoteSum")) $("dhondtTotalVoteSum").textContent = `Suma Porcentajes: ${sumVotes.toFixed(1)}%`;
+
+      var eligible = [];
+      Object.keys(dhondtVotePercentages).forEach(function(p) {
+        var pct = dhondtVotePercentages[p];
+        if (pct >= threshold) eligible.push({ party: p, pct: pct });
+      });
+
+      var quotients = [];
+      eligible.forEach(function(item) {
+        for (var s = 1; s <= totalSeats; s++) {
+          quotients.push({ party: item.party, quotient: item.pct / s });
+        }
+      });
+
+      quotients.sort(function(a, b) { return b.quotient - a.quotient; });
+
+      var allocatedSeats = {};
+      Object.keys(dhondtVotePercentages).forEach(function(p) { allocatedSeats[p] = 0; });
+
+      var winners = quotients.slice(0, totalSeats);
+      winners.forEach(function(q) {
+        allocatedSeats[q.party] = (allocatedSeats[q.party] || 0) + 1;
+      });
+
+      var actualSeatsMap = {};
+      getPartyListForCurrentLeg().forEach(function(g) { actualSeatsMap[g.partido] = g.concejales; });
+
+      var tbody = $("dhondtResultsTable");
+      if (tbody) {
+        tbody.innerHTML = Object.keys(dhondtVotePercentages).map(function(party) {
+          var pct = dhondtVotePercentages[party];
+          var isEligible = pct >= threshold;
+          var simulated = allocatedSeats[party] || 0;
+          var actual = actualSeatsMap[party] || 0;
+          var diff = simulated - actual;
+          var diffText = diff > 0 ? `+${diff}` : `${diff}`;
+          var diffColor = diff > 0 ? 'text-emerald-400 font-bold' : (diff < 0 ? 'text-rose-400 font-bold' : 'text-slate-500');
+
+          return `
+            <tr class="hover:bg-slate-900/40">
+              <td class="p-3 font-bold text-white">${party}</td>
+              <td class="p-3 text-right font-mono text-cyan-400 font-bold">${pct}%</td>
+              <td class="p-3 text-center">
+                <span class="px-2 py-0.5 rounded text-[10px] ${isEligible ? 'bg-emerald-950 text-emerald-400 border border-emerald-800' : 'bg-rose-950 text-rose-400 border border-rose-800'}">
+                  ${isEligible ? 'Supera (≥5%)' : 'Excluido (<5%)'}
+                </span>
+              </td>
+              <td class="p-3 text-center font-mono text-base font-extrabold text-white">${simulated}</td>
+              <td class="p-3 text-right font-mono ${diffColor}">${diffText}</td>
+            </tr>
+          `;
+        }).join("");
+      }
+
+      if (chartDhondt) chartDhondt.destroy();
+      var partiesList = Object.keys(dhondtVotePercentages);
+      var ctx = $("dhondtChart");
+      if (ctx) {
+        chartDhondt = new Chart(ctx.getContext("2d"), {
+          type: 'bar',
+          data: {
+            labels: partiesList,
+            datasets: [
+              { label: 'Escaños Simulados', data: partiesList.map(function(p){ return allocatedSeats[p] || 0; }), backgroundColor: '#06b6d4' },
+              { label: 'Escaños Actuales', data: partiesList.map(function(p){ return actualSeatsMap[p] || 0; }), backgroundColor: '#334155' }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              y: { ticks: { stepSize: 1, color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+              x: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.05)' } }
+            },
+            plugins: { legend: { labels: { color: '#e2e8f0', font: { size: 11 } } } }
+          }
+        });
+      }
+    }
+
+    // ================= TAB 5: EXPLORADOR DE SESIONES =================
+    function renderPlenosList() {
+      var searchInput = $("searchInput");
+      var search = searchInput ? searchInput.value.toLowerCase().trim() : "";
+      var sessions = fp();
+      var container = $("plenosListContainer");
+      if (!container) return;
+
+      var chipContainer = $("sessionTypeChips");
+      if (chipContainer) {
+        var types = ["Todos", "Ordinario", "Extraordinario", "VIQUAL", "VIMED"];
+        chipContainer.innerHTML = types.map(function(t) {
+          var isSel = (t === "Todos" && !TP) || (TP === t);
+          return `
+            <button onclick="setSessionFilter('${t === "Todos" ? "" : t}')" 
+              class="px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap transition ${isSel ? 'bg-blue-600 text-white' : 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800'}">
+              ${t}
+            </button>
+          `;
+        }).join("");
+      }
+
+      var html = "";
+      sessions.forEach(function(s) {
+        var pIndex = D.indexOf(s);
+        var matchingMotions = (s.votaciones || []).filter(function(v) {
+          if (!search) return true;
+          return (v.asunto || "").toLowerCase().includes(search) || 
+                 (v.punto && String(v.punto).toLowerCase().includes(search)) ||
+                 Object.keys(v.partidos || {}).some(function(pk) { return pk.toLowerCase().includes(search); });
+        });
+
+        if (search && !matchingMotions.length) return;
+
+        html += `
+          <div class="glass-panel rounded-2xl overflow-hidden">
+            <div class="p-4 bg-slate-900/70 border-b border-slate-800 flex flex-wrap items-center justify-between gap-3">
+              <div class="flex items-center gap-3">
+                <span class="text-xs font-mono font-bold px-3 py-1 bg-slate-800 rounded-lg text-cyan-400 border border-slate-700">${fd(s.fecha)}</span>
+                <span class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-blue-950 text-blue-300 border border-blue-800/50">${cat(s)}</span>
+                <span class="text-xs text-slate-400 hidden sm:inline">• ${(s.votaciones || []).length} votaciones</span>
+              </div>
+              
+              <div class="flex items-center gap-2">
+                ${s.url ? `<a href="${esc(s.url)}" target="_blank" rel="noopener" class="text-xs text-cyan-400 hover:text-cyan-300 underline flex items-center gap-1"><i data-lucide="external-link" class="w-3.5 h-3.5"></i> Acta PDF</a>` : ''}
+                ${IS_ADMIN ? `<button onclick="dp(${pIndex})" class="text-xs text-rose-400 hover:text-rose-300 px-2 py-1 bg-rose-950/40 rounded border border-rose-800/40">Eliminar Sesión</button>` : ''}
+              </div>
+            </div>
+
+            <div class="divide-y divide-slate-800/60">
+              ${(matchingMotions.length ? matchingMotions : s.votaciones || []).map(function(v, j) {
+                var passed = (+v.favor || 0) > (+v.contra || 0);
+                return `
+                  <div class="p-4 space-y-3 hover:bg-slate-900/30 transition">
+                    <div class="flex items-start justify-between gap-4">
+                      <div class="space-y-1">
+                        <div class="flex items-center gap-2">
+                          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Punto ${esc(v.punto)}</span>
+                          <span class="text-xs font-bold px-2 py-0.5 rounded ${passed ? 'bg-emerald-950 text-emerald-400 border border-emerald-800/40' : 'bg-rose-950 text-rose-400 border border-rose-800/40'}">
+                            ${res(v)}
+                          </span>
+                        </div>
+                        <h4 class="text-sm font-semibold text-white leading-snug">${esc(v.asunto)}</h4>
+                      </div>
+
+                      <div class="flex items-center gap-3 text-xs font-mono shrink-0 bg-slate-950 px-3 py-1.5 rounded-xl border border-slate-800">
+                        <span class="text-emerald-400 font-bold">Sí: ${v.favor || 0}</span>
+                        <span class="text-rose-400 font-bold">No: ${v.contra || 0}</span>
+                        <span class="text-amber-400 font-bold">Abst: ${v.abst || 0}</span>
+                        ${IS_ADMIN ? `<button onclick="dv(${pIndex}, ${j})" class="text-rose-400 hover:text-rose-300 ml-1">✕</button>` : ''}
+                      </div>
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-2 pt-1 text-xs">
+                      <span class="text-[11px] text-slate-500 font-semibold mr-1">Voto por grupo:</span>
+                      ${Object.keys(v.partidos || {}).map(function(pk) {
+                        var voteVal = nv(v.partidos[pk]);
+                        var badgeStyle = "bg-slate-900 text-slate-300 border-slate-700";
+                        if (voteVal === "favor") badgeStyle = "bg-emerald-950/80 text-emerald-300 border-emerald-800/60";
+                        else if (voteVal === "contra") badgeStyle = "bg-rose-950/80 text-rose-300 border-rose-800/60";
+                        else badgeStyle = "bg-amber-950/80 text-amber-300 border-amber-800/60";
+
+                        return `
+                          <span class="px-2.5 py-0.5 rounded-lg border text-[11px] font-medium flex items-center gap-1.5 ${badgeStyle}">
+                            <strong class="text-white">${esc(pk)}:</strong> ${esc(v.partidos[pk])}
+                          </span>
+                        `;
+                      }).join("")}
+                    </div>
+                  </div>
+                `;
+              }).join("")}
+            </div>
+          </div>
+        `;
+      });
+
+      container.innerHTML = html || '<div class="glass-panel rounded-2xl p-8 text-center text-slate-400">No hay sesiones plenarias que coincidan con el filtro.</div>';
+      lucide.createIcons();
+    }
+
+    // ================= TAB 6: GRUPOS MUNICIPALES =================
+    function renderGruposTab() {
+      var partyList = getPartyListForCurrentLeg();
+      var grid = $("partyCardsGrid");
+      if (!grid) return;
+      var sessions = fp();
+
+      grid.innerHTML = partyList.map(function(p) {
+        var cfg = PARTIES_CONFIG[p.partido] || { color: "#64748B", name: p.partido };
+        
+        var yesCnt = 0, noCnt = 0, abstCnt = 0;
+        sessions.forEach(function(s) {
+          (s.votaciones || []).forEach(function(v) {
+            var voteVal = (v.partidos && v.partidos[p.partido]) ? nv(v.partidos[p.partido]) : "";
+            if (voteVal === "favor") yesCnt++;
+            else if (voteVal === "contra") noCnt++;
+            else if (voteVal === "abst") abstCnt++;
+          });
+        });
+
+        var totalVotes = yesCnt + noCnt + abstCnt;
+        var yesPct = totalVotes > 0 ? Math.round((yesCnt / totalVotes) * 100) : 0;
+        var noPct = totalVotes > 0 ? Math.round((noCnt / totalVotes) * 100) : 0;
+
+        return `
+          <div class="glass-panel rounded-2xl p-5 flex flex-col justify-between space-y-4">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center gap-2.5">
+                  <span class="w-4 h-4 rounded-full" style="background-color: ${cfg.color}"></span>
+                  <h3 class="text-base font-bold text-white">${esc(p.partido)}</h3>
+                </div>
+                <span class="text-xs font-mono font-bold px-2.5 py-1 bg-slate-900 border border-slate-800 rounded-lg text-slate-300">
+                  ${p.concejales} concejales
+                </span>
+              </div>
+              <p class="text-xs text-slate-400 mb-4">${esc(cfg.name)}</p>
+
+              <div class="space-y-2 mb-4">
+                <div class="flex justify-between text-xs text-slate-300">
+                  <span>Soporte a Mociones (Sí)</span>
+                  <span class="font-mono font-bold text-emerald-400">${yesPct}%</span>
+                </div>
+                <div class="w-full bg-slate-900 h-2 rounded-full overflow-hidden flex">
+                  <div class="bg-emerald-500 h-full" style="width: ${yesPct}%"></div>
+                  <div class="bg-rose-500 h-full" style="width: ${noPct}%"></div>
+                  <div class="bg-amber-500 h-full" style="width: ${100 - yesPct - noPct}%"></div>
+                </div>
+              </div>
+
+              <div>
+                <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-2">Representantes:</span>
+                <div class="flex flex-wrap gap-1.5">
+                  ${(p.representantes || ["Sin datos"]).map(function(r) {
+                    return `<span class="text-[11px] px-2.5 py-1 bg-slate-900 rounded-lg text-slate-300 border border-slate-800">${esc(r)}</span>`;
+                  }).join("")}
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    // ================= TAB 7: ADMIN & DATA MANAGEMENT =================
+    function renderDatosTab() {
+      var textArea = $("ij");
+      if (textArea) {
+        textArea.value = JSON.stringify({ plenos: D, legislaturas: G }, null, 1);
+      }
+      
+      var vp = $("vp");
+      if (vp) {
+        vp.innerHTML = D.map(function(p, i) {
+          return '<option value="' + i + '">' + esc(fd(p.fecha)) + ' · ' + cat(p) + '</option>';
+        }).join("");
+      }
+
+      var gl = $("gl");
+      if (gl) {
+        gl.innerHTML = G.map(function(g) {
+          return '<option value="' + esc(g.id) + '">' + esc(g.nombre) + '</option>';
+        }).join("");
+      }
+    }
+
+    function addP() {
+      if (!IS_ADMIN) {
+        notify("Inicia sesión como administrador para añadir sesiones.", "info");
+        return;
+      }
+      var f = $("pf").value;
+      var t = $("pt").value;
+      if (!f) {
+        notify("Selecciona una fecha válida.", "error");
+        return;
+      }
+      if (!D.some(function(p) { return p.fecha === f && cat(p) === t; })) {
+        D.push({ fecha: f, tipo: t, url: $("pu").value, votaciones: [] });
+      }
+      sv();
+      render();
+      notify("Sesión añadida con éxito", "success");
+    }
+
+    function addV() {
+      if (!IS_ADMIN) return;
+      var p = D[+$("vp").value];
+      if (!p || !$("va").value) {
+        notify("Debes escribir el asunto de la votación.", "error");
+        return;
+      }
+      p.votaciones.push({
+        punto: $("vn").value,
+        asunto: $("va").value,
+        favor: +$("vf").value || 0,
+        contra: +$("vc").value || 0,
+        abst: +$("vb").value || 0,
+        partidos: pq($("vq").value)
+      });
+      ["vn", "va", "vf", "vc", "vb", "vq"].forEach(function(i) { $(i).value = ""; });
+      sv();
+      render();
+      notify("Votación añadida a la sesión", "success");
+    }
+
+    function addG() {
+      if (!IS_ADMIN) return;
+      var g = G.filter(function(x) { return x.id === $("gl").value; })[0];
+      var n = $("gp").value.trim();
+      if (!g || !n) return;
+
+      g.grupos = (g.grupos || []).filter(function(x) { return x.partido !== n; });
+      g.grupos.push({
+        partido: n,
+        concejales: +$("gn").value || 0,
+        representantes: $("gr").value.split(",").map(function(s) { return s.trim(); }).filter(Boolean)
+      });
+      g.grupos.sort(function(a, b) { return b.concejales - a.concejales; });
+
+      ["gp", "gn", "gr"].forEach(function(i) { $(i).value = ""; });
+      sv();
+      render();
+      notify("Grupo municipal actualizado", "success");
+    }
+
+    function dv(i, j) {
+      if (!IS_ADMIN) return;
+      if (D[i] && D[i].votaciones) {
+        D[i].votaciones.splice(j, 1);
+        sv();
+        render();
+        notify("Votación eliminada", "info");
+      }
+    }
+
+    function dp(i) {
+      if (!IS_ADMIN) return;
+      D.splice(i, 1);
+      sv();
+      render();
+      notify("Sesión plenaria eliminada", "info");
+    }
+
+    function merge(a) {
+      a.forEach(function(n) {
+        if (!n.fecha) return;
+        var p = D.filter(function(x) { return x.fecha === n.fecha && cat(x) === cat(n); })[0];
+        if (!p) {
+          D.push({ fecha: n.fecha, tipo: n.tipo || "Ordinario", url: n.url || "", votaciones: n.votaciones || [] });
+        } else {
+          (n.votaciones || []).forEach(function(v) {
+            if (!p.votaciones.some(function(w) { return w.punto === v.punto && w.asunto === v.asunto; })) {
+              p.votaciones.push(v);
+            }
+          });
+        }
+      });
+      sv();
+      render();
+    }
+
+    function imp() {
+      try {
+        var a = JSON.parse($("ij").value);
+        if (Array.isArray(a)) {
+          merge(a);
+        } else {
+          (a.legislaturas || []).forEach(function(n) {
+            var g = G.filter(function(x) { return x.id === n.id; })[0];
+            if (g) Object.assign(g, n);
+            else G.push(Object.assign({ nombre: "Legislatura " + n.id, grupos: [] }, n));
+          });
+          merge(a.plenos || []);
+        }
+        $("ij").value = "";
+        notify("Estructura JSON importada correctamente", "success");
+      } catch (e) {
+        notify("Error en el formato del JSON: " + e.message, "error");
+      }
+    }
+
+    var jsonFileInput = $("if");
+    if (jsonFileInput) {
+      jsonFileInput.onchange = function(e) {
+        var f = e.target.files[0];
+        if (!f) return;
+        var r = new FileReader();
+        r.onload = function() {
+          $("ij").value = r.result;
+          imp();
+        };
+        r.readAsText(f);
+      };
+    }
+
+    function exp() {
+      var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({ plenos: D, legislaturas: G }, null, 2));
+      var anchor = document.createElement("a");
+      anchor.setAttribute("href", dataStr);
+      anchor.setAttribute("download", `observatorio-viladecans-${new Date().toISOString().slice(0,10)}.json`);
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
+      notify("Copia JSON descargada", "success");
+    }
+
+    function clr() {
+      D = [];
+      G.forEach(function(g) { g.grupos = []; });
+      LG = TP = PS = "";
+      sv();
+      render();
+      notify("Todos los registros han sido borrados", "info");
+    }
+
+    function demo() {
+      var P = { PSC: "favor", ERC: "favor", PP: "contra", VOX: "contra" };
+      merge([
+        {
+          fecha: "2026-01-29",
+          tipo: "Ordinario",
+          votaciones: [
+            { punto: "1", asunto: "Aprobación del acta de la sesión anterior", favor: 15, contra: 0, abst: 6, partidos: { PSC: "favor", ERC: "favor", PP: "abst", VOX: "abst" } },
+            { punto: "2", asunto: "Moción de impulso al transporte público interurbano", favor: 9, contra: 11, abst: 1, partidos: { PSC: "favor", ERC: "contra", PP: "contra", VOX: "abst" } }
+          ]
+        },
+        {
+          fecha: "2026-02-12",
+          tipo: "VIQUAL",
+          votaciones: [
+            { punto: "1", asunto: "Cuentas anuales de la entidad municipal VIQUAL", favor: 16, contra: 9, abst: 0, partidos: P }
+          ]
+        }
+      ]);
+      notify("Datos de demostración cargados", "success");
+    }
+
+    // Initialize application on DOM Ready
+    window.addEventListener("DOMContentLoaded", function() {
+      lucide.createIcons();
+      switchTab("dashboard");
+      bootSupabase();
+    });
+  </script>
+</body>
+</html>
