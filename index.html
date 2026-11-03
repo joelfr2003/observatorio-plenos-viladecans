@@ -171,7 +171,7 @@
     async function refreshAuth(session){CURRENT_USER=session&&session.user?session.user:null;IS_ADMIN=false;if(CURRENT_USER){var a=await SUPA.from("observatorio_admins").select("user_id").eq("user_id",CURRENT_USER.id).maybeSingle();IS_ADMIN=!!(a.data&&!a.error)}document.getElementById("loginBox").hidden=!!CURRENT_USER&&IS_ADMIN;document.getElementById("sessionBox").hidden=!CURRENT_USER;document.getElementById("adminEditor").hidden=!IS_ADMIN;document.getElementById("authState").textContent=IS_ADMIN?"Administrador Autenticado":"Consulta Pública";document.getElementById("signedAs").textContent=CURRENT_USER?CURRENT_USER.email:"";render()}
     async function login(e){e.preventDefault();var email=document.getElementById("adminEmail").value,password=document.getElementById("adminPassword").value;st("Autenticando...");var r=await SUPA.auth.signInWithPassword({email:email,password:password});if(r.error){st("Error: "+r.error.message);return}document.getElementById("adminPassword").value="";await refreshAuth(r.data.session);if(!IS_ADMIN){await SUPA.auth.signOut();await refreshAuth(null)}}
     async function logout(){await SUPA.auth.signOut();await refreshAuth(null)}
-    function bootSupabase(){if(!window.supabase||!window.OBS_CONFIG||!OBS_CONFIG.url||!OBS_CONFIG.anonKey||OBS_CONFIG.anonKey.indexOf("PEGA_AQUI")===0){st("Falta configurar js/config.js");return}SUPA=window.supabase.createClient(OBS_CONFIG.url,OBS_CONFIG.anonKey);SUPA.auth.getSession().then(function(r){refreshAuth(r.data.session);loadCloud()});SUPA.auth.onAuthStateChange(function(ev,session){setTimeout(function(){refreshAuth(session)},0)});SUPA.channel("observatorio-live").on("postgres_changes",{event:"UPDATE",schema:"public",table:"observatorio_data",filter:"id=eq.1"},function(){if(!SAVING)loadCloud(false)}).subscribe()}
+    function bootSupabase(){if(!window.supabase||!window.OBS_CONFIG||!OBS_CONFIG.url||!OBS_CONFIG.anonKey||OBS_CONFIG.anonKey.indexOf("PEGA_AQUI")===0){st("Falta configurar js/config.js");render();return}SUPA=window.supabase.createClient(OBS_CONFIG.url,OBS_CONFIG.anonKey);SUPA.auth.getSession().then(function(r){refreshAuth(r.data.session);loadCloud()});SUPA.auth.onAuthStateChange(function(ev,session){setTimeout(function(){refreshAuth(session)},0)});SUPA.channel("observatorio-live").on("postgres_changes",{event:"UPDATE",schema:"public",table:"observatorio_data",filter:"id=eq.1"},function(){if(!SAVING)loadCloud(false)}).subscribe()}
 
     function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
     function res(v){if(v.resultado)return v.resultado;return (+v.favor||0)>(+v.contra||0)?"Aprobado":"Rechazado"}
@@ -233,8 +233,8 @@
         +((g.grupos||[]).length?(g.grupos).map(function(x,j){return'<tr><td><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:'+col(x.partido)+';margin-right:8px"></span><b>'+esc(x.partido)+'</b></td><td><b>'+esc(x.concejales)+'</b></td><td>'+(x.representantes||[]).map(esc).join(", ")+'</td><td>'+(IS_ADMIN?'<button onclick="dg('+gi+","+j+')">✕</button>':'')+'</td></tr>'}).join(""):'<tr><td colspan="4" class="e">Sin grupos.</td></tr>')+"</table></div></div>"}
       document.getElementById("co").innerHTML=h}
     function render(){D.sort(function(a,b){return b.fecha.localeCompare(a.fecha)});
-      document.getElementById("vp").innerHTML=D.map(function(p,i){return'<option value="'+i+'">'+esc(fd(p.fecha))+" · "+cat(p)+"</option>"}).join("");
-      document.getElementById("gl").innerHTML=G.map(function(g){return"<option value=\""+esc(g.id)+'">'+esc(g.nombre)+"</option>"}).join("");
+      var vpEl = document.getElementById("vp"); if(vpEl) vpEl.innerHTML=D.map(function(p,i){return'<option value="'+i+'">'+esc(fd(p.fecha))+" · "+cat(p)+"</option>"}).join("");
+      var glEl = document.getElementById("gl"); if(glEl) glEl.innerHTML=G.map(function(g){return"<option value=\""+esc(g.id)+'">'+esc(g.nombre)+"</option>"}).join("");
       rf();rk();rp();rt();rc()}
     function addP(){if(!IS_ADMIN)return;var f=document.getElementById("pf").value,t=document.getElementById("pt").value;if(!f)return;if(!D.some(function(p){return p.fecha==f&&cat(p)==t}))D.push({fecha:f,tipo:t,url:document.getElementById("pu").value,votaciones:[]});sv();render()}
     function addV(){if(!IS_ADMIN)return;var p=D[+document.getElementById("vp").value];if(!p||!document.getElementById("va").value)return;p.votaciones.push({punto:document.getElementById("vn").value,asunto:document.getElementById("va").value,favor:+document.getElementById("vf").value||0,contra:+document.getElementById("vc").value||0,abst:+document.getElementById("vb").value||0,partidos:pq(document.getElementById("vq").value)});["vn","va","vf","vc","vb","vq"].forEach(function(i){document.getElementById(i).value=""});sv();render()}
@@ -244,7 +244,7 @@
     function dp(i){if(!IS_ADMIN)return;if(confirm("¿Eliminar sesión?")){D.splice(i,1);sv();render()}}
     function merge(a){if(!IS_ADMIN)return;a.forEach(function(n){if(!n.fecha)return;var p=D.filter(function(x){return x.fecha==n.fecha&&cat(x)==cat(n)})[0];if(!p)D.push({fecha:n.fecha,tipo:n.tipo||"Ordinario",url:n.url||"",votaciones:n.votaciones||[]});else(n.votaciones||[]).forEach(function(v){if(!p.votaciones.some(function(w){return w.punto==v.punto&&w.asunto==v.asunto}))p.votaciones.push(v)})});sv();render()}
     function imp(){if(!IS_ADMIN)return;try{var a=JSON.parse(document.getElementById("ij").value);if(Array.isArray(a))merge(a);else{(a.legislaturas||[]).forEach(function(n){var g=G.filter(function(x){return x.id==n.id})[0];if(g)Object.assign(g,n);else G.push(Object.assign({nombre:"Legislatura "+n.id,grupos:[]},n))});merge(a.plenos||[])}document.getElementById("ij").value=""}catch(e){alert("JSON no válido")}}
-    document.getElementById("if").onchange=function(e){var f=e.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(){document.getElementById("ij").value=r.result;imp()};r.readAsText(f)};
+    var fileInput = document.getElementById("if"); if(fileInput) fileInput.onchange=function(e){var f=e.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(){document.getElementById("ij").value=r.result;imp()};r.readAsText(f)};
     function exp(){document.getElementById("ij").value=JSON.stringify({plenos:D,legislaturas:G},null,2)}
     function clr(){if(!IS_ADMIN)return;if(confirm("¿Borrar todo?")){D=[];G.forEach(function(g){g.grupos=[]});LG=TP=PS="";sv();render()}}
     function demo(){if(!IS_ADMIN)return;
@@ -255,8 +255,11 @@
       var g=G.filter(function(x){return x.id=="2023-2027"})[0];
       if(!g.grupos.length){g.grupos=[{partido:"PSC",concejales:11,representantes:["Olga Morales","Anselmo Sánchez"]},{partido:"ERC",concejales:5,representantes:["Bárbara Lligadas"]},{partido:"PP",concejales:5,representantes:["Fernando Moya"]},{partido:"VOX",concejales:4,representantes:["Ana María de la Cruz"]}];sv();render()}
     }
+    
+    // Inicialización y arranque seguro
     show("plenos");
     bootSupabase();
   </script>
+  <script>if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("./sw.js").catch(function(e){console.warn("SW",e)})})}</script>
 </body>
 </html>
