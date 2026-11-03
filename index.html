@@ -3,375 +3,638 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#0b0f19">
-  <meta name="description" content="Observatorio de plenos municipales y análisis político por grupo municipal de Viladecans">
+  <meta name="theme-color" content="#060911">
+  <meta name="description" content="Observatorio de Inteligencia Político-Electoral y Análisis de Plenos Municipales · Viladecans">
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="icon" href="./icons/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="./icons/icon-192.png">
-  <title>Observatorio Político · Viladecans</title>
+  <title>Observatorio Político & Electoral · Viladecans</title>
 
-  <!-- Script Supabase y Configuración -->
+  <!-- Supabase JS Client & Config -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="./js/config.js"></script>
 
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap');
+
     :root {
-      --bg: #0b0f19;
-      --card-bg: rgba(18, 26, 43, 0.85);
-      --card-border: rgba(255, 255, 255, 0.08);
-      --text: #f1f5f9;
+      --bg-base: #060911;
+      --bg-surface: #0d1322;
+      --bg-card: rgba(16, 24, 40, 0.75);
+      --bg-card-hover: rgba(23, 34, 56, 0.9);
+      --border: rgba(255, 255, 255, 0.07);
+      --border-accent: rgba(96, 165, 250, 0.25);
+      
+      --text-main: #f8fafc;
       --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      
       --accent: #3b82f6;
-      --accent-hover: #2563eb;
+      --accent-glow: rgba(59, 130, 246, 0.25);
       --ok: #10b981;
+      --ok-bg: rgba(16, 185, 129, 0.12);
       --ko: #ef4444;
+      --ko-bg: rgba(239, 68, 68, 0.12);
       --ab: #f59e0b;
-      --header-bg: #070a12;
-      --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --ab-bg: rgba(245, 158, 11, 0.12);
+      
+      --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    
     body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: var(--font);
-      font-size: 14px;
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      font-size: 13.5px;
       line-height: 1.5;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      -webkit-font-smoothing: antialiased;
     }
 
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
-    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 3px; }
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: var(--bg-base); }
+    ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 3px; }
 
+    /* Top Command Header */
     header {
-      background: var(--header-bg);
-      border-bottom: 1px solid var(--card-border);
-      padding: 16px 20px 0;
+      background: rgba(6, 9, 17, 0.92);
+      border-bottom: 1px solid var(--border);
       position: sticky;
       top: 0;
       z-index: 100;
-      backdrop-filter: blur(12px);
+      backdrop-filter: blur(16px);
     }
-    .header-in { max-width: 1280px; margin: 0 auto; }
-    .brand {
+    
+    .header-inner {
+      max-width: 1360px;
+      margin: 0 auto;
+      padding: 14px 24px 0;
+    }
+
+    .brand-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 12px;
+      gap: 16px;
       flex-wrap: wrap;
-      gap: 10px;
     }
-    h1 {
-      font-size: 18px;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      background: linear-gradient(135deg, #60a5fa, #a855f7);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+
+    .brand-title {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 12px;
     }
-    .badge-live {
-      font-size: 10px;
-      background: rgba(16, 185, 129, 0.15);
-      color: #34d399;
-      border: 1px solid rgba(52, 211, 153, 0.3);
-      padding: 2px 8px;
-      border-radius: 12px;
-      font-weight: 600;
-      text-transform: uppercase;
-    }
-    .sub { color: var(--text-muted); font-size: 12px; }
 
-    nav { display: flex; gap: 4px; overflow-x: auto; margin-top: 10px; }
-    nav button {
-      background: none;
-      border: 0;
-      color: var(--text-muted);
-      padding: 10px 16px;
-      font: inherit;
+    .brand-title h1 {
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: #fff;
+    }
+
+    .status-pill {
+      font-size: 10.5px;
+      font-family: var(--font-mono);
       font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 20px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .status-pill.online {
+      background: rgba(16, 185, 129, 0.12);
+      color: #34d399;
+      border: 1px solid rgba(52, 211, 153, 0.25);
+    }
+    .status-pill.local {
+      background: rgba(245, 158, 11, 0.12);
+      color: #fbbf24;
+      border: 1px solid rgba(251, 191, 36, 0.25);
+    }
+    .status-pill .dot-lead {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    /* Top Navigation Tabs */
+    nav.app-tabs {
+      display: flex;
+      gap: 6px;
+      margin-top: 14px;
+      overflow-x: auto;
+    }
+
+    nav.app-tabs button {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 10px 18px;
+      font-family: var(--font-sans);
       font-size: 13px;
+      font-weight: 600;
       cursor: pointer;
       border-bottom: 2px solid transparent;
       white-space: nowrap;
-      transition: all 0.2s ease;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
     }
-    nav button:hover { color: var(--text); }
-    nav button.on {
+
+    nav.app-tabs button:hover {
+      color: var(--text-main);
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    nav.app-tabs button.active {
       color: #60a5fa;
       border-bottom-color: #60a5fa;
-      background: rgba(96, 165, 250, 0.05);
+      background: rgba(59, 130, 246, 0.08);
       border-radius: 6px 6px 0 0;
     }
 
-    .kp {
+    /* Executive Metric Ribbon */
+    .kpi-ribbon {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-      gap: 10px;
-      margin: 14px 0;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px;
+      margin: 18px 0 8px;
     }
-    .kp div {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid var(--card-border);
-      border-radius: 8px;
-      padding: 10px 14px;
+
+    .kpi-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 16px;
+      transition: border-color 0.2s;
     }
-    .kp b { display: block; font-size: 20px; font-weight: 700; color: #fff; }
-    .kp span { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
 
-    main { max-width: 1280px; margin: 0 auto; padding: 20px; width: 100%; flex: 1; }
+    .kpi-card:hover { border-color: rgba(255, 255, 255, 0.15); }
+    .kpi-val { font-size: 22px; font-weight: 800; color: #fff; font-family: var(--font-mono); }
+    .kpi-lbl { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); font-weight: 600; margin-top: 2px; }
 
+    /* Main Content Container */
+    main {
+      max-width: 1360px;
+      margin: 0 auto;
+      padding: 20px 24px 40px;
+      width: 100%;
+      flex: 1;
+    }
+
+    /* Cards & Containers */
     .card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
+      background: var(--bg-card);
+      border: 1px solid var(--border);
       border-radius: 12px;
-      margin-bottom: 16px;
+      margin-bottom: 20px;
       overflow: hidden;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-      backdrop-filter: blur(8px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(12px);
     }
-    .ch {
+
+    .card-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.015);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 8px;
       flex-wrap: wrap;
-      padding: 14px 18px;
-      border-bottom: 1px solid var(--card-border);
-      background: rgba(255,255,255,0.01);
+      gap: 12px;
     }
-    .ch h2 { margin: 0; font-size: 15px; font-weight: 600; color: #f8fafc; }
-    .ch small { color: var(--text-muted); font-weight: 400; }
 
-    .w { overflow-x: auto; }
-    table { border-collapse: collapse; width: 100%; min-width: 680px; }
-    th {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
+    .card-header h2 {
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-header sub {
+      font-size: 12px;
       color: var(--text-muted);
-      text-align: left;
-      padding: 10px 14px;
-      background: rgba(0, 0, 0, 0.2);
-      font-weight: 600;
+      font-weight: 400;
+      margin-left: 4px;
     }
-    td { padding: 10px 14px; border-top: 1px solid var(--card-border); vertical-align: middle; }
-    .n { text-align: center; font-variant-numeric: tabular-nums; }
-    tr.cl { cursor: pointer; transition: background 0.15s; }
-    tr.cl:hover td { background: rgba(255, 255, 255, 0.03); }
-    tr.sl td { background: rgba(59, 130, 246, 0.1) !important; }
 
-    .ok { color: var(--ok); } .ko { color: var(--ko); } .ab { color: var(--ab); }
-    .tag {
+    /* Data Tables */
+    .table-wrapper { overflow-x: auto; }
+    table.data-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 720px;
+      text-align: left;
+    }
+
+    table.data-table th {
+      font-size: 10.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      padding: 12px 16px;
+      background: rgba(0, 0, 0, 0.25);
+      border-bottom: 1px solid var(--border);
+    }
+
+    table.data-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+
+    table.data-table tr.clickable {
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    table.data-table tr.clickable:hover td {
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    /* Status Badges */
+    .badge {
       display: inline-flex;
       align-items: center;
       font-size: 11px;
-      padding: 2px 8px;
-      border-radius: 12px;
-      border: 1px solid currentColor;
-      font-weight: 600;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 6px;
       white-space: nowrap;
+      font-family: var(--font-mono);
     }
-    .tag.c { color: #60a5fa; border-color: rgba(96, 165, 250, 0.4); background: rgba(96, 165, 250, 0.1); }
-    .tag.ok { color: #34d399; border-color: rgba(52, 211, 153, 0.4); background: rgba(52, 211, 153, 0.1); }
-    .tag.ko { color: #f87171; border-color: rgba(248, 113, 113, 0.4); background: rgba(248, 113, 113, 0.1); }
-    .tag.ab { color: #fbbf24; border-color: rgba(251, 191, 36, 0.4); background: rgba(251, 191, 36, 0.1); }
+    .badge.ok { color: var(--ok); background: var(--ok-bg); border: 1px solid rgba(16, 185, 129, 0.3); }
+    .badge.ko { color: var(--ko); background: var(--ko-bg); border: 1px solid rgba(239, 68, 68, 0.3); }
+    .badge.ab { color: var(--ab); background: var(--ab-bg); border: 1px solid rgba(245, 158, 11, 0.3); }
+    .badge.cat { color: #60a5fa; background: rgba(96, 165, 250, 0.12); border: 1px solid rgba(96, 165, 250, 0.3); }
 
-    .bar {
+    /* Progress Distribution Bars */
+    .vote-dist-bar {
       display: flex;
       height: 8px;
       border-radius: 4px;
       overflow: hidden;
-      background: rgba(255, 255, 255, 0.1);
-      min-width: 120px;
+      background: rgba(255, 255, 255, 0.08);
+      min-width: 110px;
     }
-    .bar i { display: block; }
-    .f { background: var(--ok); }
-    .c { background: var(--ko); }
-    .a { background: var(--ab); }
+    .vote-dist-bar span { height: 100%; display: block; }
+    .vote-dist-bar .f { background: var(--ok); }
+    .vote-dist-bar .c { background: var(--ko); }
+    .vote-dist-bar .a { background: var(--ab); }
 
-    .g2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
-    .g2 .card { margin: 0; }
-    .dot { display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: 6px; }
-
-    /* Estilos para Ficha de Partido Exhaustiva */
-    .party-grid {
+    /* Custom Party Selection Grid */
+    .party-selector-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 12px;
-      padding: 16px;
-    }
-    .party-card-btn {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid var(--card-border);
-      border-radius: 10px;
-      padding: 14px;
-      cursor: pointer;
-      text-align: left;
-      transition: all 0.2s ease;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-    .party-card-btn:hover, .party-card-btn.active {
-      background: rgba(59, 130, 246, 0.15);
-      border-color: #3b82f6;
-      transform: translateY(-2px);
-    }
-    .party-card-btn b { font-size: 16px; color: #fff; }
-    .party-card-btn span { font-size: 12px; color: var(--text-muted); }
-
-    .party-detail-header {
-      background: rgba(15, 23, 42, 0.9);
-      border-bottom: 1px solid var(--card-border);
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 14px;
       padding: 20px;
+    }
+
+    .party-card-tile {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .party-card-tile::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; bottom: 0;
+      width: 4px;
+      background: var(--party-color, var(--accent));
+      border-radius: 12px 0 0 12px;
+    }
+
+    .party-card-tile:hover, .party-card-tile.active {
+      background: var(--bg-card-hover);
+      border-color: var(--border-accent);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .party-card-tile.active {
+      box-shadow: 0 0 0 2px #3b82f6, 0 8px 24px rgba(59, 130, 246, 0.2);
+    }
+
+    .party-card-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .party-card-name {
+      font-size: 17px;
+      font-weight: 800;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .party-card-seats {
+      font-size: 11px;
+      font-weight: 700;
+      background: rgba(255, 255, 255, 0.06);
+      padding: 2px 8px;
+      border-radius: 4px;
+      color: var(--text-muted);
+    }
+
+    /* Exhaustive Party Profile Layout */
+    .party-profile-header {
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.6));
+      border-bottom: 1px solid var(--border);
+      padding: 24px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
-      gap: 16px;
+      gap: 20px;
     }
-    .party-stats-row {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-      gap: 12px;
-      padding: 16px;
-      background: rgba(0, 0, 0, 0.2);
-    }
-    .stat-box {
-      background: rgba(255,255,255,0.02);
-      border: 1px solid var(--card-border);
-      padding: 12px;
-      border-radius: 8px;
-      text-align: center;
-    }
-    .stat-box strong { display: block; font-size: 22px; color: #fff; }
-    .stat-box span { font-size: 11px; color: var(--text-muted); text-transform: uppercase; }
 
-    input, select, textarea, button {
-      font: inherit;
-      color: var(--text);
-      background: rgba(15, 23, 42, 0.8);
-      border: 1px solid var(--card-border);
-      border-radius: 8px;
-      padding: 8px 12px;
-      outline: none;
-      transition: all 0.2s ease;
+    .party-profile-info h2 {
+      font-size: 24px;
+      font-weight: 800;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
+
+    .party-profile-info p {
+      color: var(--text-muted);
+      font-size: 13px;
+      margin-top: 4px;
+    }
+
+    .party-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.2);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .party-kpi-box {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 18px;
+    }
+
+    .party-kpi-box .val {
+      font-size: 24px;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      color: #fff;
+    }
+
+    .party-kpi-box .lbl {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    /* Party Detailed Breakdown Grid */
+    .party-detailed-sections {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 20px;
+      padding: 20px;
+    }
+
+    .breakdown-block {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px;
+    }
+
+    .breakdown-block h3 {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .vote-item-feed {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-height: 480px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .vote-item-card {
+      background: rgba(13, 19, 34, 0.7);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 14px;
+      transition: border-color 0.2s;
+    }
+
+    .vote-item-card:hover { border-color: rgba(255, 255, 255, 0.15); }
+    .vote-item-meta { font-size: 11px; color: var(--text-muted); font-family: var(--font-mono); margin-bottom: 4px; }
+    .vote-item-title { font-size: 13px; font-weight: 600; color: #f1f5f9; margin-bottom: 8px; line-height: 1.4; }
+
+    /* Inputs, Controls & Forms */
+    input, select, textarea, button.btn {
+      font-family: var(--font-sans);
+      font-size: 13px;
+      color: var(--text-main);
+      background: rgba(13, 19, 34, 0.85);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 9px 14px;
+      outline: none;
+      transition: all 0.2s;
+    }
+
     input:focus, select:focus, textarea:focus {
       border-color: #3b82f6;
-      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+      box-shadow: 0 0 0 3px var(--accent-glow);
     }
-    button { cursor: pointer; font-weight: 600; }
-    button:hover { background: rgba(255,255,255,0.08); }
-    button.p, button.sel { background: var(--accent); color: #fff; border-color: var(--accent); }
-    button.p:hover, button.sel:hover { background: var(--accent-hover); }
-    
-    .r { display: flex; gap: 10px; flex-wrap: wrap; padding: 14px; align-items: center; }
-    .r .x { flex: 1; min-width: 160px; }
-    .r input[type=number] { width: 90px; }
-    textarea { width: calc(100% - 28px); margin: 0 14px 14px; min-height: 100px; font-family: monospace; }
-    .m { color: var(--text-muted); padding: 10px 14px 0; font-size: 12px; }
-    .e { color: var(--text-muted); text-align: center; padding: 30px; }
-    a { color: #60a5fa; text-decoration: none; }
-    a:hover { text-decoration: underline; }
 
-    #fb { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 16px; }
-    .chips { display: flex; gap: 6px; flex-wrap: wrap; }
-    .chips button { border-radius: 20px; padding: 5px 14px; font-size: 12px; }
+    button.btn {
+      cursor: pointer;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      justify-content: center;
+    }
+
+    button.btn-primary {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+    button.btn-primary:hover { background: #2563eb; }
+
+    button.btn-danger {
+      background: rgba(239, 68, 68, 0.15);
+      color: #f87171;
+      border-color: rgba(239, 68, 68, 0.3);
+    }
+    button.btn-danger:hover { background: rgba(239, 68, 68, 0.25); }
+
+    .form-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 16px 20px;
+      align-items: center;
+    }
+    .form-row .flex-1 { flex: 1; min-width: 180px; }
+
+    /* Filter Chips Bar */
+    .filter-bar {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .chip-group { display: flex; gap: 6px; flex-wrap: wrap; }
+    .chip-btn {
+      border-radius: 20px;
+      padding: 6px 14px;
+      font-size: 12px;
+      border: 1px solid var(--border);
+      background: var(--bg-surface);
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .chip-btn:hover { color: #fff; border-color: rgba(255, 255, 255, 0.2); }
+    .chip-btn.active {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+      font-weight: 600;
+    }
+
+    .dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .empty-state {
+      padding: 40px 20px;
+      text-align: center;
+      color: var(--text-muted);
+    }
   </style>
 </head>
 <body>
 
-  <!-- Cabecera -->
+  <!-- Top Executive Navigation Header -->
   <header>
-    <div class="header-in">
-      <div class="brand">
-        <div>
-          <h1>
-            Observatorio Político & Electoral · Viladecans
-            <span class="badge-live" id="sys-status">Cargando...</span>
-          </h1>
-          <div class="sub">Auditoría de votos en pleno, seguimiento de grupos municipales y consistorio</div>
+    <div class="header-inner">
+      <div class="brand-row">
+        <div class="brand-title">
+          <h1>Observatorio Político & Electoral · Viladecans</h1>
+          <span id="sys-status" class="status-pill local"><span class="dot-lead"></span>Modo Local</span>
         </div>
       </div>
-      
-      <div class="kp" id="kp"></div>
 
-      <nav>
-        <button id="t-plenos" onclick="show('plenos')">📋 Sesiones & Votaciones</button>
-        <button id="t-partidos" onclick="show('partidos')">👥 Análisis por Partido</button>
-        <button id="t-consistorio" onclick="show('consistorio')">🏛️ Consistorio & Grupos</button>
-        <button id="t-datos" onclick="show('datos')">⚙️ Nube & Configuración</button>
+      <!-- Live KPI Bar -->
+      <div class="kpi-ribbon" id="kp"></div>
+
+      <!-- Main Tabs -->
+      <nav class="app-tabs">
+        <button id="t-plenos" class="active" onclick="show('plenos')">📋 Sesiones & Plenos</button>
+        <button id="t-partidos" onclick="show('partidos')">📊 Análisis por Partido Político</button>
+        <button id="t-consistorio" onclick="show('consistorio')">🏛️ Consistorio y Grupos Municipales</button>
+        <button id="t-datos" onclick="show('datos')">⚙️ Base de Datos & Nube</button>
       </nav>
     </div>
   </header>
 
-  <!-- Contenido Principal -->
+  <!-- Main View Container -->
   <main>
-    <div id="fb"></div>
+    <div id="fb" class="filter-bar"></div>
 
-    <!-- VISTA 1: PLENOS -->
+    <!-- VIEW 1: PLENOS -->
     <section id="v-plenos">
-      <div class="r" style="padding:0 0 14px">
-        <input id="sq" class="x" placeholder="🔍 Buscar asuntos, proyectos, ordenanzas o partidos..." oninput="rp()">
+      <div style="margin-bottom: 16px;">
+        <input id="sq" style="width: 100%; padding: 12px 16px; font-size: 14px;" placeholder="🔍 Buscar propuestas, dictámenes, mociones o partidos en los plenos..." oninput="rp()">
       </div>
       <div id="pl"></div>
     </section>
 
-    <!-- VISTA 2: ANÁLISIS EXHAUSTIVO POR PARTIDO -->
+    <!-- VIEW 2: EXHAUSTIVE PARTY ANALYSIS -->
     <section id="v-partidos" hidden>
       <div class="card">
-        <div class="ch">
-          <h2>Selecciona un Grupo Político para su Análisis Exhaustivo</h2>
-          <small>Auditoría de conducta de voto, efectividad e iniciativas</small>
+        <div class="card-header">
+          <h2>Selecciona un Grupo Municipal para su Análisis Completo</h2>
+          <sub>Auditoría de disciplina de voto, tasa de aprobaciones e iniciativa</sub>
         </div>
-        <div id="party-selector-grid" class="party-grid"></div>
+        <div id="party-selector-grid" class="party-selector-grid"></div>
       </div>
 
-      <!-- Panel de Detalle del Partido -->
+      <!-- Party Detailed Profile Container -->
       <div id="party-detailed-profile"></div>
     </section>
 
-    <!-- VISTA 3: CONSISTORIO -->
+    <!-- VIEW 3: CONSISTORIO -->
     <section id="v-consistorio" hidden>
       <div id="co"></div>
     </section>
 
-    <!-- VISTA 4: DATOS Y NUBE -->
+    <!-- VIEW 4: DATA & CLOUD ADMIN -->
     <section id="v-datos" hidden>
       <div class="card" id="authCard">
-        <div class="ch">
-          <h2>Administración & Sincronización en la Nube</h2>
-          <small id="authState">Consulta pública</small>
+        <div class="card-header">
+          <h2>Administración y Sincronización Supabase</h2>
+          <sub id="authState">Consulta Pública</sub>
         </div>
-        <p class="m" id="sts">Conectando con la base de datos…</p>
+        <p style="padding: 14px 20px 0; color: var(--text-muted); font-size: 12px;" id="sts">Conectando con el servidor...</p>
         <div id="loginBox">
-          <p class="m" style="margin-bottom:10px;">Inicia sesión con tu cuenta autorizada para realizar cambios en Supabase.</p>
-          <form class="r" onsubmit="login(event)">
-            <input id="adminEmail" type="email" autocomplete="username" placeholder="Correo electrónico" required>
-            <input id="adminPassword" type="password" autocomplete="current-password" placeholder="Contraseña" required>
-            <button class="p" type="submit">Entrar</button>
+          <form class="form-row" onsubmit="login(event)">
+            <input id="adminEmail" type="email" autocomplete="username" placeholder="Correo electrónico del administrador" required class="flex-1">
+            <input id="adminPassword" type="password" autocomplete="current-password" placeholder="Contraseña" required class="flex-1">
+            <button class="btn btn-primary" type="submit">Iniciar Sesión</button>
           </form>
         </div>
-        <div id="sessionBox" hidden class="r">
-          <span id="signedAs" class="x" style="font-weight:600;"></span>
-          <button onclick="logout()">Cerrar sesión</button>
+        <div id="sessionBox" hidden class="form-row">
+          <span id="signedAs" style="font-weight: 600;" class="flex-1"></span>
+          <button class="btn" onclick="logout()">Cerrar sesión</button>
         </div>
       </div>
 
       <div id="adminEditor" hidden>
         <div class="card">
-          <div class="ch"><h2>Añadir Sesión Plenaria</h2></div>
-          <div class="r">
+          <div class="card-header"><h2>Añadir Sesión Plenaria</h2></div>
+          <div class="form-row">
             <input type="date" id="pf">
             <select id="pt">
               <option>Ordinario</option>
@@ -379,57 +642,59 @@
               <option>VIQUAL</option>
               <option>VIMED</option>
             </select>
-            <input id="pu" class="x" placeholder="Enlace al acta oficial (URL)">
-            <button class="p" onclick="addP()">Añadir Sesión</button>
+            <input id="pu" class="flex-1" placeholder="URL Enlace Acta Oficial PDF">
+            <button class="btn btn-primary" onclick="addP()">Añadir Sesión</button>
           </div>
         </div>
 
         <div class="card">
-          <div class="ch"><h2>Añadir Votación a Sesión</h2></div>
-          <div class="r">
+          <div class="card-header"><h2>Añadir Votación a Sesión</h2></div>
+          <div class="form-row">
             <select id="vp"></select>
-            <input id="vn" placeholder="Punto N°" style="width:90px">
-            <input id="va" class="x" placeholder="Asunto / Propuesta de acuerdo">
-            <input type="number" id="vf" placeholder="Sí" min="0">
-            <input type="number" id="vc" placeholder="No" min="0">
-            <input type="number" id="vb" placeholder="Abst." min="0">
-            <input id="vq" class="x" placeholder="Voto por partido (ej: PSC:si, ERC:no, PP:abst, VOX:no)" style="flex-basis:100%">
-            <button class="p" onclick="addV()">Añadir Votación</button>
+            <input id="vn" placeholder="Punto N°" style="width: 90px;">
+            <input id="va" class="flex-1" placeholder="Asunto o Titular de la Moción">
+            <input type="number" id="vf" placeholder="Sí" min="0" style="width: 80px;">
+            <input type="number" id="vc" placeholder="No" min="0" style="width: 80px;">
+            <input type="number" id="vb" placeholder="Abst." min="0" style="width: 80px;">
+            <input id="vq" style="flex-basis: 100%;" placeholder="Posición de partidos (ej: PSC:si, ERC:no, PP:abst, VOX:no)">
+            <button class="btn btn-primary" onclick="addV()">Registrar Votación</button>
           </div>
         </div>
 
         <div class="card">
-          <div class="ch"><h2>Añadir Grupo Municipal a Legislatura</h2></div>
-          <div class="r">
+          <div class="card-header"><h2>Añadir Grupo Municipal a Legislatura</h2></div>
+          <div class="form-row">
             <select id="gl"></select>
-            <input id="gp" placeholder="Partido / Sigla" style="width:120px">
-            <input type="number" id="gn" placeholder="Concejales" min="0" style="width:110px">
-            <input id="gr" class="x" placeholder="Representantes (separados por comas)">
-            <button class="p" onclick="addG()">Guardar Grupo</button>
+            <input id="gp" placeholder="Sigla / Partido" style="width: 140px;">
+            <input type="number" id="gn" placeholder="Escaños" min="0" style="width: 100px;">
+            <input id="gr" class="flex-1" placeholder="Representantes (separados por comas)">
+            <button class="btn btn-primary" onclick="addG()">Guardar Grupo</button>
           </div>
         </div>
 
         <div class="card">
-          <div class="ch"><h2>Importar / Exportar Datos JSON</h2></div>
-          <p class="m">Gestión directa de copias de seguridad local/nube:</p>
-          <textarea id="ij"></textarea>
-          <div class="r">
-            <input type="file" id="if" accept=".json">
-            <button class="p" onclick="imp()">Importar JSON</button>
-            <button onclick="exp()">Exportar JSON</button>
-            <button onclick="demo()">Cargar Ejemplo Real Viladecans</button>
-            <button onclick="clr()" style="border-color:#ef4444; color:#ef4444;">Borrar Todo</button>
+          <div class="card-header"><h2>Importación / Exportación JSON</h2></div>
+          <div style="padding: 16px;">
+            <textarea id="ij" style="width: 100%; min-height: 120px; font-family: var(--font-mono); font-size: 11px;" placeholder="Pega el código JSON aquí..."></textarea>
+            <div class="form-row" style="padding: 10px 0 0;">
+              <input type="file" id="if" accept=".json">
+              <button class="btn btn-primary" onclick="imp()">Importar JSON</button>
+              <button class="btn" onclick="exp()">Exportar JSON</button>
+              <button class="btn" onclick="demo()">Cargar Demo Real Viladecans</button>
+              <button class="btn btn-danger" onclick="clr()">Vaciar Todo</button>
+            </div>
           </div>
         </div>
       </div>
     </section>
   </main>
 
+  <!-- Core JavaScript Application Logic -->
   <script>
     var K="plenos-viladecans", K2="leg-viladecans", LG="", TP="", PS="", PK=[], tab="plenos";
     var L={favor:"A favor", contra:"En contra", abst:"Abstención"}, CL={favor:"ok", contra:"ko", abst:"ab"}, CT=["Ordinario","Extraordinario","VIQUAL","VIMED"];
-    var PAL=["#1f5fa8","#c0392b","#2e8b57","#d68910","#7d3c98","#117a8b","#8e6e53","#5d6d7e","#b03a77","#4a7c1f"];
     
+    // Official party colors for Viladecans political forces
     var PARTY_COLORS = {
       "PSC": "#e11d48", "PSC-CP": "#e11d48",
       "ERC": "#f59e0b", "ERC-AM": "#f59e0b",
@@ -448,7 +713,11 @@
 
     function st(t){
       var e=$("sts"); if(e) e.textContent=t;
-      var sys=$("sys-status"); if(sys) sys.textContent = SUPA ? "Nube Conectada" : "Modo Local";
+      var sys=$("sys-status");
+      if(sys){
+        sys.className = SUPA ? "status-pill online" : "status-pill local";
+        sys.innerHTML = '<span class="dot-lead"></span>' + (SUPA ? "Nube Conectada" : "Modo Local");
+      }
     }
     function $(i){return document.getElementById(i)}
     function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
@@ -456,12 +725,18 @@
     function fd(s){var p=s.split("-");return p.length==3?p[2]+"/"+p[1]+"/"+p[0]:s}
     function cat(p){var t=(p.tipo||"").toLowerCase();return t.indexOf("viqual")>-1?"VIQUAL":t.indexOf("vimed")>-1?"VIMED":t.indexOf("extra")>-1?"Extraordinario":"Ordinario"}
     function legOf(f){var g=G.filter(function(x){return f>=x.inicio&&f<=x.fin})[0];return g?g.id:""}
-    function col(n){ if(PARTY_COLORS[n]) return PARTY_COLORS[n]; var h=0;for(var i=0;i<n.length;i++)h=(h*31+n.charCodeAt(i))%1000;return PAL[h%PAL.length]}
+    function col(n){ if(PARTY_COLORS[n]) return PARTY_COLORS[n]; var h=0;for(var i=0;i<n.length;i++)h=(h*31+n.charCodeAt(i))%1000;return "#3b82f6";}
 
     function nv(x){var s=String(x).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim();if(/^(si|s$|f|a favor)/.test(s))return"favor";if(/^(n|c|en contra)/.test(s))return"contra";if(/^(ab|a$)/.test(s))return"abst";return""}
     function pq(t){var o={};String(t||"").split(",").forEach(function(x){var a=x.split(":");if(a.length>1&&a[0].trim()&&nv(a[1]))o[a[0].trim()]=nv(a[1])});return o}
-    function pts(v){var p=v.partidos;if(!p)return"";var g={favor:[],contra:[],abst:[]};Object.keys(p).forEach(function(k){var s=nv(p[k]);if(g[s])g[s].push(k)});
-      return["favor","contra","abst"].filter(function(s){return g[s].length}).map(function(s){return'<b class="'+CL[s]+'">'+L[s]+':</b> '+g[s].map(esc).join(", ")}).join("<br>")}
+    function pts(v){
+      var p=v.partidos;if(!p)return"";
+      var g={favor:[],contra:[],abst:[]};
+      Object.keys(p).forEach(function(k){var s=nv(p[k]);if(g[s])g[s].push(k)});
+      return["favor","contra","abst"].filter(function(s){return g[s].length}).map(function(s){
+        return'<span class="badge '+CL[s]+'">'+L[s]+':</span> '+g[s].map(esc).join(", ");
+      }).join(" · ");
+    }
 
     function fp(){return D.filter(function(p){return(!LG||legOf(p.fecha)==LG)&&(!TP||cat(p)==TP)})}
     
@@ -472,9 +747,8 @@
           var q=v.partidos||{};
           Object.keys(q).forEach(function(k){
             var s=nv(q[k]);if(!s)return;
-            var e=m[k]||(m[k]={favor:[],contra:[],abst:[], total:0});
+            var e=m[k]||(m[k]={favor:[],contra:[],abst:[]});
             e[s].push({f:p.fecha, c:cat(p), n:v.punto, a:v.asunto, r:res(v), voto:s});
-            e.total++;
           })
         })
       });
@@ -488,7 +762,7 @@
       tab=t;
       ["plenos","partidos","consistorio","datos"].forEach(function(x){
         var el = $("v-"+x); if(el) el.hidden = (x!=t);
-        var btn = $("t-"+x); if(btn) btn.className = (x==t?"on":"");
+        var btn = $("t-"+x); if(btn) btn.className = (x==t ? "active" : "");
       });
       $("fb").hidden=(t=="datos"||t=="consistorio");
       if(t === "partidos") renderPartySelector();
@@ -500,18 +774,23 @@
 
     function rf(){
       var h='<select onchange="setL(this.value)"><option value="">Todas las legislaturas</option>'+G.slice().sort(function(a,b){return b.id.localeCompare(a.id)}).map(function(g){return'<option value="'+esc(g.id)+'"'+(g.id==LG?" selected":"")+">"+esc(g.nombre)+"</option>"}).join("")+"</select>";
-      h+='<div class="chips">'+[""].concat(CT).map(function(c){var n=D.filter(function(p){return(!LG||legOf(p.fecha)==LG)&&(!c||cat(p)==c)}).length;return'<button class="'+(TP==c?"sel":"")+'" onclick="setT(\''+c+'\')">'+(c||"Todos")+" ("+n+")</button>"}).join("")+"</div>";
+      h+='<div class="chip-group">'+[""].concat(CT).map(function(c){
+        var n=D.filter(function(p){return(!LG||legOf(p.fecha)==LG)&&(!c||cat(p)==c)}).length;
+        return'<button class="chip-btn '+(TP==c?"active":"")+'" onclick="setT(\''+c+'\')">'+(c||"Todos los órganos")+" ("+n+")</button>";
+      }).join("")+"</div>";
       $("fb").innerHTML=h;
     }
 
     function rk(){
       var f=fp(),n=0;f.forEach(function(p){n+=(p.votaciones||[]).length});
       $("kp").innerHTML=[
-        [f.length,"Sesiones Plenarias"],
-        [n,"Votaciones Registradas"],
-        [Object.keys(stats()).length,"Partidos Representados"],
+        [f.length,"Plenos Auditales"],
+        [n,"Votaciones Totales"],
+        [Object.keys(stats()).length,"Grupos Políticos"],
         [LG||"Todas","Legislaturas"]
-      ].map(function(x){return"<div><b>"+esc(x[0])+"</b><span>"+x[1]+"</span></div>"}).join("");
+      ].map(function(x){
+        return'<div class="kpi-card"><div class="kpi-val">'+esc(x[0])+'</div><div class="kpi-lbl">'+x[1]+'</div></div>';
+      }).join("");
     }
 
     function rp(){
@@ -519,14 +798,28 @@
       fp().forEach(function(p){
         var i=D.indexOf(p),vs=(p.votaciones||[]).map(function(v,j){return{v:v,j:j}}).filter(function(o){return!q||(o.v.asunto||"").toLowerCase().indexOf(q)>-1||Object.keys(o.v.partidos||{}).join(" ").toLowerCase().indexOf(q)>-1});
         if(q&&!vs.length)return;
-        var rows=vs.map(function(o){var v=o.v,r=res(v),k=/aprob/i.test(r)?"ok":"ko";
-          return"<tr><td><b>"+esc(v.punto)+"</b></td><td>"+esc(v.asunto)+'</td><td class="n ok"><b>'+(v.favor==null?"":v.favor)+'</b></td><td class="n ko"><b>'+(v.contra==null?"":v.contra)+'</b></td><td class="n ab"><b>'+(v.abst==null?"":v.abst)+'</b></td><td><span class="tag '+k+'">'+esc(r)+'</span></td><td class="pt">'+pts(v)+'</td><td>'+(IS_ADMIN?'<button onclick="dv('+i+","+o.j+')">✕</button>':'')+'</td></tr>'}).join("");
-        h+='<div class="card"><div class="ch"><h2>Pleno del '+esc(fd(p.fecha))+' <span class="tag c">'+cat(p)+"</span> <small>· "+legOf(p.fecha)+" · "+(p.votaciones||[]).length+' votaciones</small></h2><span>'+(p.url?'<a href="'+esc(p.url)+'" target="_blank" rel="noopener">📄 Ver Acta Oficial</a> ':"")+(IS_ADMIN?'<button onclick="dp('+i+')" style="margin-left:8px;">Eliminar Sesión</button>':'')+'</span></div><div class="w"><table><tr><th>Punto</th><th>Asunto / Moción</th><th class="n">Sí</th><th class="n">No</th><th class="n">Abst.</th><th>Resultado</th><th>Voto por Grupo Municipal</th><th></th></tr>'+(rows||'<tr><td colspan="8" class="e">Sin votaciones registradas en este pleno.</td></tr>')+"</table></div></div>"});
-      $("pl").innerHTML=h||'<div class="card"><div class="e">No se encontraron sesiones. Ve a "Nube & Datos" para cargar información.</div></div>';
+        var rows=vs.map(function(o){
+          var v=o.v,r=res(v),k=/aprob/i.test(r)?"ok":"ko";
+          return'<tr><td style="font-family:var(--font-mono); font-weight:700;">'+esc(v.punto)+'</td>'
+               +'<td><b>'+esc(v.asunto)+'</b></td>'
+               +'<td style="text-align:center;"><span class="badge ok">'+(v.favor==null?"-":v.favor)+'</span></td>'
+               +'<td style="text-align:center;"><span class="badge ko">'+(v.contra==null?"-":v.contra)+'</span></td>'
+               +'<td style="text-align:center;"><span class="badge ab">'+(v.abst==null?"-":v.abst)+'</span></td>'
+               +'<td><span class="badge '+k+'">'+esc(r)+'</span></td>'
+               +'<td style="font-size:12px;">'+pts(v)+'</td>'
+               +'<td>'+(IS_ADMIN?'<button class="btn btn-danger" style="padding:2px 6px; font-size:11px;" onclick="dv('+i+","+o.j+')">✕</button>':'')+'</td></tr>';
+        }).join("");
+
+        h+='<div class="card"><div class="card-header"><h2>Sesión Plenaria: '+esc(fd(p.fecha))+' <span class="badge cat">'+cat(p)+'</span><sub>· '+legOf(p.fecha)+' · '+vs.length+' dictámenes</sub></h2>'
+          +'<div>'+(p.url?'<a href="'+esc(p.url)+'" target="_blank" rel="noopener" class="btn" style="padding:4px 10px; font-size:12px;">📄 Ver Acta Oficial PDF</a> ':"")+(IS_ADMIN?'<button class="btn btn-danger" style="padding:4px 10px; font-size:12px;" onclick="dp('+i+')">Eliminar Sesión</button>':'')+'</div></div>'
+          +'<div class="table-wrapper"><table class="data-table"><thead><tr><th>N°</th><th>Dictamen / Asunto / Moción</th><th style="text-align:center;">Sí</th><th style="text-align:center;">No</th><th style="text-align:center;">Abst.</th><th>Resultado</th><th>Posicionamiento por Partido</th><th></th></tr></thead><tbody>'
+          +(rows||'<tr><td colspan="8" class="empty-state">Sin votaciones registradas en este pleno.</td></tr>')+'</tbody></table></div></div>';
+      });
+      $("pl").innerHTML=h||'<div class="card"><div class="empty-state">No se encontraron sesiones plenarias con los filtros aplicados.</div></div>';
     }
 
     // ==========================================
-    // ANÁLISIS EXHAUSTIVO POR PARTIDO
+    // EXHAUSTIVE PARTY PROFILE & DASHBOARD
     // ==========================================
 
     function renderPartySelector() {
@@ -535,7 +828,7 @@
       
       var grid = $("party-selector-grid");
       if(!PK.length) {
-        grid.innerHTML = '<div class="e">No hay datos de voto registrados para esta legislatura.</div>';
+        grid.innerHTML = '<div class="empty-state">No hay votos de partidos para analizar con los filtros actuales.</div>';
         $("party-detailed-profile").innerHTML = "";
         return;
       }
@@ -546,9 +839,19 @@
       PK.forEach(function(k){
         var totalVotes = tot(m[k]);
         var isActive = (k === PS);
-        html += '<div class="party-card-btn '+(isActive ? 'active' : '')+'" onclick="selectParty(\''+esc(k)+'\')">'
-             + '<div><span class="dot" style="background:'+col(k)+'"></span><b>'+esc(k)+'</b></div>'
-             + '<span>'+totalVotes+' Votaciones auditadas</span>'
+        var partyColor = col(k);
+        
+        // Count concejales
+        var currentLeg = G.filter(function(x){ return x.id === (LG || "2023-2027"); })[0] || G[G.length-1];
+        var gInfo = (currentLeg && currentLeg.grupos) ? currentLeg.grupos.filter(function(g){ return g.partido === k; })[0] : null;
+        var seats = gInfo ? gInfo.concejales : 0;
+
+        html += '<div class="party-card-tile '+(isActive ? 'active' : '')+'" style="--party-color:'+partyColor+'" onclick="selectParty(\''+esc(k)+'\')">'
+             + '<div class="party-card-head">'
+             + '<div class="party-card-name"><span class="dot" style="background:'+partyColor+'"></span>'+esc(k)+'</div>'
+             + '<span class="party-card-seats">'+(seats ? seats + ' Escaño(s)' : 'Sin acta')+'</span>'
+             + '</div>'
+             + '<div style="font-size:12px; color:var(--text-muted);"><b>'+totalVotes+'</b> Votaciones auditadas</div>'
              + '</div>';
       });
       grid.innerHTML = html;
@@ -567,7 +870,7 @@
       var container = $("party-detailed-profile");
 
       if(!e) {
-        container.innerHTML = '<div class="card"><div class="e">Selecciona un partido para ver su análisis.</div></div>';
+        container.innerHTML = '<div class="card"><div class="empty-state">Selecciona un grupo para visualizar su expediente político.</div></div>';
         return;
       }
 
@@ -575,87 +878,119 @@
       var currentLeg = G.filter(function(x){ return x.id === (LG || "2023-2027"); })[0] || G[G.length-1];
       var groupInfo = (currentLeg && currentLeg.grupos) ? currentLeg.grupos.filter(function(g){ return g.partido === party; })[0] : null;
 
-      // Calcular Efectividad / Coincidencia con resultado final
-      var matches = 0;
-      var organBreakdown = { Ordinario: 0, Extraordinario: 0, VIQUAL: 0, VIMED: 0 };
+      // Calculate Cohesion & Alignment Metrics
+      var alignedVotes = 0;
+      var organCount = { Ordinario: 0, Extraordinario: 0, VIQUAL: 0, VIMED: 0 };
       var organFavor = { Ordinario: 0, Extraordinario: 0, VIQUAL: 0, VIMED: 0 };
 
       ["favor", "contra", "abst"].forEach(function(voteType){
         e[voteType].forEach(function(item){
-          var approved = /aprob/i.test(item.r);
-          if((voteType === "favor" && approved) || (voteType === "contra" && !approved)) {
-            matches++;
+          var isApproved = /aprob/i.test(item.r);
+          if((voteType === "favor" && isApproved) || (voteType === "contra" && !isApproved)) {
+            alignedVotes++;
           }
-          if(organBreakdown[item.c] !== undefined) {
-            organBreakdown[item.c]++;
+          if(organCount[item.c] !== undefined) {
+            organCount[item.c]++;
             if(voteType === "favor") organFavor[item.c]++;
           }
         });
       });
 
-      var effectiveness = total ? Math.round((matches / total) * 100) : 0;
+      var alignmentPct = total ? Math.round((alignedVotes / total) * 100) : 0;
+      var favorPct = pc(e.favor.length, total);
+      var contraPct = pc(e.contra.length, total);
+      var abstPct = pc(e.abst.length, total);
 
       var html = '<div class="card">'
-               + '<div class="party-detail-header">'
-               + '<div>'
-               + '<h2 style="font-size:22px; color:#fff; display:flex; align-items:center; gap:10px;">'
-               + '<span class="dot" style="background:'+col(party)+'; width:18px; height:18px;"></span>'
-               + 'Grupo Municipal: '+esc(party)
-               + '</h2>'
-               + '<p style="color:var(--text-muted); font-size:13px; margin-top:4px;">'
-               + (groupInfo ? groupInfo.concejales + ' Concejales · Rep. ' + (groupInfo.representantes||[]).join(", ") : 'Fuerza con representación en Viladecans')
-               + '</p>'
+               + '<div class="party-profile-header">'
+               + '<div class="party-profile-info">'
+               + '<h2><span class="dot" style="background:'+col(party)+'; width:16px; height:16px;"></span> Expediente Político: '+esc(party)+'</h2>'
+               + '<p>' + (groupInfo ? '<b>' + groupInfo.concejales + ' Concejales</b> · Representantes: ' + (groupInfo.representantes||[]).join(", ") : 'Grupo político activo en plenos de Viladecans') + '</p>'
                + '</div>'
-               + '<div class="tag c" style="font-size:14px; padding:6px 14px;">'+effectiveness+'% Coincidencia con Votación Ganadora</div>'
-               + '</div>'
-               
-               // KPI Stats Grid
-               + '<div class="party-stats-row">'
-               + '<div class="stat-box"><strong>'+total+'</strong><span>Votaciones Totales</span></div>'
-               + '<div class="stat-box"><strong class="ok">'+e.favor.length+' ('+pc(e.favor.length, total)+'%)</strong><span>Votos A Favor</span></div>'
-               + '<div class="stat-box"><strong class="ko">'+e.contra.length+' ('+pc(e.contra.length, total)+'%)</strong><span>Votos En Contra</span></div>'
-               + '<div class="stat-box"><strong class="ab">'+e.abst.length+' ('+pc(e.abst.length, total)+'%)</strong><span>Abstenciones</span></div>'
+               + '<div style="text-align:right;"><span class="badge cat" style="font-size:13px; padding:6px 12px;">Índice de Gobernabilidad: '+alignmentPct+'%</span>'
+               + '<div style="font-size:11px; color:var(--text-muted); margin-top:4px;">% Votos en el lado de la mayoría victoria</div></div>'
                + '</div>'
 
-               // Desglose por Órgano / Tipología
-               + '<div style="padding:16px; border-top:1px solid var(--card-border);">'
-               + '<h3 style="font-size:14px; margin-bottom:10px; color:#fff;">Conducta de Voto según Tipo de Órgano / Empresa Municipal</h3>'
-               + '<div class="w"><table>'
-               + '<tr><th>Órgano / Sesión</th><th class="n">Participaciones</th><th class="n">% Apoyo A Favor</th><th>Patrón Predominante</th></tr>';
+               // KPI Overview Cards
+               + '<div class="party-kpi-grid">'
+               + '<div class="party-kpi-box"><div class="val">'+total+'</div><div class="lbl">Total Dictámenes Votados</div></div>'
+               + '<div class="party-kpi-box"><div class="val" style="color:var(--ok);">'+e.favor.length+' <small style="font-size:14px;">('+favorPct+'%)</small></div><div class="lbl">A Favor / Apoyos</div></div>'
+               + '<div class="party-kpi-box"><div class="val" style="color:var(--ko);">'+e.contra.length+' <small style="font-size:14px;">('+contraPct+'%)</small></div><div class="lbl">En Contra / Rechazos</div></div>'
+               + '<div class="party-kpi-box"><div class="val" style="color:var(--ab);">'+e.abst.length+' <small style="font-size:14px;">('+abstPct+'%)</small></div><div class="lbl">Abstenciones</div></div>'
+               + '</div>'
+
+               // Detailed Breakdown Grid
+               + '<div class="party-detailed-sections">'
+               
+               // Organ Breakdown
+               + '<div class="breakdown-block">'
+               + '<h3>🏛️ Apoyo por Tipo de Órgano y Empresa Pública</h3>'
+               + '<div class="table-wrapper"><table class="data-table"><thead><tr><th>Órgano</th><th style="text-align:center;">Votos</th><th style="text-align:center;">% Sí</th><th>Distribución</th></tr></thead><tbody>';
 
       CT.forEach(function(type){
-        var cnt = organBreakdown[type] || 0;
+        var cnt = organCount[type] || 0;
         var fav = organFavor[type] || 0;
-        var pctFav = cnt ? Math.round((fav / cnt) * 100) : 0;
+        var pFav = cnt ? Math.round((fav / cnt) * 100) : 0;
         html += '<tr>'
              + '<td><b>'+type+'</b></td>'
-             + '<td class="n">'+cnt+'</td>'
-             + '<td class="n"><b class="ok">'+pctFav+'%</b></td>'
-             + '<td><div class="bar"><i class="f" style="width:'+pctFav+'%"></i><i class="c" style="width:'+(100-pctFav)+'%"></i></div></td>'
+             + '<td style="text-align:center; font-family:var(--font-mono);">'+cnt+'</td>'
+             + '<td style="text-align:center;"><b style="color:var(--ok);">'+pFav+'%</b></td>'
+             + '<td><div class="vote-dist-bar"><span class="f" style="width:'+pFav+'%"></span><span class="c" style="width:'+(100-pFav)+'%"></span></div></td>'
              + '</tr>';
       });
 
-      html += '</table></div></div></div>';
+      html += '</tbody></table></div></div>'
 
-      // Columnas detalladas de Votaciones por tipo
-      html += '<div class="card"><div class="ch"><h2>Registro Histórico de Posicionamiento · '+esc(party)+'</h2></div>'
-            + '<div class="cols">';
+               // Key Oppositions / Disagreements
+               + '<div class="breakdown-block">'
+               + '<h3>⚠️ Decisiones Contrapuestas a la Mayoría</h3>'
+               + '<p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">Asuntos aprobados en los que '+esc(party)+' votó en contra, o viceversa.</p>'
+               + '<div class="vote-item-feed">';
+
+      var keyDisagreements = [];
+      e.contra.concat(e.favor).forEach(function(x){
+        var isApproved = /aprob/i.test(x.r);
+        if((x.voto === "contra" && isApproved) || (x.voto === "favor" && !isApproved)) {
+          keyDisagreements.push(x);
+        }
+      });
+
+      if(keyDisagreements.length) {
+        keyDisagreements.slice(0, 5).forEach(function(x){
+          html += '<div class="vote-item-card">'
+               + '<div class="vote-item-meta">'+fd(x.f)+' · '+x.c+' · Punto '+x.n+'</div>'
+               + '<div class="vote-item-title">'+esc(x.a)+'</div>'
+               + '<div style="display:flex; justify-content:space-between; align-items:center;">'
+               + '<span class="badge '+(x.voto==='favor'?'ok':'ko')+'">Votó '+L[x.voto]+'</span>'
+               + '<span class="badge cat">Resultado: '+esc(x.r)+'</span>'
+               + '</div></div>';
+        });
+      } else {
+        html += '<div class="empty-state" style="padding:15px;">Sin discrepancias registradas con el acuerdo mayoritario.</div>';
+      }
+
+      html += '</div></div></div></div>';
+
+      // Full Historical Feed for the Party
+      html += '<div class="card"><div class="card-header"><h2>Histórico Completo de Votaciones auditadas de '+esc(party)+'</h2></div>'
+            + '<div class="party-detailed-sections">';
 
       ["favor", "contra", "abst"].forEach(function(s){
-        html += '<div class="col">'
-             + '<h3 class="'+CL[s]+'">'+L[s]+' ('+e[s].length+')</h3>';
+        html += '<div class="breakdown-block">'
+             + '<h3 class="'+CL[s]+'">'+L[s]+' ('+e[s].length+')</h3>'
+             + '<div class="vote-item-feed">';
         if(e[s].length) {
           e[s].slice().sort(function(a,b){ return b.f.localeCompare(a.f); }).forEach(function(x){
-            html += '<div class="it">'
-                 + '<small>'+fd(x.f)+' · '+x.c+' · Punto '+x.n+'</small><br>'
-                 + '<b>'+esc(x.a)+'</b><br>'
-                 + '<span class="tag '+(/aprob/i.test(x.r)?"ok":"ko")+'" style="margin-top:4px;">'+esc(x.r)+'</span>'
+            html += '<div class="vote-item-card">'
+                 + '<div class="vote-item-meta">'+fd(x.f)+' · '+x.c+' · Punto '+x.n+'</div>'
+                 + '<div class="vote-item-title">'+esc(x.a)+'</div>'
+                 + '<span class="badge '+(/aprob/i.test(x.r)?"ok":"ko")+'">'+esc(x.r)+'</span>'
                  + '</div>';
           });
         } else {
-          html += '<div class="e">Sin registros en esta categoría</div>';
+          html += '<div class="empty-state">Sin votos en esta categoría</div>';
         }
-        html += '</div>';
+        html += '</div></div>';
       });
 
       html += '</div></div>';
@@ -664,32 +999,47 @@
     }
 
     // ==========================================
-    // VISTA CONSISTORIO Y GRUPOS
+    // VISTA CONSISTORIO
     // ==========================================
 
     function rc(){
       var h="";
       if(!LG){
-        h='<div class="g2">'+G.slice().sort(function(a,b){return b.id.localeCompare(a.id)}).map(function(g){var n=D.filter(function(p){return legOf(p.fecha)==g.id}).length;
-          return'<div class="card" style="padding:16px;"><h2 style="margin:0 0 6px;font-size:17px; color:#fff;">'+esc(g.nombre)+'</h2><small style="color:var(--text-muted)">'+esc(fd(g.inicio))+" – "+esc(fd(g.fin))+" · "+seats(g)+" concejales · "+n+' sesiones plenarias</small><div style="margin:12px 0">'+dots(g)+'</div><button class="p" onclick="ent('+G.indexOf(g)+')">Ver Consistorio</button></div>'}).join("")+"</div>";
+        h='<div class="party-selector-grid">'+G.slice().sort(function(a,b){return b.id.localeCompare(a.id)}).map(function(g){
+          var n=D.filter(function(p){return legOf(p.fecha)==g.id}).length;
+          return'<div class="party-card-tile" style="--party-color:#3b82f6" onclick="ent('+G.indexOf(g)+')">'
+               +'<div class="party-card-name">'+esc(g.nombre)+'</div>'
+               +'<div style="font-size:12px; color:var(--text-muted); margin-top:6px;">'+esc(fd(g.inicio))+" a "+esc(fd(g.fin))+'</div>'
+               +'<div style="margin-top:10px; font-weight:700; color:#fff;">'+seats(g)+' Concejales · '+n+' Plenos</div>'
+               +'</div>';
+        }).join("")+"</div>";
       } else {
-        var g=G.filter(function(x){return x.id==LG})[0],gi=G.indexOf(g),ps=D.filter(function(p){return legOf(p.fecha)==LG}),nvv=0;ps.forEach(function(p){nvv+=(p.votaciones||[]).length});
-        h='<div class="card"><div class="ch"><h2>'+esc(g.nombre)+" <small>· "+esc(fd(g.inicio))+" a "+esc(fd(g.fin))+'</small></h2><span><button onclick="setL(\'\')">← Volver a Legislaturas</button></span></div>'
-        +'<div style="padding:14px;">'+dots(g)+'</div><p class="m" style="padding-bottom:14px; font-size:13px;"><b>'+seats(g)+" concejales</b> · "+ps.length+" sesiones ("+CT.map(function(c){return c+": "+ps.filter(function(p){return cat(p)==c}).length}).join(", ")+") · "+nvv+' votaciones registradas</p></div>'
-        +'<div class="card"><div class="ch"><h2>Grupos Municipales y Concejales Representantes</h2><small>Haz clic en un grupo para auditarlo</small></div><div class="w"><table><tr><th>Grupo Municipal</th><th class="n">Concejales</th><th>Miembros / Representantes</th><th>Acción</th></tr>'
-        +((g.grupos||[]).length?(g.grupos).map(function(x,j){
-          return'<tr class="cl" onclick="selectParty(\''+esc(x.partido)+'\'); show(\'partidos\');"><td><span class="dot" style="background:'+col(x.partido)+'"></span> <b>'+esc(x.partido)+'</b></td><td class="n"><b>'+esc(x.concejales)+'</b></td><td>'+(x.representantes||[]).map(esc).join(", ")+'</td><td><button class="p" style="font-size:11px; padding:3px 8px;">Auditar Votos</button>'+(IS_ADMIN?' <button onclick="event.stopPropagation(); dg('+gi+","+j+')" style="border-color:#ef4444; color:#ef4444;">✕</button>':'')+'</td></tr>';
-        }).join(""):'<tr><td colspan="4" class="e">Sin grupos definidos para esta legislatura.</td></tr>')+"</table></div></div>";
+        var g=G.filter(function(x){return x.id==LG})[0], gi=G.indexOf(g), ps=D.filter(function(p){return legOf(p.fecha)==LG}), nvv=0;
+        ps.forEach(function(p){nvv+=(p.votaciones||[]).length});
+
+        h='<div class="card"><div class="card-header"><h2>Consistorio Municipal '+esc(g.nombre)+' <sub>· '+esc(fd(g.inicio))+' a '+esc(fd(g.fin))+'</sub></h2>'
+         +'<button class="btn" onclick="setL(\'\')">← Ver todas las legislaturas</button></div>'
+         +'<div style="padding:16px 20px;"><p style="font-size:13px; color:var(--text-muted);"><b>'+seats(g)+' Concejales Totales</b> · '+ps.length+' Plenos ('+CT.map(function(c){return c+": "+ps.filter(function(p){return cat(p)==c}).length}).join(", ")+') · '+nvv+' votaciones registradas</p></div></div>'
+         +'<div class="card"><div class="card-header"><h2>Composición por Grupos Políticos</h2></div>'
+         +'<div class="table-wrapper"><table class="data-table"><thead><tr><th>Grupo Político</th><th style="text-align:center;">Concejales</th><th>Miembros / Representantes</th><th>Auditoría</th></tr></thead><tbody>'
+         +((g.grupos||[]).length?(g.grupos).map(function(x,j){
+           return'<tr class="clickable" onclick="selectParty(\''+esc(x.partido)+'\'); show(\'partidos\');">'
+                +'<td><span class="dot" style="background:'+col(x.partido)+'"></span> <b>'+esc(x.partido)+'</b></td>'
+                +'<td style="text-align:center; font-family:var(--font-mono); font-weight:700;">'+esc(x.concejales)+'</td>'
+                +'<td>'+(x.representantes||[]).map(esc).join(", ")+'</td>'
+                +'<td><button class="btn btn-primary" style="padding:3px 10px; font-size:11px;">Ver Expediente</button>'
+                +(IS_ADMIN?' <button class="btn btn-danger" style="padding:3px 8px; font-size:11px;" onclick="event.stopPropagation(); dg('+gi+","+j+')">✕</button>':'')+'</td>'
+                +'</tr>';
+         }).join(""):'<tr><td colspan="4" class="empty-state">Sin grupos configurados para esta legislatura.</td></tr>')+'</tbody></table></div></div>';
       }
       $("co").innerHTML=h;
     }
 
-    function dots(g){var h="";(g.grupos||[]).forEach(function(x){for(var i=0;i<(+x.concejales||0);i++)h+='<span class="dot" style="background:'+col(x.partido)+'" title="'+esc(x.partido)+'"></span>'});return h||'<small class="m">Composición no definida</small>'}
     function seats(g){var n=0;(g.grupos||[]).forEach(function(x){n+=+x.concejales||0});return n}
     function ent(i){LG=G[i].id;render()}
 
     // ==========================================
-    // SUPABASE & NUBE
+    // CORE ENGINE & SUPABASE PERSISTENCE
     // ==========================================
 
     function render(){
@@ -706,7 +1056,7 @@
         localStorage.setItem(K2,JSON.stringify(G));
       }catch(e){};
       if(!IS_ADMIN||!SUPA){
-        st(SUPA ? "Guardado localmente. Requiere cuenta administrador para la nube." : "Modo offline: Guardado en almacenamiento local.");
+        st(SUPA ? "Modo consulta: Inicia sesión para modificar la nube." : "Modo Local: Cambios guardados en este navegador.");
         return;
       }
       saveCloud();
@@ -715,23 +1065,23 @@
     async function saveCloud(){
       if(SAVING) return;
       SAVING=true;
-      st("Guardando en Supabase…");
+      st("Guardando en Supabase...");
       var r = await SUPA.from("observatorio_data").update({plenos:D, legislaturas:G, updated_at:new Date().toISOString()}).eq("id",1);
       SAVING=false;
-      if(r.error){ st("Error Supabase: "+r.error.message); return; }
+      if(r.error){ st("Error al guardar en Supabase: "+r.error.message); return; }
       st("Datos sincronizados en la nube.");
     }
 
     async function loadCloud(showStatus){
       if(!SUPA) return;
       var r = await SUPA.from("observatorio_data").select("plenos,legislaturas,updated_at").eq("id",1).single();
-      if(r.error){ st("Error al cargar Supabase. "+r.error.message); return; }
+      if(r.error){ st("Error de conexión. "+r.error.message); return; }
       D = r.data.plenos || [];
       G = r.data.legislaturas || [];
       DEF.forEach(function(d){if(!G.some(function(g){return g.id==d[0]}))G.push({id:d[0],nombre:"Legislatura "+d[0],inicio:d[1],fin:d[2],grupos:[]})});
       try{ localStorage.setItem(K,JSON.stringify(D)); localStorage.setItem(K2,JSON.stringify(G)); }catch(e){};
       render();
-      if(showStatus!==false) st("Datos sincronizados con la nube.");
+      if(showStatus!==false) st("Datos en vivo sincronizados.");
     }
 
     async function refreshAuth(session){
@@ -744,7 +1094,7 @@
       if($("loginBox")) $("loginBox").hidden = !!CURRENT_USER && IS_ADMIN;
       if($("sessionBox")) $("sessionBox").hidden = !CURRENT_USER;
       if($("adminEditor")) $("adminEditor").hidden = !IS_ADMIN;
-      if($("authState")) $("authState").textContent = IS_ADMIN ? "Administrador Conectado" : (CURRENT_USER ? "Cuenta sin permisos de edición" : "Consulta Pública");
+      if($("authState")) $("authState").textContent = IS_ADMIN ? "Administrador Conectado" : (CURRENT_USER ? "Cuenta sin permisos" : "Consulta Pública");
       if($("signedAs")) $("signedAs").textContent = CURRENT_USER ? CURRENT_USER.email : "";
       render();
     }
@@ -752,9 +1102,9 @@
     async function login(e){
       e.preventDefault();
       var email=$("adminEmail").value, password=$("adminPassword").value;
-      st("Iniciando sesión…");
+      st("Autenticando...");
       var r = await SUPA.auth.signInWithPassword({email:email, password:password});
-      if(r.error){ st("Error de acceso: "+r.error.message); return; }
+      if(r.error){ st("Fallo de acceso: "+r.error.message); return; }
       $("adminPassword").value="";
       await refreshAuth(r.data.session);
     }
@@ -766,7 +1116,7 @@
 
     function bootSupabase(){
       if(!window.supabase || !window.OBS_CONFIG || !OBS_CONFIG.url || !OBS_CONFIG.anonKey || OBS_CONFIG.anonKey.indexOf("PEGA_AQUI")===0){
-        st("Modo local activo (Configura js/config.js para conectar con la nube)");
+        st("Modo Local (Configura js/config.js para la nube)");
         render();
         return;
       }
@@ -778,7 +1128,7 @@
           if(!SAVING) loadCloud(false);
         }).subscribe();
       } catch(e) {
-        st("Modo local activo");
+        st("Modo Local Activo");
       }
     }
 
@@ -787,7 +1137,7 @@
     function addG(){ if(!IS_ADMIN)return; var g=G.filter(function(x){return x.id==$("gl").value})[0], n=$("gp").value.trim(); if(!g||!n)return; g.grupos=(g.grupos||[]).filter(function(x){return x.partido!=n}); g.grupos.push({partido:n,concejales:+$("gn").value||0,representantes:$("gr").value.split(",").map(function(s){return s.trim()}).filter(Boolean)}); g.grupos.sort(function(a,b){return b.concejales-a.concejales}); ["gp","gn","gr"].forEach(function(i){$(i).value=""}); sv(); render(); }
     function dg(i,j){ if(!IS_ADMIN)return; G[i].grupos.splice(j,1); sv(); render(); }
     function dv(i,j){ if(!IS_ADMIN)return; D[i].votaciones.splice(j,1); sv(); render(); }
-    function dp(i){ if(!IS_ADMIN)return; if(confirm("¿Eliminar esta sesión?")){ D.splice(i,1); sv(); render(); } }
+    function dp(i){ if(!IS_ADMIN)return; if(confirm("¿Eliminar esta sesión plenaria?")){ D.splice(i,1); sv(); render(); } }
 
     function merge(a){
       a.forEach(function(n){
@@ -802,27 +1152,27 @@
     function imp(){ try{ var a=JSON.parse($("ij").value); if(Array.isArray(a)) merge(a); else{ (a.legislaturas||[]).forEach(function(n){ var g=G.filter(function(x){return x.id==n.id})[0]; if(g) Object.assign(g,n); else G.push(Object.assign({nombre:"Legislatura "+n.id,grupos:[]},n)); }); merge(a.plenos||[]); } $("ij").value=""; }catch(e){ alert("JSON no válido"); } }
     if($("if")) $("if").onchange=function(e){ var f=e.target.files[0]; if(!f)return; var r=new FileReader(); r.onload=function(){$("ij").value=r.result; imp()}; r.readAsText(f); };
     function exp(){ $("ij").value=JSON.stringify({plenos:D,legislaturas:G},null,2); }
-    function clr(){ if(!IS_ADMIN)return; if(confirm("¿Borrar todos los datos?")){ D=[]; G.forEach(function(g){g.grupos=[]}); sv(); render(); } }
+    function clr(){ if(!IS_ADMIN)return; if(confirm("¿Borrar todos los datos local y nube?")){ D=[]; G.forEach(function(g){g.grupos=[]}); sv(); render(); } }
 
     function demo(){
       var P={PSC:"favor", ERC:"favor", PP:"contra", VOX:"contra", COMUNS:"favor"};
       merge([
         {fecha:"2026-01-29", tipo:"Ordinario", votaciones:[
-          {punto:"1", asunto:"Aprobación definitiva del Presupuesto Municipal 2026", favor:13, contra:12, abst:0, partidos:{PSC:"favor", COMUNS:"favor", ERC:"contra", PP:"contra", VOX:"contra"}},
-          {punto:"2", asunto:"Plan de Sostenibilidad Urbana y Zonas Verdes", favor:18, contra:3, abst:4, partidos:{PSC:"favor", ERC:"favor", COMUNS:"favor", PP:"abst", VOX:"contra"}}
+          {punto:"1", asunto:"Aprobación del Presupuesto General Municipal 2026", favor:13, contra:12, abst:0, partidos:{PSC:"favor", COMUNS:"favor", ERC:"contra", PP:"contra", VOX:"contra"}},
+          {punto:"2", asunto:"Plan Local de Movilidad Sostenible y Zonas de Bajas Emisiones", favor:18, contra:3, abst:4, partidos:{PSC:"favor", ERC:"favor", COMUNS:"favor", PP:"abst", VOX:"contra"}}
         ]},
         {fecha:"2026-02-12", tipo:"VIQUAL", votaciones:[
-          {punto:"1", asunto:"Estado de cuentas anuales de la empresa pública VIQUAL", favor:17, contra:8, abst:0, partidos:P}
+          {punto:"1", asunto:"Aprobación de la liquidación anual de la empresa pública VIQUAL", favor:17, contra:8, abst:0, partidos:P}
         ]}
       ]);
       var g=G.filter(function(x){return x.id=="2023-2027"})[0];
       if(g && !g.grupos.length){
         g.grupos=[
-          {partido:"PSC", concejales:12, representantes:["Grupo Mayoritario"]},
-          {partido:"ERC", concejales:5, representantes:["Oposición"]},
-          {partido:"PP", concejales:4, representantes:["Oposición"]},
-          {partido:"VOX", concejales:3, representantes:["Oposición"]},
-          {partido:"COMUNS", concejales:1, representantes:["Socio de gobierno"]}
+          {partido:"PSC", concejales:12, representantes:["Grupo del Alcalde / Equipo Gobierno"]},
+          {partido:"ERC", concejales:5, representantes:["Principal Grupo de la Oposición"]},
+          {partido:"PP", concejales:4, representantes:["Grupo Municipal Popular"]},
+          {partido:"VOX", concejales:3, representantes:["Grupo Municipal VOX"]},
+          {partido:"COMUNS", concejales:1, representantes:["Socio de Gobierno"]}
         ];
         sv(); render();
       }
@@ -832,6 +1182,7 @@
     bootSupabase();
   </script>
 
+  <!-- Service Worker Registration -->
   <script>
     if("serviceWorker" in navigator){
       window.addEventListener("load", function(){
