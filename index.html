@@ -16,92 +16,55 @@
   
   <style>
     :root {
-      --bg: #0f172a;
-      --sf: #1e293b;
-      --sf-sub: #334155;
-      --fg: #f8fafc;
-      --mut: #94a3b8;
-      --bd: #334155;
-      --ac: #38bdf8;
-      --ac-dark: #0284c7;
-      --ok: #10b981;
-      --ko: #ef4444;
-      --ab: #f59e0b;
-      --hd: #020617;
+      --bg: #0f172a; --sf: #1e293b; --sf-sub: #334155; --fg: #f8fafc; --mut: #94a3b8; --bd: #334155;
+      --ac: #38bdf8; --ac-dark: #0284c7; --ok: #10b981; --ko: #ef4444; --ab: #f59e0b; --hd: #020617;
       --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
-
     [data-theme="light"] {
-      --bg: #f8fafc;
-      --sf: #ffffff;
-      --sf-sub: #f1f5f9;
-      --fg: #0f172a;
-      --mut: #64748b;
-      --bd: #e2e8f0;
-      --ac: #0284c7;
-      --ac-dark: #0369a1;
-      --ok: #059669;
-      --ko: #dc2626;
-      --ab: #d97706;
-      --hd: #0f172a;
+      --bg: #f8fafc; --sf: #ffffff; --sf-sub: #f1f5f9; --fg: #0f172a; --mut: #64748b; --bd: #e2e8f0;
+      --ac: #0284c7; --ac-dark: #0369a1; --ok: #059669; --ko: #dc2626; --ab: #d97706; --hd: #0f172a;
       --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
     }
-
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { background: var(--bg); color: var(--fg); line-height: 1.5; min-height: 100vh; }
-    
     header { background: var(--hd); color: #fff; padding: 24px 20px 0; border-bottom: 1px solid var(--bd); }
     .in { max-width: 1200px; margin: 0 auto; }
     .brand { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px; }
     h1 { font-family: 'Newsreader', Georgia, serif; font-size: 26px; font-weight: 600; letter-spacing: -0.02em; }
     .sub { color: var(--mut); font-size: 13px; font-weight: 400; margin-top: 2px; }
-    
     .theme-toggle { background: var(--sf); border: 1px solid var(--bd); color: var(--fg); padding: 6px 12px; border-radius: 20px; font-size: 12px; cursor: pointer; }
-
     .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 20px; }
-    .kpi-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 12px 16px; backdrop-filter: blur(8px); }
+    .kpi-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 12px 16px; }
     [data-theme="light"] .kpi-card { background: rgba(0,0,0,0.02); border-color: rgba(0,0,0,0.06); }
     .kpi-card b { display: block; font-size: 24px; font-weight: 700; font-family: 'Newsreader', serif; }
     .kpi-card span { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--mut); font-weight: 600; }
-
-    nav { display: flex; gap: 4px; border-bottom: 1px solid transparent; overflow-x: auto; }
-    nav button { background: none; border: 0; color: var(--mut); padding: 12px 18px; font: inherit; font-weight: 600; font-size: 14px; cursor: pointer; border-bottom: 3px solid transparent; white-space: nowrap; transition: all 0.2s; }
+    nav { display: flex; gap: 4px; overflow-x: auto; }
+    nav button { background: none; border: 0; color: var(--mut); padding: 12px 18px; font: inherit; font-weight: 600; font-size: 14px; cursor: pointer; border-bottom: 3px solid transparent; white-space: nowrap; }
     nav button:hover { color: var(--fg); }
     nav button.on { color: var(--ac); border-color: var(--ac); }
-
     main { max-width: 1200px; margin: 0 auto; padding: 24px 20px; }
-
     .filter-bar { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin-bottom: 20px; background: var(--sf); padding: 14px 16px; border-radius: 12px; border: 1px solid var(--bd); box-shadow: var(--card-shadow); }
     .chips { display: flex; gap: 6px; flex-wrap: wrap; }
-    .chips button { border-radius: 20px; padding: 5px 14px; font-size: 12px; font-weight: 500; border: 1px solid var(--bd); background: var(--bg); cursor: pointer; transition: all 0.2s; }
+    .chips button { border-radius: 20px; padding: 5px 14px; font-size: 12px; font-weight: 500; border: 1px solid var(--bd); background: var(--bg); cursor: pointer; }
     .chips button.sel { background: var(--ac); color: #fff; border-color: var(--ac); }
-
     .card { background: var(--sf); border: 1px solid var(--bd); border-radius: 14px; margin-bottom: 20px; overflow: hidden; box-shadow: var(--card-shadow); }
     .ch { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; padding: 16px 20px; border-bottom: 1px solid var(--bd); background: var(--sf-sub); }
     .ch h2 { font-size: 16px; font-weight: 600; }
-    
     .table-w { overflow-x: auto; }
     table { border-collapse: collapse; width: 100%; min-width: 720px; font-size: 13px; }
     th { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--mut); text-align: left; padding: 10px 16px; background: var(--bg); font-weight: 600; border-bottom: 1px solid var(--bd); }
     td { padding: 12px 16px; border-top: 1px solid var(--bd); vertical-align: middle; }
-    
     .tag { display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 10px; border-radius: 12px; border: 1px solid currentColor; white-space: nowrap; }
     .tag.ok { color: var(--ok); background: rgba(16, 185, 129, 0.1); }
     .tag.ko { color: var(--ko); background: rgba(239, 68, 68, 0.1); }
     .tag.c { color: var(--ac); background: rgba(56, 189, 248, 0.1); }
-
     .hemicycle-container { text-align: center; padding: 24px; position: relative; }
     .hemicycle { display: inline-flex; justify-content: center; align-items: flex-end; width: 320px; height: 170px; position: relative; margin: 0 auto; }
-    .seat { width: 14px; height: 14px; border-radius: 50%; position: absolute; transition: transform 0.2s, box-shadow 0.2s; cursor: pointer; border: 2px solid var(--sf); }
-    .seat:hover { transform: scale(1.4); z-index: 10; box-shadow: 0 0 10px rgba(255,255,255,0.5); }
-
+    .seat { width: 14px; height: 14px; border-radius: 50%; position: absolute; border: 2px solid var(--sf); }
     .vote-bar { display: flex; height: 10px; border-radius: 6px; overflow: hidden; background: var(--bd); min-width: 140px; }
     .vote-bar i { display: block; height: 100%; }
-    .bg-ok { background: var(--ok); }
-    .bg-ko { background: var(--ko); }
-    .bg-ab { background: var(--ab); }
-
+    .bg-ok { background: var(--ok); } .bg-ko { background: var(--ko); } .bg-ab { background: var(--ab); }
     input, select, textarea, button { font: inherit; color: var(--fg); background: var(--sf); border: 1px solid var(--bd); border-radius: 8px; padding: 8px 12px; }
     button.p { background: var(--ac); color: #fff; border-color: var(--ac); font-weight: 600; }
     button.p:hover { background: var(--ac-dark); }
@@ -121,9 +84,7 @@
         </div>
         <button class="theme-toggle" onclick="toggleTheme()">🌓 Cambiar tema</button>
       </div>
-      
       <div class="kpi-grid" id="kp"></div>
-      
       <nav>
         <button id="t-plenos" onclick="show('plenos')">📋 Sesiones y Votaciones</button>
         <button id="t-partidos" onclick="show('partidos')">📊 Análisis de Partidos</button>
@@ -135,28 +96,15 @@
 
   <main>
     <div id="fb" class="filter-bar"></div>
-
     <section id="v-plenos">
-      <div class="r" style="padding: 0 0 16px 0;">
-        <input id="sq" class="x" placeholder="🔍 Buscar por asunto, moción o partido político..." oninput="rp()">
-      </div>
+      <div class="r" style="padding: 0 0 16px 0;"><input id="sq" class="x" placeholder="🔍 Buscar por asunto, moción o partido político..." oninput="rp()"></div>
       <div id="pl"></div>
     </section>
-
-    <section id="v-partidos" hidden>
-      <div id="pa"></div>
-    </section>
-
-    <section id="v-consistorio" hidden>
-      <div id="co"></div>
-    </section>
-
+    <section id="v-partidos" hidden><div id="pa"></div></section>
+    <section id="v-consistorio" hidden><div id="co"></div></section>
     <section id="v-datos" hidden>
       <div class="card" id="authCard">
-        <div class="ch">
-          <h2>Administración de Datos</h2>
-          <small id="authState" class="tag c">Consulta pública</small>
-        </div>
+        <div class="ch"><h2>Administración de Datos</h2><small id="authState" class="tag c">Consulta pública</small></div>
         <p style="padding:12px 20px; color:var(--mut);" id="sts">Conectando con Supabase...</p>
         <div id="loginBox" style="padding: 0 20px 20px;">
           <form class="r" style="padding:0;" onsubmit="login(event)">
@@ -165,12 +113,8 @@
             <button class="p" type="submit">Acceder</button>
           </form>
         </div>
-        <div id="sessionBox" hidden class="r">
-          <span id="signedAs" class="x"></span>
-          <button onclick="logout()">Cerrar sesión</button>
-        </div>
+        <div id="sessionBox" hidden class="r"><span id="signedAs" class="x"></span><button onclick="logout()">Cerrar sesión</button></div>
       </div>
-
       <div id="adminEditor" hidden>
         <div class="card">
           <div class="ch"><h2>Añadir Sesión</h2></div>
@@ -181,7 +125,6 @@
             <button class="p" onclick="addP()">Añadir Sesión</button>
           </div>
         </div>
-
         <div class="card">
           <div class="ch"><h2>Añadir Votación</h2></div>
           <div class="r">
@@ -195,7 +138,6 @@
             <button class="p" onclick="addV()">Registrar Votación</button>
           </div>
         </div>
-
         <div class="card">
           <div class="ch"><h2>Grupos Municipales por Legislatura</h2></div>
           <div class="r">
@@ -206,10 +148,8 @@
             <button class="p" onclick="addG()">Guardar Grupo</button>
           </div>
         </div>
-
         <div class="card">
-          <div class="ch"><h2>Importar / Exportar JSON</h2></div>
-          <br>
+          <div class="ch"><h2>Importar / Exportar JSON</h2></div><br>
           <textarea id="ij" placeholder="Pega aquí tu JSON..."></textarea>
           <div class="r">
             <input type="file" id="if" accept=".json">
@@ -228,156 +168,107 @@
   <script>
     var K="plenos-viladecans", K2="leg-viladecans", LG="", TP="", PS="", PK=[], tab="plenos";
     var L={favor:"A favor", contra:"En contra", abst:"Abstención"}, CL={favor:"ok", contra:"ko", abst:"ab"}, CT=["Ordinario","Extraordinario","VIQUAL","VIMED"];
-    
-    var PARTY_COLORS = {
-      "PSC": "#e11d48", "ERC": "#f59e0b", "PP": "#0284c7", "VOX": "#16a34a", 
-      "Cs": "#eb5e28", "PODEMOS": "#9333ea", "COMUNS": "#a855f7", "JUNTS": "#06b6d4"
-    };
-
+    var PARTY_COLORS = { "PSC": "#e11d48", "ERC": "#f59e0b", "PP": "#0284c7", "VOX": "#16a34a", "CS": "#eb5e28", "PODEMOS": "#9333ea", "COMUNS": "#a855f7", "JUNTS": "#06b6d4" };
     var DEF=[["2011-2015","2011-06-11","2015-06-12"],["2015-2019","2015-06-13","2019-06-14"],["2019-2023","2019-06-15","2023-06-16"],["2023-2027","2023-06-17","2027-06-30"]];
     function ld(k,d){try{return JSON.parse(localStorage.getItem(k)||"null")||d}catch(e){return d}}
-    
     var D=ld(K,[]), G=ld(K2,[]), IS_ADMIN=false, CURRENT_USER=null, SUPA=null, SAVING=false;
     DEF.forEach(function(d){if(!G.some(function(g){return g.id==d[0]}))G.push({id:d[0],nombre:"Legislatura "+d[0],inicio:d[1],fin:d[2],grupos:[]})});
 
-    function toggleTheme(){
-      var b = document.body;
-      var cur = b.getAttribute('data-theme');
-      b.setAttribute('data-theme', cur === 'light' ? 'dark' : 'light');
-    }
-
+    function toggleTheme(){var b=document.body,cur=b.getAttribute('data-theme');b.setAttribute('data-theme',cur==='light'?'dark':'light');}
     function st(t){var e=document.getElementById("sts");if(e)e.textContent=t}
-    function sv(){try{localStorage.setItem(K,JSON.stringify(D));localStorage.setItem(K2,JSON.stringify(G))}catch(e){};if(!IS_ADMIN||!SUPA){st("Modo local: Inicia sesión como administrador para publicar en la nube.");return}saveCloud()}
-    
-    async function saveCloud(){if(SAVING)return;SAVING=true;st("Sincronizando cambios con Supabase...");var r=await SUPA.from("observatorio_data").update({plenos:D,legislaturas:G,updated_at:new Date().toISOString()}).eq("id",1);SAVING=false;if(r.error){st("Error al guardar: "+r.error.message);return}st("✓ Cambios guardados y publicados correctamente.")}
-    async function loadCloud(showStatus){if(!SUPA)return;var r=await SUPA.from("observatorio_data").select("plenos,legislaturas,updated_at").eq("id",1).single();if(r.error){st("No se pudieron cargar los datos de Supabase. "+r.error.message);return}D=r.data.plenos||[];G=r.data.legislaturas||[];DEF.forEach(function(d){if(!G.some(function(g){return g.id==d[0]}))G.push({id:d[0],nombre:"Legislatura "+d[0],inicio:d[1],fin:d[2],grupos:[]})});try{localStorage.setItem(K,JSON.stringify(D));localStorage.setItem(K2,JSON.stringify(G))}catch(e){};render();if(showStatus!==false)st("Sincronizado · Última actualización: "+(r.data.updated_at?new Date(r.data.updated_at).toLocaleString("es-ES"):"reciente"))}
-    
+    function sv(){try{localStorage.setItem(K,JSON.stringify(D));localStorage.setItem(K2,JSON.stringify(G))}catch(e){};if(!IS_ADMIN||!SUPA){st("Modo local: Inicia sesión como administrador.");return}saveCloud()}
+    async function saveCloud(){if(SAVING)return;SAVING=true;st("Sincronizando con Supabase...");var r=await SUPA.from("observatorio_data").update({plenos:D,legislaturas:G,updated_at:new Date().toISOString()}).eq("id",1);SAVING=false;if(r.error){st("Error: "+r.error.message);return}st("✓ Cambios guardados.")}
+    async function loadCloud(showStatus){if(!SUPA)return;var r=await SUPA.from("observatorio_data").select("plenos,legislaturas,updated_at").eq("id",1).single();if(r.error){st("Error al cargar: "+r.error.message);return}D=r.data.plenos||[];G=r.data.legislaturas||[];DEF.forEach(function(d){if(!G.some(function(g){return g.id==d[0]}))G.push({id:d[0],nombre:"Legislatura "+d[0],inicio:d[1],fin:d[2],grupos:[]})});try{localStorage.setItem(K,JSON.stringify(D));localStorage.setItem(K2,JSON.stringify(G))}catch(e){};render();if(showStatus!==false)st("Sincronizado correctamente.")}
     async function refreshAuth(session){CURRENT_USER=session&&session.user?session.user:null;IS_ADMIN=false;if(CURRENT_USER){var a=await SUPA.from("observatorio_admins").select("user_id").eq("user_id",CURRENT_USER.id).maybeSingle();IS_ADMIN=!!(a.data&&!a.error)}document.getElementById("loginBox").hidden=!!CURRENT_USER&&IS_ADMIN;document.getElementById("sessionBox").hidden=!CURRENT_USER;document.getElementById("adminEditor").hidden=!IS_ADMIN;document.getElementById("authState").textContent=IS_ADMIN?"Administrador Autenticado":"Consulta Pública";document.getElementById("signedAs").textContent=CURRENT_USER?CURRENT_USER.email:"";render()}
-    
     async function login(e){e.preventDefault();var email=document.getElementById("adminEmail").value,password=document.getElementById("adminPassword").value;st("Autenticando...");var r=await SUPA.auth.signInWithPassword({email:email,password:password});if(r.error){st("Error: "+r.error.message);return}document.getElementById("adminPassword").value="";await refreshAuth(r.data.session);if(!IS_ADMIN){await SUPA.auth.signOut();await refreshAuth(null)}}
     async function logout(){await SUPA.auth.signOut();await refreshAuth(null)}
-
-    function bootSupabase(){if(!window.supabase||!window.OBS_CONFIG||!OBS_CONFIG.url||!OBS_CONFIG.anonKey||OBS_CONFIG.anonKey.indexOf("PEGA_AQUI")===0){st("Atención: Configura js/config.js con tu clave anon de Supabase.");return}SUPA=window.supabase.createClient(OBS_CONFIG.url,OBS_CONFIG.anonKey);SUPA.auth.getSession().then(function(r){refreshAuth(r.data.session);loadCloud()});SUPA.auth.onAuthStateChange(function(ev,session){setTimeout(function(){refreshAuth(session)},0)});SUPA.channel("observatorio-live").on("postgres_changes",{event:"UPDATE",schema:"public",table:"observatorio_data",filter:"id=eq.1"},function(){if(!SAVING)loadCloud(false)}).subscribe()}
+    function bootSupabase(){if(!window.supabase||!window.OBS_CONFIG||!OBS_CONFIG.url||!OBS_CONFIG.anonKey||OBS_CONFIG.anonKey.indexOf("PEGA_AQUI")===0){st("Falta configurar js/config.js");return}SUPA=window.supabase.createClient(OBS_CONFIG.url,OBS_CONFIG.anonKey);SUPA.auth.getSession().then(function(r){refreshAuth(r.data.session);loadCloud()});SUPA.auth.onAuthStateChange(function(ev,session){setTimeout(function(){refreshAuth(session)},0)});SUPA.channel("observatorio-live").on("postgres_changes",{event:"UPDATE",schema:"public",table:"observatorio_data",filter:"id=eq.1"},function(){if(!SAVING)loadCloud(false)}).subscribe()}
 
     function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
     function res(v){if(v.resultado)return v.resultado;return (+v.favor||0)>(+v.contra||0)?"Aprobado":"Rechazado"}
     function fd(s){var p=s.split("-");return p.length==3?p[2]+"/"+p[1]+"/"+p[0]:s}
     function cat(p){var t=(p.tipo||"").toLowerCase();return t.indexOf("viqual")>-1?"VIQUAL":t.indexOf("vimed")>-1?"VIMED":t.indexOf("extra")>-1?"Extraordinario":"Ordinario"}
     function legOf(f){var g=G.filter(function(x){return f>=x.inicio&&f<=x.fin})[0];return g?g.id:""}
-    function col(n){return PARTY_COLORS[(n||"").toUpperCase()] || "#64748b"}
-
+    function col(n){return PARTY_COLORS[(n||"").toUpperCase().trim()] || "#64748b"}
     function nv(x){var s=String(x).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim();if(/^(si|s$|f|a favor)/.test(s))return"favor";if(/^(n|c|en contra)/.test(s))return"contra";if(/^(ab|a$)/.test(s))return"abst";return""}
     function pq(t){var o={};String(t||"").split(",").forEach(function(x){var a=x.split(":");if(a.length>1&&a[0].trim()&&nv(a[1]))o[a[0].trim()]=nv(a[1])});return o}
     function pts(v){var p=v.partidos;if(!p)return"";var g={favor:[],contra:[],abst:[]};Object.keys(p).forEach(function(k){var s=nv(p[k]);if(g[s])g[s].push(k)});return["favor","contra","abst"].filter(function(s){return g[s].length}).map(function(s){return'<b class="'+CL[s]+'">'+L[s]+':</b> '+g[s].map(esc).join(", ")}).join("<br>")}
     function fp(){return D.filter(function(p){return(!LG||legOf(p.fecha)==LG)&&(!TP||cat(p)==TP)})}
-    
     function stats(){var m={};fp().forEach(function(p){(p.votaciones||[]).forEach(function(v){var q=v.partidos||{};Object.keys(q).forEach(function(k){var s=nv(q[k]);if(!s)return;var e=m[k]||(m[k]={favor:[],contra:[],abst:[]});e[s].push({f:p.fecha,c:cat(p),n:v.punto,a:v.asunto,r:res(v)})})})});return m}
     function tot(e){return e.favor.length+e.contra.length+e.abst.length}
     function pc(n,t){return t?Math.round(n*100/t):0}
-
     function show(t){tab=t;["plenos","partidos","consistorio","datos"].forEach(function(x){document.getElementById("v-"+x).hidden=x!=t;document.getElementById("t-"+x).className=x==t?"on":""});document.getElementById("fb").hidden=(t=="datos"||t=="consistorio");render()}
     function setL(v){LG=v;render()}function setT(v){TP=v;render()}
-
     function rf(){var h='<select onchange="setL(this.value)"><option value="">Todas las legislaturas</option>'+G.slice().sort(function(a,b){return b.id.localeCompare(a.id)}).map(function(g){return'<option value="'+esc(g.id)+'"'+(g.id==LG?" selected":"")+">"+esc(g.nombre)+"</option>"}).join("")+"</select>";
       h+='<div class="chips">'+[""].concat(CT).map(function(c){var n=D.filter(function(p){return(!LG||legOf(p.fecha)==LG)&&(!c||cat(p)==c)}).length;return'<button class="'+(TP==c?"sel":"")+'" onclick="setT(\''+c+'\')">'+(c||"Todos los plenos")+" ("+n+")</button>"}).join("")+"</div>";document.getElementById("fb").innerHTML=h}
-    
     function rk(){var f=fp(),n=0,unanimidad=0;f.forEach(function(p){(p.votaciones||[]).forEach(function(v){n++;if((+v.contra||0)===0&&(+v.abst||0)===0)unanimidad++})});
-      var pctUnanimidad = n? Math.round((unanimidad*100)/n) : 0;
-      document.getElementById("kp").innerHTML=[
-        [f.length,"Sesiones"],
-        [n,"Votaciones"],
-        [pctUnanimidad+"%","Consenso / Unanimidad"],
-        [LG||"Todas","Legislatura Activa"]
-      ].map(function(x){return'<div class="kpi-card"><b>'+esc(x[0])+'</b><span>'+x[1]+'</span></div>'}).join("")}
-
+      var pctUnanimidad=n?Math.round((unanimidad*100)/n):0;
+      document.getElementById("kp").innerHTML=[[f.length,"Sesiones"],[n,"Votaciones"],[pctUnanimidad+"%","Consenso"],[LG||"Todas","Legislatura"]].map(function(x){return'<div class="kpi-card"><b>'+esc(x[0])+'</b><span>'+x[1]+'</span></div>'}).join("")}
     function rp(){var q=document.getElementById("sq").value.toLowerCase().trim(),h="";
       fp().forEach(function(p){var i=D.indexOf(p),vs=(p.votaciones||[]).map(function(v,j){return{v:v,j:j}}).filter(function(o){return!q||(o.v.asunto||"").toLowerCase().indexOf(q)>-1||Object.keys(o.v.partidos||{}).join(" ").toLowerCase().indexOf(q)>-1});
         if(q&&!vs.length)return;
         var rows=vs.map(function(o){var v=o.v,r=res(v),k=/aprob/i.test(r)?"ok":"ko";
-          var totalVotos = (+v.favor||0) + (+v.contra||0) + (+v.abst||0);
-          var pFavor = pc(v.favor, totalVotos), pContra = pc(v.contra, totalVotos), pAbst = pc(v.abst, totalVotos);
-          return"<tr><td><b>Punto "+esc(v.punto)+'</b></td><td>'+esc(v.asunto)+'</td><td><div class="vote-bar"><i class="bg-ok" style="width:'+pFavor+'%"></i><i class="bg-ko" style="width:'+pContra+'%"></i><i class="bg-ab" style="width:'+pAbst+'%"></i></div><small style="color:var(--mut)">'+v.favor+' Sí / '+v.contra+' No / '+v.abst+' Abs.</small></td><td><span class="tag '+k+'">'+esc(r)+'</span></td><td style="font-size:12px">'+pts(v)+'</td><td>'+(IS_ADMIN?'<button onclick="dv('+i+","+o.j+')">✕</button>':'')+'</td></tr>'}).join("");
-        h+='<div class="card"><div class="ch"><h2>🗓️ '+esc(fd(p.fecha))+' <span class="tag c">'+cat(p)+"</span> <small style="color:var(--mut)">· "+legOf(p.fecha)+" · "+(p.votaciones||[]).length+' votaciones</small></h2><span>'+(p.url?'<a href="'+esc(p.url)+'" target="_blank" rel="noopener" style="color:var(--ac);font-size:13px;font-weight:600">📄 Ver Acta Oficial</a> ':"")+(IS_ADMIN?'<button onclick="dp('+i+')" style="color:var(--ko)">Eliminar Sesión</button>':'')+'</span></div><div class="table-w"><table><tr><th>Nº</th><th>Asunto / Moción</th><th>Distribución de Voto</th><th>Resultado</th><th>Voto por Grupo Municipal</th><th></th></tr>'+(rows||'<tr><td colspan="6" class="e">No hay votaciones registradas en esta sesión.</td></tr>')+"</table></div></div>"});
-      document.getElementById("pl").innerHTML=h||'<div class="card"><div class="e">No se encontraron sesiones con el filtro seleccionado.</div></div>'}
-
+          var totalVotos=(+v.favor||0)+(+v.contra||0)+(+v.abst||0);
+          return"<tr><td><b>Punto "+esc(v.punto)+'</b></td><td>'+esc(v.asunto)+'</td><td><div class="vote-bar"><i class="bg-ok" style="width:'+pc(v.favor,totalVotos)+'%"></i><i class="bg-ko" style="width:'+pc(v.contra,totalVotos)+'%"></i><i class="bg-ab" style="width:'+pc(v.abst,totalVotos)+'%"></i></div><small style="color:var(--mut)">'+v.favor+' Sí / '+v.contra+' No / '+v.abst+' Abs.</small></td><td><span class="tag '+k+'">'+esc(r)+'</span></td><td style="font-size:12px">'+pts(v)+'</td><td>'+(IS_ADMIN?'<button onclick="dv('+i+","+o.j+')">✕</button>':'')+'</td></tr>'}).join("");
+        h+='<div class="card"><div class="ch"><h2>🗓️ '+esc(fd(p.fecha))+' <span class="tag c">'+cat(p)+"</span> <small style="color:var(--mut)">· "+legOf(p.fecha)+" · "+(p.votaciones||[]).length+' votaciones</small></h2><span>'+(p.url?'<a href="'+esc(p.url)+'" target="_blank" rel="noopener" style="color:var(--ac);font-size:13px;font-weight:600">📄 Ver Acta</a> ':"")+(IS_ADMIN?'<button onclick="dp('+i+')" style="color:var(--ko)">Eliminar</button>':'')+'</span></div><div class="table-w"><table><tr><th>Nº</th><th>Asunto</th><th>Votos</th><th>Resultado</th><th>Grupos</th><th></th></tr>'+(rows||'<tr><td colspan="6" class="e">Sin votaciones</td></tr>')+"</table></div></div>"});
+      document.getElementById("pl").innerHTML=h||'<div class="card"><div class="e">No hay sesiones con estos filtros.</div></div>'}
     function rt(){var m=stats();PK=Object.keys(m).sort(function(a,b){return tot(m[b])-tot(m[a])||a.localeCompare(b)});
-      if(!PK.length){document.getElementById("pa").innerHTML='<div class="card"><div class="e">Sin datos de voto por partido.</div></div>';return}
+      if(!PK.length){document.getElementById("pa").innerHTML='<div class="card"><div class="e">Sin datos de partidos.</div></div>';return}
       if(PS&&!m[PS])PS="";
-      var h='<div class="card"><div class="ch"><h2>Análisis por Grupo Municipal</h2><select onchange="PS=this.value;rt()"><option value="">Selecciona un partido para analizar...</option>'+PK.map(function(k){return'<option'+(k==PS?" selected":"")+">"+esc(k)+"</option>"}).join("")+"</select></div>";
+      var h='<div class="card"><div class="ch"><h2>Análisis por Grupo</h2><select onchange="PS=this.value;rt()"><option value="">Selecciona un partido...</option>'+PK.map(function(k){return'<option'+(k==PS?" selected":"")+">"+esc(k)+"</option>"}).join("")+"</select></div>";
       if(PS){var e=m[PS],t=tot(e);h+='<div class="r">'+["favor","contra","abst"].map(function(s){
         return'<div style="flex:1;min-width:260px;background:var(--bg);padding:14px;border-radius:10px;border:1px solid var(--bd)"><h3 class="'+CL[s]+'" style="font-size:14px;margin-bottom:8px">'+L[s]+" · "+e[s].length+" ("+pc(e[s].length,t)+"%)</h3>"+(e[s].length?e[s].slice().sort(function(a,b){return b.f.localeCompare(a.f)}).map(function(x){return'<div style="padding:6px 0;border-top:1px solid var(--bd);font-size:12px"><small style="color:var(--mut)">'+esc(fd(x.f))+" · "+x.c+'</small><br>'+esc(x.a)+' <span class="tag '+(/aprob/i.test(x.r)?"ok":"ko")+'">'+esc(x.r)+"</span></div>"}).join(""):'<div class="e">Sin registros</div>')+"</div>"}).join("")+"</div>"}
-      h+='</div><div class="card"><div class="ch"><h2>Resumen General de Posicionamiento</h2></div><div class="table-w"><table><tr><th>Grupo Municipal</th><th>Votaciones Totales</th><th>A Favor</th><th>En Contra</th><th>Abstención</th><th>Perfil de Voto</th></tr>';
-      PK.forEach(function(k,i){var e=m[k],t=tot(e);h+='<tr style="cursor:pointer" onclick="PS=PK['+i+'];rt()"><td><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:'+col(k)+';margin-right:6px"></span><b>'+esc(k)+'</b></td><td>'+t+'</td><td><b class="ok">'+e.favor.length+'</b> <small>('+pc(e.favor.length,t)+'%)</small></td><td><b class="ko">'+e.contra.length+'</b> <small>('+pc(e.contra.length,t)+'%)</small></td><td><b class="ab">'+e.abst.length+'</b> <small>('+pc(e.abst.length,t)+'%)</small></td><td><div class="vote-bar"><i class="bg-ok" style="width:'+pc(e.favor.length,t)+'%"></i><i class="bg-ko" style="width:'+pc(e.contra.length,t)+'%"></i><i class="bg-ab" style="width:'+pc(e.abst.length,t)+'%"></i></div></td></tr>'});
+      h+='</div><div class="card"><div class="ch"><h2>Resumen General</h2></div><div class="table-w"><table><tr><th>Grupo</th><th>Total</th><th>A Favor</th><th>En Contra</th><th>Abstención</th><th>Distribución</th></tr>';
+      PK.forEach(function(k,i){var e=m[k],t=tot(e);h+='<tr style="cursor:pointer" onclick="PS=PK['+i+'];rt()"><td><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:'+col(k)+';margin-right:6px"></span><b>'+esc(k)+'</b></td><td>'+t+'</td><td><b class="ok">'+e.favor.length+'</b></td><td><b class="ko">'+e.contra.length+'</b></td><td><b class="ab">'+e.abst.length+'</b></td><td><div class="vote-bar"><i class="bg-ok" style="width:'+pc(e.favor.length,t)+'%"></i><i class="bg-ko" style="width:'+pc(e.contra.length,t)+'%"></i><i class="bg-ab" style="width:'+pc(e.abst.length,t)+'%"></i></div></td></tr>'});
       document.getElementById("pa").innerHTML=h+"</table></div></div>"}
-
     function drawHemicycle(g){
-      var groups = g.grupos || [];
-      var seatsData = [];
-      groups.forEach(function(grp){
-        for(var i=0; i<(+grp.concejales||0); i++){
-          seatsData.push({partido: grp.partido, color: col(grp.partido)});
-        }
+      var groups=g.grupos||[],seatsData=[];
+      groups.forEach(function(grp){for(var i=0;i<(+grp.concejales||0);i++)seatsData.push({partido:grp.partido,color:col(grp.partido)});});
+      var totalSeats=seatsData.length;if(!totalSeats)return'<div class="e">Composición no definida.</div>';
+      var html='<div class="hemicycle-container"><div class="hemicycle">';
+      var radius=130,cx=160,cy=150;
+      seatsData.forEach(function(st,idx){
+        var angle=Math.PI+(idx/Math.max(1,totalSeats-1))*Math.PI;
+        var x=cx+radius*Math.cos(angle)-7,y=cy+radius*Math.sin(angle)-7;
+        html+='<div class="seat" style="left:'+x+'px; top:'+y+'px; background:'+st.color+'" title="'+esc(st.partido)+'"></div>';
       });
-      
-      var totalSeats = seatsData.length;
-      if(!totalSeats) return '<div class="e">Composición del Pleno no configurada para esta legislatura.</div>';
-
-      var html = '<div class="hemicycle-container"><div class="hemicycle">';
-      var radius = 130;
-      var cx = 160, cy = 150;
-      
-      seatsData.forEach(function(st, idx){
-        var angle = Math.PI + (idx / Math.max(1, totalSeats - 1)) * Math.PI;
-        var x = cx + radius * Math.cos(angle) - 7;
-        var y = cy + radius * Math.sin(angle) - 7;
-        html += '<div class="seat" style="left:'+x+'px; top:'+y+'px; background:'+st.color+'" title="'+esc(st.partido)+'"></div>';
-      });
-      
-      html += '</div><div style="margin-top:12px;font-size:12px;color:var(--mut)"><b>'+totalSeats+' Concejales</b> constituidos en el Hemiciclo</div></div>';
+      html+='</div><div style="margin-top:12px;font-size:12px;color:var(--mut)"><b>'+totalSeats+' Concejales</b></div></div>';
       return html;
     }
-
     function rc(){var h="";
       if(!LG){h='<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px">'+G.slice().sort(function(a,b){return b.id.localeCompare(a.id)}).map(function(g){var n=D.filter(function(p){return legOf(p.fecha)==g.id}).length;
-        return'<div class="card"><div class="ch"><h2>'+esc(g.nombre)+'</h2></div>'+drawHemicycle(g)+'<div style="padding:16px;border-top:1px solid var(--bd)"><small style="color:var(--mut)">'+esc(fd(g.inicio))+" – "+esc(fd(g.fin))+" · "+n+' sesiones registradas</small><br><br><button class="p" style="width:100%" onclick="setL(\''+g.id+'\');show(\'plenos\')">Explorar Plenos de esta Legislatura</button></div></div>'}).join("")+"</div>"}
+        return'<div class="card"><div class="ch"><h2>'+esc(g.nombre)+'</h2></div>'+drawHemicycle(g)+'<div style="padding:16px;border-top:1px solid var(--bd)"><small style="color:var(--mut)">'+esc(fd(g.inicio))+" – "+esc(fd(g.fin))+" · "+n+' sesiones</small><br><br><button class="p" style="width:100%" onclick="setL(\''+g.id+'\');show(\'plenos\')">Ver Sesiones</button></div></div>'}).join("")+"</div>"}
       else{var g=G.filter(function(x){return x.id==LG})[0],gi=G.indexOf(g),ps=D.filter(function(p){return legOf(p.fecha)==LG});
-        h='<div class="card"><div class="ch"><h2>'+esc(g.nombre)+" <small>· "+esc(fd(g.inicio))+" – "+esc(fd(g.fin))+'</small></h2><span><button onclick="setL(\'\')">← Volver a todas</button></span></div>'
-        +drawHemicycle(g)+'</div><div class="card"><div class="ch"><h2>Grupos Municipales y Portavoces</h2></div><div class="table-w"><table><tr><th>Grupo Político</th><th>Concejales</th><th>Representantes Corporativos</th><th></th></tr>'
-        +((g.grupos||[]).length?(g.grupos).map(function(x,j){return'<tr><td><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:'+col(x.partido)+';margin-right:8px"></span><b>'+esc(x.partido)+'</b></td><td><b>'+esc(x.concejales)+'</b></td><td>'+(x.representantes||[]).map(esc).join(", ")+'</td><td>'+(IS_ADMIN?'<button onclick="dg('+gi+","+j+')">✕</button>':'')+'</td></tr>'}).join(""):'<tr><td colspan="4" class="e">No hay grupos configurados en esta legislatura.</td></tr>')+"</table></div></div>"}
+        h='<div class="card"><div class="ch"><h2>'+esc(g.nombre)+" <small>· "+esc(fd(g.inicio))+" – "+esc(fd(g.fin))+'</small></h2><span><button onclick="setL(\'\')">← Volver</button></span></div>'
+        +drawHemicycle(g)+'</div><div class="card"><div class="ch"><h2>Grupos y Portavoces</h2></div><div class="table-w"><table><tr><th>Grupo</th><th>Concejales</th><th>Representantes</th><th></th></tr>'
+        +((g.grupos||[]).length?(g.grupos).map(function(x,j){return'<tr><td><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:'+col(x.partido)+';margin-right:8px"></span><b>'+esc(x.partido)+'</b></td><td><b>'+esc(x.concejales)+'</b></td><td>'+(x.representantes||[]).map(esc).join(", ")+'</td><td>'+(IS_ADMIN?'<button onclick="dg('+gi+","+j+')">✕</button>':'')+'</td></tr>'}).join(""):'<tr><td colspan="4" class="e">Sin grupos.</td></tr>')+"</table></div></div>"}
       document.getElementById("co").innerHTML=h}
-
     function render(){D.sort(function(a,b){return b.fecha.localeCompare(a.fecha)});
       document.getElementById("vp").innerHTML=D.map(function(p,i){return'<option value="'+i+'">'+esc(fd(p.fecha))+" · "+cat(p)+"</option>"}).join("");
       document.getElementById("gl").innerHTML=G.map(function(g){return"<option value=\""+esc(g.id)+'">'+esc(g.nombre)+"</option>"}).join("");
       rf();rk();rp();rt();rc()}
-
     function addP(){if(!IS_ADMIN)return;var f=document.getElementById("pf").value,t=document.getElementById("pt").value;if(!f)return;if(!D.some(function(p){return p.fecha==f&&cat(p)==t}))D.push({fecha:f,tipo:t,url:document.getElementById("pu").value,votaciones:[]});sv();render()}
     function addV(){if(!IS_ADMIN)return;var p=D[+document.getElementById("vp").value];if(!p||!document.getElementById("va").value)return;p.votaciones.push({punto:document.getElementById("vn").value,asunto:document.getElementById("va").value,favor:+document.getElementById("vf").value||0,contra:+document.getElementById("vc").value||0,abst:+document.getElementById("vb").value||0,partidos:pq(document.getElementById("vq").value)});["vn","va","vf","vc","vb","vq"].forEach(function(i){document.getElementById(i).value=""});sv();render()}
     function addG(){if(!IS_ADMIN)return;var g=G.filter(function(x){return x.id==document.getElementById("gl").value})[0],n=document.getElementById("gp").value.trim();if(!g||!n)return;g.grupos=(g.grupos||[]).filter(function(x){return x.partido!=n});g.grupos.push({partido:n,concejales:+document.getElementById("gn").value||0,representantes:document.getElementById("gr").value.split(",").map(function(s){return s.trim()}).filter(Boolean)});g.grupos.sort(function(a,b){return b.concejales-a.concejales});["gp","gn","gr"].forEach(function(i){document.getElementById(i).value=""});sv();render()}
     function dg(i,j){if(!IS_ADMIN)return;G[i].grupos.splice(j,1);sv();render()}
     function dv(i,j){if(!IS_ADMIN)return;D[i].votaciones.splice(j,1);sv();render()}
-    function dp(i){if(!IS_ADMIN)return;if(confirm("¿Eliminar esta sesión de pleno por completo?")){D.splice(i,1);sv();render()}}
-
+    function dp(i){if(!IS_ADMIN)return;if(confirm("¿Eliminar sesión?")){D.splice(i,1);sv();render()}}
     function merge(a){if(!IS_ADMIN)return;a.forEach(function(n){if(!n.fecha)return;var p=D.filter(function(x){return x.fecha==n.fecha&&cat(x)==cat(n)})[0];if(!p)D.push({fecha:n.fecha,tipo:n.tipo||"Ordinario",url:n.url||"",votaciones:n.votaciones||[]});else(n.votaciones||[]).forEach(function(v){if(!p.votaciones.some(function(w){return w.punto==v.punto&&w.asunto==v.asunto}))p.votaciones.push(v)})});sv();render()}
-    function imp(){if(!IS_ADMIN)return;try{var a=JSON.parse(document.getElementById("ij").value);if(Array.isArray(a))merge(a);else{(a.legislaturas||[]).forEach(function(n){var g=G.filter(function(x){return x.id==n.id})[0];if(g)Object.assign(g,n);else G.push(Object.assign({nombre:"Legislatura "+n.id,grupos:[]},n))});merge(a.plenos||[])}document.getElementById("ij").value=""}catch(e){alert("El formato JSON no es válido")}}
+    function imp(){if(!IS_ADMIN)return;try{var a=JSON.parse(document.getElementById("ij").value);if(Array.isArray(a))merge(a);else{(a.legislaturas||[]).forEach(function(n){var g=G.filter(function(x){return x.id==n.id})[0];if(g)Object.assign(g,n);else G.push(Object.assign({nombre:"Legislatura "+n.id,grupos:[]},n))});merge(a.plenos||[])}document.getElementById("ij").value=""}catch(e){alert("JSON no válido")}}
     document.getElementById("if").onchange=function(e){var f=e.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(){document.getElementById("ij").value=r.result;imp()};r.readAsText(f)};
     function exp(){document.getElementById("ij").value=JSON.stringify({plenos:D,legislaturas:G},null,2)}
-    function clr(){if(!IS_ADMIN)return;if(confirm("¿Eliminar todos los datos del observatorio?")){D=[];G.forEach(function(g){g.grupos=[]});LG=TP=PS="";sv();render()}}
-
+    function clr(){if(!IS_ADMIN)return;if(confirm("¿Borrar todo?")){D=[];G.forEach(function(g){g.grupos=[]});LG=TP=PS="";sv();render()}}
     function demo(){if(!IS_ADMIN)return;
       merge([
-        {fecha:"2026-01-29",tipo:"Ordinario",votaciones:[{punto:"1",asunto:"Aprobación del acta de la sesión anterior",favor:25,contra:0,abst:0,partidos:{PSC:"favor",ERC:"favor",PP:"favor",Vox:"favor"}},{punto:"2",asunto:"Moción para la mejora del transporte público",favor:16,contra:9,abst:0,partidos:{PSC:"favor",ERC:"favor",PP:"contra",Vox:"contra"}}]},
-        {fecha:"2026-02-12",tipo:"VIQUAL",votaciones:[{punto:"1",asunto:"Aprobación de cuentas de la entidad de vivienda VIQUAL",favor:16,contra:0,abst:9,partidos:{PSC:"favor",ERC:"favor",PP:"abst",Vox:"abst"}}]}
+        {fecha:"2026-01-29",tipo:"Ordinario",votaciones:[{punto:"1",asunto:"Aprobación del acta anterior",favor:25,contra:0,abst:0,partidos:{PSC:"favor",ERC:"favor",PP:"favor",Vox:"favor"}},{punto:"2",asunto:"Moción transporte público",favor:16,contra:9,abst:0,partidos:{PSC:"favor",ERC:"favor",PP:"contra",Vox:"contra"}}]},
+        {fecha:"2026-02-12",tipo:"VIQUAL",votaciones:[{punto:"1",asunto:"Cuentas VIQUAL",favor:16,contra:0,abst:9,partidos:{PSC:"favor",ERC:"favor",PP:"abst",Vox:"abst"}}]}
       ]);
       var g=G.filter(function(x){return x.id=="2023-2027"})[0];
-      if(!g.grupos.length){g.grupos=[{partido:"PSC",concejales:11,representantes:["Olga Morales","Anselmo Sánchez"]},{partido:"ERC",concejales:5,representantes:["Bárbara Lligadas"]},{partido:"PP",concejales:5,representantes:["Fernando Moya"]},{partido:"Vox",concejales:4,representantes:["Ana María de la Cruz"]}];sv();render()}
+      if(!g.grupos.length){g.grupos=[{partido:"PSC",concejales:11,representantes:["Olga Morales","Anselmo Sánchez"]},{partido:"ERC",concejales:5,representantes:["Bárbara Lligadas"]},{partido:"PP",concejales:5,representantes:["Fernando Moya"]},{partido:"VOX",concejales:4,representantes:["Ana María de la Cruz"]}];sv();render()}
     }
-
     show("plenos");
     bootSupabase();
   </script>
-  <script>
-    if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("./sw.js").catch(function(e){console.warn("SW Error",e)})})}
-  </script>
+  <script>if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("./sw.js").catch(function(e){console.warn("SW",e)})})}</script>
 </body>
 </html>
