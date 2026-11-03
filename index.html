@@ -59,7 +59,6 @@
     
     .theme-toggle { background: var(--sf); border: 1px solid var(--bd); color: var(--fg); padding: 6px 12px; border-radius: 20px; font-size: 12px; cursor: pointer; }
 
-    /* KPIs Executive Bar */
     .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 20px; }
     .kpi-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 12px 16px; backdrop-filter: blur(8px); }
     [data-theme="light"] .kpi-card { background: rgba(0,0,0,0.02); border-color: rgba(0,0,0,0.06); }
@@ -92,20 +91,17 @@
     .tag.ko { color: var(--ko); background: rgba(239, 68, 68, 0.1); }
     .tag.c { color: var(--ac); background: rgba(56, 189, 248, 0.1); }
 
-    /* Hemiciclo gráfico */
     .hemicycle-container { text-align: center; padding: 24px; position: relative; }
     .hemicycle { display: inline-flex; justify-content: center; align-items: flex-end; width: 320px; height: 170px; position: relative; margin: 0 auto; }
     .seat { width: 14px; height: 14px; border-radius: 50%; position: absolute; transition: transform 0.2s, box-shadow 0.2s; cursor: pointer; border: 2px solid var(--sf); }
     .seat:hover { transform: scale(1.4); z-index: 10; box-shadow: 0 0 10px rgba(255,255,255,0.5); }
 
-    /* Progress & Vote Bars */
     .vote-bar { display: flex; height: 10px; border-radius: 6px; overflow: hidden; background: var(--bd); min-width: 140px; }
     .vote-bar i { display: block; height: 100%; }
     .bg-ok { background: var(--ok); }
     .bg-ko { background: var(--ko); }
     .bg-ab { background: var(--ab); }
 
-    /* UI Inputs & Buttons */
     input, select, textarea, button { font: inherit; color: var(--fg); background: var(--sf); border: 1px solid var(--bd); border-radius: 8px; padding: 8px 12px; }
     button.p { background: var(--ac); color: #fff; border-color: var(--ac); font-weight: 600; }
     button.p:hover { background: var(--ac-dark); }
@@ -233,10 +229,9 @@
     var K="plenos-viladecans", K2="leg-viladecans", LG="", TP="", PS="", PK=[], tab="plenos";
     var L={favor:"A favor", contra:"En contra", abst:"Abstención"}, CL={favor:"ok", contra:"ko", abst:"ab"}, CT=["Ordinario","Extraordinario","VIQUAL","VIMED"];
     
-    // Mapeo dinámico de colores políticos oficialistas
     var PARTY_COLORS = {
       "PSC": "#e11d48", "ERC": "#f59e0b", "PP": "#0284c7", "VOX": "#16a34a", 
-      "Cs": "#eb5e28", "Podemos": "#9333ea", "Comuns": "#a855f7", "Junts": "#06b6d4"
+      "Cs": "#eb5e28", "PODEMOS": "#9333ea", "COMUNS": "#a855f7", "JUNTS": "#06b6d4"
     };
 
     var DEF=[["2011-2015","2011-06-11","2015-06-12"],["2015-2019","2015-06-13","2019-06-14"],["2019-2023","2019-06-15","2023-06-16"],["2023-2027","2023-06-17","2027-06-30"]];
@@ -269,7 +264,7 @@
     function fd(s){var p=s.split("-");return p.length==3?p[2]+"/"+p[1]+"/"+p[0]:s}
     function cat(p){var t=(p.tipo||"").toLowerCase();return t.indexOf("viqual")>-1?"VIQUAL":t.indexOf("vimed")>-1?"VIMED":t.indexOf("extra")>-1?"Extraordinario":"Ordinario"}
     function legOf(f){var g=G.filter(function(x){return f>=x.inicio&&f<=x.fin})[0];return g?g.id:""}
-    function col(n){return PARTY_COLORS[n] || "#64748b"}
+    function col(n){return PARTY_COLORS[(n||"").toUpperCase()] || "#64748b"}
 
     function nv(x){var s=String(x).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim();if(/^(si|s$|f|a favor)/.test(s))return"favor";if(/^(n|c|en contra)/.test(s))return"contra";if(/^(ab|a$)/.test(s))return"abst";return""}
     function pq(t){var o={};String(t||"").split(",").forEach(function(x){var a=x.split(":");if(a.length>1&&a[0].trim()&&nv(a[1]))o[a[0].trim()]=nv(a[1])});return o}
@@ -315,7 +310,6 @@
       PK.forEach(function(k,i){var e=m[k],t=tot(e);h+='<tr style="cursor:pointer" onclick="PS=PK['+i+'];rt()"><td><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:'+col(k)+';margin-right:6px"></span><b>'+esc(k)+'</b></td><td>'+t+'</td><td><b class="ok">'+e.favor.length+'</b> <small>('+pc(e.favor.length,t)+'%)</small></td><td><b class="ko">'+e.contra.length+'</b> <small>('+pc(e.contra.length,t)+'%)</small></td><td><b class="ab">'+e.abst.length+'</b> <small>('+pc(e.abst.length,t)+'%)</small></td><td><div class="vote-bar"><i class="bg-ok" style="width:'+pc(e.favor.length,t)+'%"></i><i class="bg-ko" style="width:'+pc(e.contra.length,t)+'%"></i><i class="bg-ab" style="width:'+pc(e.abst.length,t)+'%"></i></div></td></tr>'});
       document.getElementById("pa").innerHTML=h+"</table></div></div>"}
 
-    // Hemiciclo semicircular dinámico
     function drawHemicycle(g){
       var groups = g.grupos || [];
       var seatsData = [];
