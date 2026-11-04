@@ -78,7 +78,7 @@ const $=i=>document.getElementById(i);
 var K="plenos-viladecans",K2="leg-viladecans",LG="",TP="",PS="",CG="",PP="favor",tab="resumen",PK=[],ST={m:{},A:{}};
 const TABS=[["resumen","Resumen"],["plenos","Sesiones"],["partidos","Grupos"],["consistorio","Consistorio"]],L={favor:"A favor",contra:"En contra",abst:"Abstención",dv:"Voto dividido",mo:"Mociones presentadas"},S={favor:"Sí",contra:"No",abst:"Abst."},CL={favor:"ok",contra:"ko",abst:"ab"},CT=["Ordinario","Extraordinario","VIQUAL","VIMED"],
 DEF=[["2011-2015","2011-06-11","2015-06-12"],["2015-2019","2015-06-13","2019-06-14"],["2019-2023","2019-06-15","2023-06-16"],["2023-2027","2023-06-17","2027-06-30"]],
-PC={psc:"#c8363f",erc:"#e2a21b",pp:"#2a6db5",vox:"#5b8c2a",junts:"#1fa39c",comuns:"#7b4a9c",cs:"#e8702a",cup:"#c9b81c"},PAL=["#1f5fa8","#8e6e53","#117a8b","#b03a77","#5d6d7e","#d68910","#4a7c1f","#7d3c98"];
+PC={psc:"#c8363f","psc-cp":"#c8363f",erc:"#e2a21b","erc-am":"#e2a21b",pp:"#2a6db5",vox:"#5b8c2a",junts:"#1fa39c",comuns:"#7b4a9c","vecp-c":"#7b4a9c",cs:"#e8702a",cup:"#c9b81c"},PAL=["#1f5fa8","#8e6e53","#117a8b","#b03a77","#5d6d7e","#d68910","#4a7c1f","#7d3c98"];
 function ld(k,d){try{return JSON.parse(localStorage.getItem(k)||"null")||d}catch(e){return d}}
 var D=ld(K,[]),G=ld(K2,[]),IS_ADMIN=false,CURRENT_USER=null,SUPA=null,SAVING=false;
 function fix(){DEF.forEach(d=>{if(!G.some(g=>g.id==d[0]))G.push({id:d[0],nombre:"Legislatura "+d[0],inicio:d[1],fin:d[2],grupos:[]})})}fix();
