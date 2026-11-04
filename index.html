@@ -334,21 +334,22 @@ function parseActa(text,extra,filename){
  var constit=/(?:sessio|sesion)\s+(?:de\s+)?(?:constitucio|constitutiva)|ple\s+(?:de\s+)?constitucio|constitucio(?:n)?\s+(?:de\s+)?(?:l\s*ajuntament|del?\s+ayuntamiento|del?\s+consistorio|ajuntament|ayuntamiento|consistorio)|(?:ajuntament|ayuntamiento|consistorio)\s+(?:de\s+)?constitucio(?:n)?|constitucio(?:n)?\s+(?:del?\s+)?(?:nou\s+)?(?:ajuntament|ayuntamiento|consistorio)|(?:nou\s+)?(?:ajuntament|ayuntamiento|consistorio)\s+constituit|constitucion\s+del\s+pleno|pleno\s+constituyente/.test(cabecera);
  constit=constit||["2011-06-11","2015-06-13","2019-06-15","2023-06-17"].indexOf(fecha)>=0;
  var estadoCiudad=/(?:ple|pleno)\s+(?:de\s+(?:l\s*)?estat|del?\s+estado|de\s+la\s+(?:ciudad|ciutat))|estat\s+de\s+la\s+ciutat|estado\s+de\s+la\s+ciudad/.test(cabecera);
- var tipo=estadoCiudad?"Pleno de estado de la ciudad":(constit?"Pleno de constitución":(ses&&/^extra/i.test(ses[1])?"Extraordinario":"Ordinario"));
-  if(jg&&!ses&&!constit&&!estadoCiudad){
-   // La categoría empresarial depende de la Junta General que encabeza el acta,
-   // no de menciones incidentales a las sociedades en el cuerpo del documento.
-   if(/MEDITERR[ÀA]NIA|MEDITERRANIA/i.test(cabecera))tipo="VIMED";
-   else if(/QUALITAT/i.test(cabecera))tipo="VIQUAL";
-   else if(/GRUP D.EMPRESES/i.test(cabecera))tipo="VIGEM";
-   else{
-    var cm=cabecera.match(/junta\s+general(?:\s+(?:de|d\s*))?\s*([^.;]{3,100})/i),
-        company=cm?cm[1].replace(/\s+/g," ").trim():"Empresa pública";
-    company=company.replace(/^(?:de|d)\s*/i,"").replace(/\s+(?:acta|data|sessio).*$/i,"").trim();
-    tipo="Junta · "+(company||"Empresa pública");
-    aviso.push("Se ha creado una categoría propia para esta junta/empresa pública: "+tipo+".");
-   }
-  }
+ // Primero se comprueba si el encabezado identifica inequívocamente una
+ // Junta General de una sociedad. Solo después se clasifica como pleno.
+ // Así, la palabra "ordinària/extraordinària" de otro apartado no pisa VIMED.
+ var empresaJunta = jg && /MEDITERR[ÀA]NIA|MEDITERRANIA|VIMED/i.test(cabecera) ? "VIMED"
+   : jg && /QUALITAT|VIQUAL/i.test(cabecera) ? "VIQUAL"
+   : jg && /GRUP D[’' .]?EMPRESES|VIGEM/i.test(cabecera) ? "VIGEM" : "";
+ var tipo = empresaJunta || (estadoCiudad ? "Pleno de estado de la ciudad"
+   : constit ? "Pleno de constitución"
+   : ses && /^extra/i.test(ses[1]) ? "Extraordinario" : "Ordinario");
+ if(jg && !empresaJunta && !ses && !constit && !estadoCiudad){
+   var cm=cabecera.match(/junta\s+general(?:\s+(?:de|d\s*))?\s*([^.;]{3,100})/i),
+       company=cm?cm[1].replace(/\s+/g," ").trim():"Empresa pública";
+   company=company.replace(/^(?:de|d)\s*/i,"").replace(/\s+(?:acta|data|sessio).*$/i,"").trim();
+   tipo="Junta · "+(company||"Empresa pública");
+   aviso.push("Se ha creado una categoría propia para esta junta/empresa pública: "+tipo+".");
+ }
  var um=(jg&&T.match(/https?:\/\/videoacta\.viladecans\.cat\?pleno=\d+&punto=\d+/))||T.match(/https?:\/\/videoacta\.viladecans\.cat\?pleno=\d+/),url=um?um[0]:"";
  var i0=T.indexOf("MEMBRES ASSISTENTS"),blk=i0<0?"":T.slice(i0,(function(){var j=T.slice(i0).search(/NO ASSISTENTS?|Tamb[ée] hi assisteixen/);return j<0?i0+3000:i0+j})()),re=/(?:Alcalde-president|tinent[a]?\s+d.alcalde|Regidor[a]?)\s+([A-ZÇ][A-Za-zÇ]*(?:-[A-Z]{1,3})?)(?=\s)/g,tot=0;
  while((m=re.exec(blk))){seats[m[1]]=(seats[m[1]]||0)+1;tot++}
