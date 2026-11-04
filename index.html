@@ -318,6 +318,30 @@ function actaGrupos(txt,seats,known){
   var f={favor:a.f.favor,contra:a.f.contra,abst:a.f.abst};if(w.length==1&&seats[p]){var r=seats[p]-n;if(r>0)f[w[0]]+=r}
   var nz=["favor","contra","abst"].filter(function(o){return f[o]>0});if(nz.length==1)part[p]=nz[0];else if(nz.length>1){part[p]="dividido";des[p]=f}});
  return{partidos:part,desglose:des}}
+function clasificarActa(T,filename,fecha){
+ /* Clasifica el acta mirando SOLO el encabezado (hasta la lista de asistentes), no todo el texto.
+    Orden de prioridad: constitución > estado de la ciudad > empresa pública (VIMED/VIQUAL/VIGEM) > ordinaria/extraordinaria. */
+ var nz=function(x){return String(x||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[’‘´`]/g," ").replace(/[\u2010-\u2015-]/g," ").replace(/[_.]/g," ").replace(/\s+/g," ")};
+ var tx=nz(T),fn=nz(filename),corte=tx.search(/membres assistents|miembros asistentes/),
+     ini=tx.slice(0,corte>200?Math.min(corte,3000):3000),
+     EMP=[{n:"VIMED",a:/\bvimed\b|viladecans mediterrania/,g:/\bmediterrania\b/},{n:"VIQUAL",a:/\bviqual\b|viladecans qualitat/,g:/\bqualitat\b/},{n:"VIGEM",a:/\bvigem\b|viladecans grup d empreses/,g:/grup d empreses|grupo de empresas|empreses municipals/}],
+     CTX=/junta general|junta de accionistas|junta d accionistes|consell d administracio|consejo de administracion|societat|sociedad|accionist/,
+     emp=function(s){var best=null;EMP.forEach(function(e){var i=s.search(e.a);if(i<0){var m=e.g.exec(s);if(m&&CTX.test(s.slice(Math.max(0,m.index-150),m.index+150)))i=m.index}if(i>=0&&(!best||i<best.i))best={n:e.n,i:i}});return best},
+     jg=/junta general|junta de accionistas|junta d accionistes|consell d administracio|consejo de administracion/.test(ini),
+     eIni=emp(ini),eFn=emp(fn),e=eIni||eFn,
+     constit=/(?:sessio|sesion)\s+(?:de\s+)?(?:constitucio|constitutiva)|ple\s+(?:de\s+)?constitucio|constitucio(?:n)?\s+(?:de\s+)?(?:l\s*ajuntament|del?\s+ayuntamiento|del?\s+consistorio)|(?:nou\s+)?(?:ajuntament|ayuntamiento)\s+constituit|constitucion\s+del\s+pleno|pleno\s+constituyente/.test(ini)||["2011-06-11","2015-06-13","2019-06-15","2023-06-17"].indexOf(fecha)>=0,
+     estado=/(?:ple|pleno)\s+(?:de\s+(?:l\s*)?estat|del?\s+estado|de\s+la\s+(?:ciudad|ciutat))|estat\s+de\s+la\s+ciutat|estado\s+de\s+la\s+ciudad/.test(ini),
+     hayPle=/\b(?:ple|pleno|plenaria|plenari)\b/.test(ini),
+     sm=null,re=/\b(extraordinari[ao]?|ordinari[ao]?)\b/g,mm;
+ while((mm=re.exec(ini))){if(/(?:sessio|sesion|ple|pleno|junta|reunio|reunion|plenaria)\s*(?:\w+\s+){0,3}$/.test(ini.slice(Math.max(0,mm.index-40),mm.index))){sm=mm;break}}
+ var modo=sm?(/^extra/.test(sm[1])?"Extraordinario":"Ordinario"):"",r={jg:jg,tipo:"Ordinario",motivo:"",dudoso:false};
+ if(constit){r.tipo="Pleno de constitución";r.motivo="el encabezado habla de la constitución del Ayuntamiento"}
+ else if(estado){r.tipo="Pleno de estado de la ciudad";r.motivo="el encabezado menciona el estado de la ciudad"}
+ else if(e&&(jg||eFn||!hayPle)){r.tipo=e.n;r.motivo=(eIni?"«"+e.n+"» aparece en el encabezado":"«"+e.n+"» aparece en el nombre del archivo")+(jg?" junto a «Junta General»":"")+(modo?" (junta "+modo.toLowerCase()+", se registra como "+e.n+")":"");r.dudoso=!jg&&!eFn}
+ else if(jg){var cab=T.slice(0,5000),cm=cab.match(/junta\s+general(?:\s+(?:de|d\s*))?\s*([^.;]{3,100})/i),co=cm?cm[1].replace(/\s+/g," ").replace(/^(?:de|d)\s*/i,"").replace(/\s+(?:acta|data|sessi).*$/i,"").trim():"";r.tipo="Junta · "+(co||"Empresa pública");r.motivo="hay una Junta General de una empresa que no es VIMED, VIQUAL ni VIGEM";r.dudoso=true}
+ else if(modo){r.tipo=modo;r.motivo="el encabezado dice sesión "+modo.toLowerCase()+(e?" (también aparece «"+e.n+"», se ha ignorado por tratarse de un pleno)":"");r.dudoso=!!e}
+ else{r.motivo="no se ha encontrado ninguna indicación en el encabezado; se asume Ordinario";r.dudoso=true}
+ return r}
 function parseActa(text,extra,filename){
  var T=text.replace(/\s+/g," "),aviso=[],seats={},m,filename=String(filename||"");
  var head=T.slice(0,5000).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[’‘´`]/g," ").replace(/[\u2010-\u2015-]/g," ");
@@ -330,30 +354,8 @@ function parseActa(text,extra,filename){
   if(fn){var fy=fn[3];if(fy.length===2)fy=(+fy>=70?"19":"20")+fy;fecha=fy+"-"+fn[2]+"-"+fn[1];aviso.push("La fecha se ha deducido del nombre del archivo ("+fn[1]+"/"+fn[2]+"/"+fy+"). Comprueba que sea correcta.")}
  }
  if(!fecha)return{error:"No se ha podido identificar la fecha. Se ha buscado DATA/FECHA y fechas dd/mm/aaaa; revisa el nombre del PDF o introduce la sesión manualmente."};
- var ses=T.match(/(?:Sessi[óo]\s+(?:plen[àa]ria\s+)?|(?:Ple|Pleno)\s+)(ordin[àa]ria|extraordin[àa]ria)/i),cab=T.slice(0,5000),cabecera=head;
- var constit=/(?:sessio|sesion)\s+(?:de\s+)?(?:constitucio|constitutiva)|ple\s+(?:de\s+)?constitucio|constitucio(?:n)?\s+(?:de\s+)?(?:l\s*ajuntament|del?\s+ayuntamiento|del?\s+consistorio|ajuntament|ayuntamiento|consistorio)|(?:ajuntament|ayuntamiento|consistorio)\s+(?:de\s+)?constitucio(?:n)?|constitucio(?:n)?\s+(?:del?\s+)?(?:nou\s+)?(?:ajuntament|ayuntamiento|consistorio)|(?:nou\s+)?(?:ajuntament|ayuntamiento|consistorio)\s+constituit|constitucion\s+del\s+pleno|pleno\s+constituyente/.test(cabecera);
- constit=constit||["2011-06-11","2015-06-13","2019-06-15","2023-06-17"].indexOf(fecha)>=0;
- var estadoCiudad=/(?:ple|pleno)\s+(?:de\s+(?:l\s*)?estat|del?\s+estado|de\s+la\s+(?:ciudad|ciutat))|estat\s+de\s+la\s+ciutat|estado\s+de\s+la\s+ciudad/.test(cabecera);
- // Una sesión plenaria explícita siempre prevalece sobre menciones incidentales
- // a sociedades que puedan aparecer en el encabezado o en el orden del día.
- // Solo se reconoce una sociedad cuando su nombre está junto a "Junta General".
- var jgMatch=cabecera.match(/junta\s+general.{0,180}/i),jgInversa=cabecera.match(/.{0,100}(?:vimed|viqual|vigem|mediterrania|qualitat|grup d.?empreses).{0,100}junta\s+general/i);
- var jg=!!(jgMatch||jgInversa);
- var bloqueJG=jg?(jgMatch?jgMatch[0]:jgInversa[0]):"";
- var empresaJunta = /vimed|mediterrania/i.test(bloqueJG) ? "VIMED"
-   : /viqual|qualitat/i.test(bloqueJG) ? "VIQUAL"
-   : /vigem|grup d.?empreses/i.test(bloqueJG) ? "VIGEM" : "";
- var tipo = ses ? (/^extra/i.test(ses[1]) ? "Extraordinario" : "Ordinario")
-   : estadoCiudad ? "Pleno de estado de la ciudad"
-   : constit ? "Pleno de constitución"
-   : empresaJunta || "Ordinario";
- if(!ses && !constit && !estadoCiudad && jg && !empresaJunta){
-   var cm=cabecera.match(/junta\s+general(?:\s+(?:de|d\s*))?\s*([^.;]{3,100})/i),
-       company=cm?cm[1].replace(/\s+/g," ").trim():"Empresa pública";
-   company=company.replace(/^(?:de|d)\s*/i,"").replace(/\s+(?:acta|data|sessio).*$/i,"").trim();
-   tipo="Junta · "+(company||"Empresa pública");
-   aviso.push("Se ha creado una categoría propia para esta junta/empresa pública: "+tipo+".");
- }
+ var cl=clasificarActa(T,filename,fecha),tipo=cl.tipo,jg=cl.jg;
+ aviso.push("Tipo detectado: "+tipo+" ("+cl.motivo+")."+(cl.dudoso?" Revísalo y cámbialo con el selector si no es correcto.":""));
  var um=(jg&&T.match(/https?:\/\/videoacta\.viladecans\.cat\?pleno=\d+&punto=\d+/))||T.match(/https?:\/\/videoacta\.viladecans\.cat\?pleno=\d+/),url=um?um[0]:"";
  var i0=T.indexOf("MEMBRES ASSISTENTS"),blk=i0<0?"":T.slice(i0,(function(){var j=T.slice(i0).search(/NO ASSISTENTS?|Tamb[ée] hi assisteixen/);return j<0?i0+3000:i0+j})()),re=/(?:Alcalde-president|tinent[a]?\s+d.alcalde|Regidor[a]?)\s+([A-ZÇ][A-Za-zÇ]*(?:-[A-Z]{1,3})?)(?=\s)/g,tot=0;
  while((m=re.exec(blk))){seats[m[1]]=(seats[m[1]]||0)+1;tot++}
@@ -392,11 +394,13 @@ async function actaRun(){if(!IS_ADMIN)return;const fs=[...$("af").files],o=$("ac
  for(let k=0;k<fs.length;k++){o.innerHTML='<p class="m">Leyendo acta '+(k+1)+" de "+fs.length+": "+esc(fs[k].name)+"…</p>";
   try{const r=parseActa(await actaText(fs[k]),names(),fs[k].name);if(r.error)bad.push(fs[k].name+": "+r.error);else{r.archivo=fs[k].name;list.push(r)}}catch(e){bad.push(fs[k].name+": no se pudo leer el PDF ("+(e.message||e)+")");if(/lector de PDF/.test(String(e.message)))break}}
  list.sort((x,y)=>x.fecha.localeCompare(y.fecha)||x.tipo.localeCompare(y.tipo));ACTA=list;actaView(bad)}
-function actaView(bad){const L=ACTA||[],o=$("actaOut");
+var ACTA_BAD=[];
+function actaTipo(ai,v){const ck={};document.querySelectorAll("#actaOut input[data-i]").forEach(x=>{ck[x.dataset.a+"-"+x.dataset.i]=x.checked});ACTA[ai].tipo=v;ACTA[ai].aviso=ACTA[ai].aviso.filter(a=>a.indexOf("Tipo detectado")!==0).concat(["Tipo cambiado manualmente a: "+v+"."]);actaView(ACTA_BAD);document.querySelectorAll("#actaOut input[data-i]").forEach(x=>{if(+x.dataset.a!==ai&&(x.dataset.a+"-"+x.dataset.i) in ck)x.checked=ck[x.dataset.a+"-"+x.dataset.i]})}
+function actaView(bad){ACTA_BAD=bad;const L=ACTA||[],o=$("actaOut");
  const dup=(ai,v)=>{const r=L[ai],p=D.find(x=>x.fecha==r.fecha&&cat(x)==r.tipo);return(p&&(p.votaciones||[]).some(w=>String(w.punto)==String(v.punto)))||L.slice(0,ai).some(q=>q.fecha==r.fecha&&q.tipo==r.tipo&&q.votaciones.some(w=>String(w.punto)==String(v.punto)))};
  const n=L.reduce((t,r)=>t+r.votaciones.length,0);
  o.innerHTML=(bad&&bad.length?'<div class="pnl" style="margin-top:6px"><p class="m ko" style="margin-top:12px"><b>No se han podido leer:</b></p>'+bad.map(x=>'<p class="wn">'+esc(x)+"</p>").join("")+"</div>":"")
- +L.map((r,ai)=>{const p=D.find(x=>x.fecha==r.fecha&&cat(x)==r.tipo);return`<div class="pnl" style="margin-top:12px"><h2>${fd(r.fecha)} <span class="tag t">${r.tipo}</span></h2><p class="m">${esc(r.archivo)} · ${r.votaciones.filter(v=>!nov(v)).length} votaciones y ${r.votaciones.filter(nov).length} puntos sin votación${r.asistentes?" · "+r.asistentes+" concejales presentes":""}.${p?" Esta sesión ya existe: solo se añadirán los puntos que no estén ya registrados.":""}</p>`+r.aviso.map(a=>`<p class="wn">${esc(a)}</p>`).join("")
+ +L.map((r,ai)=>{const p=D.find(x=>x.fecha==r.fecha&&cat(x)==r.tipo);return`<div class="pnl" style="margin-top:12px"><h2>${fd(r.fecha)} <span class="tag t">${esc(r.tipo)}</span></h2><div class="fm" style="margin:6px 0"><label class="m">Tipo de sesión: <select onchange="actaTipo(${ai},this.value)">${CT.concat(CT.includes(r.tipo)?[]:[r.tipo]).map(o=>`<option${o==r.tipo?" selected":""}>${esc(o)}</option>`).join("")}</select></label></div><p class="m">${esc(r.archivo)} · ${r.votaciones.filter(v=>!nov(v)).length} votaciones y ${r.votaciones.filter(nov).length} puntos sin votación${r.asistentes?" · "+r.asistentes+" concejales presentes":""}.${p?" Esta sesión ya existe: solo se añadirán los puntos que no estén ya registrados.":""}</p>`+r.aviso.map(a=>`<p class="wn">${esc(a)}</p>`).join("")
  +(r.votaciones.map((v,i)=>`<label class="ar"><input type="checkbox" data-a="${ai}" data-i="${i}"${dup(ai,v)?"":" checked"}><span><b>${esc(v.punto)}.</b> ${esc(v.asunto)} ${tg(v)}${v.proponente?`<br><small class="m">${esc(v.clase)} de ${esc(v.proponente)}</small>`:""}${dup(ai,v)?'<br><small class="wn">Ya existe el punto '+esc(v.punto)+" en esta sesión.</small>":""}${v.aviso.map(a=>`<br><small class="wn">Revisar: ${esc(a)}</small>`).join("")}<span class="vb" style="display:grid">${vb(v).replace(/^<span class="vb">|<\/span>$/g,"")}</span><span class="pv">${pv(v)}</span></span></label>`).join("")||'<p class="e">No se han detectado acuerdos en el acta. La sesión se registrará igualmente como informativa al pulsar «Guardar sesiones».</p>')
  +(r.omitidas.length?`<details style="margin-top:10px"><summary style="display:block;padding:6px 0"><span class="m">Puntos sin votación (${r.omitidas.length})</span></summary><ul class="m">${r.omitidas.map(x=>"<li>"+esc(x)+"</li>").join("")}</ul></details>`:"")+"</div>"}).join("")
  +(L.length?`<div class="fm" style="margin-top:14px"><button class="p" onclick="actaImport()">Guardar sesiones e importar puntos seleccionados${L.length>1?" ("+L.length+" actas)":""}</button><button onclick="ACTA=null;$('actaOut').innerHTML=''">Cancelar</button></div>`:"")}
