@@ -233,6 +233,7 @@ D.forEach(p=>(p.votaciones||[]).forEach(v=>{v.partidos=mv(v.partidos);if(v.desgl
 G.forEach(g=>{const r=[];(g.grupos||[]).forEach(x=>{const nm=same(x.partido)?n:x.partido,e=r.find(y=>y.partido==nm);if(e){e.concejales=(+e.concejales||0)+(+x.concejales||0);(x.representantes||[]).forEach(q=>{if((e.representantes=e.representantes||[]).indexOf(q)<0)e.representantes.push(q)})}else r.push(Object.assign({},x,{partido:nm}))});r.sort((a,b)=>b.concejales-a.concejales);g.grupos=r});
 if(PS&&same(PS))PS=n;$("rnn").value="";sv();render();st("Grupo «"+o+"» renombrado a «"+n+"».")}
 /* ===== Lector de actas (PDF del pleno) ===== */
+function actaCorta(t){var re=/\.(?=\s|$)/g,m;while((m=re.exec(t))){var w=(t.slice(0,m.index).match(/([A-Za-zÀ-ÿ]+)$/)||[])[1]||"";if(w&&w.length<=1||/^(exp|n[úu]ms?|art|arts|sr|sra|srs|sres|ctra|av|avda|pl|dr|dra|apt|tel)$/i.test(w))continue;return t.slice(0,m.index).trim()}return t.replace(/[.\-\s]+$/,"").trim()}
 function actaTitulo(t,K){var u=t.toLowerCase();u=u.charAt(0).toUpperCase()+u.slice(1);K.forEach(function(k){u=u.replace(new RegExp("\\b"+k.replace(/[-]/g,"\\-")+"\\b","gi"),k)});return u.replace(/\b(sl|sa|sau|spm|pgm|rlt|pes|paif|pef|iva|boe|dogc|femp|viqual|vimed|vigem|rom|rtdg|pee|urbaser)\b/gi,function(x){return x.toUpperCase()}).replace(/\b(viladecans|ajuntament|generalitat|catalunya|barcelona)\b/g,function(x){return x.charAt(0).toUpperCase()+x.slice(1)})}
 function actaGrupos(txt,seats,known){
  /* txt: "13 vots a favor (PSC-CP i VECP-C-F. Ramón Espejo-); cap vot en contra; i 12 abstencions (ERC-AM, PP, VOX i VECP-C-E. García)" */
@@ -261,7 +262,7 @@ function parseActa(text,extra){
  var vots=[],omit=[];
  hs.forEach(function(h,i){var sec=T.slice(h.b,i+1<hs.length?hs[i+1].a:T.length),all=[],rr=/Resultat de la votació:\s*/g,x;
   while((x=rr.exec(sec))){var s=sec.slice(rr.lastIndex),cut=s.search(/Hi va haver|Es fa constar|https?:|ACORD NÚM|\bEl secretari\b|\bL.alcalde\b/);all.push((cut<0?s:s.slice(0,cut)).slice(0,700).trim())}
-  var title=h.t.trim();
+  var title=actaCorta(h.t.trim());
   if(!all.length){omit.push(h.n+". "+actaTitulo(title,known).slice(0,70)+" (sin votación)");return}
   var r=all[all.length-1],kind=(r.match(/^(Aprovat|Aprovada|Rebutjat|Rebutjada)/i)||[])[1];
   if(!kind){omit.push(h.n+". "+actaTitulo(title,known).slice(0,70)+" ("+r.split(/[.\-]/)[0].trim().toLowerCase()+")");return}
