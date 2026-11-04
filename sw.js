@@ -1,4 +1,4 @@
-const CACHE = "observatorio-viladecans-v6";
+const CACHE = "observatorio-viladecans-v7";
 
 const APP_SHELL = [
   "./",
