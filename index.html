@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#14283f"><meta name="description" content="Análisis de las votaciones del pleno municipal de Viladecans: sesiones, grupos políticos y composición del consistorio."><link rel="manifest" href="./manifest.webmanifest"><link rel="icon" href="./icons/icon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="./icons/icon-192.png"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600&family=Source+Serif+4:wght@500;600&display=swap"><title>Observatorio de plenos · Viladecans</title><style>
+<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#14283f"><meta name="color-scheme" content="light dark"><meta name="description" content="Análisis de las votaciones del pleno municipal de Viladecans: sesiones, grupos políticos y composición del consistorio."><link rel="manifest" href="./manifest.webmanifest"><link rel="icon" href="./icons/icon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="./icons/icon-192.png"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600&family=Source+Serif+4:wght@500;600&display=swap"><title>Observatorio de plenos · Viladecans</title><style>
 :root{--bg:#f4f5f7;--sf:#fff;--fg:#17202a;--mut:#5c6874;--ln:#d9dee3;--ac:#1c5d7a;--ok:#2b7a55;--ko:#b23b2c;--ab:#a67c12;--hd:#14283f}
 @media(prefers-color-scheme:dark){:root{--bg:#0e1319;--sf:#151c24;--fg:#e6ebf0;--mut:#8f9ba7;--ln:#27313c;--ac:#6fb1d1;--ok:#4cbf8a;--ko:#f0806f;--ab:#d9aa43;--hd:#0a0f14}}
 *{box-sizing:border-box}[hidden]{display:none!important}
@@ -55,6 +55,76 @@ dialog{border:1px solid var(--ln);border-radius:10px;padding:22px;width:min(560p
 .gr{display:grid;grid-template-columns:1fr repeat(3,62px);gap:6px 8px;align-items:center;padding:6px 0;border-bottom:1px solid var(--ln)}
 .gr input{padding:4px 6px;text-align:center}.gr.h{border:0;padding:0;font-size:12px;color:var(--mut);text-align:center}
 .dd{color:var(--ac)}
+
+/* ===== Refresco visual v2 ===== */
+:root{--r:14px;--sh:0 1px 2px rgba(16,32,48,.05),0 8px 24px -12px rgba(16,32,48,.18);--hd2:#21496b}
+@media(prefers-color-scheme:dark){:root{--hd2:#16324a;--sh:0 1px 2px rgba(0,0,0,.35),0 10px 28px -12px rgba(0,0,0,.6)}}
+html{-webkit-text-size-adjust:100%}body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+header{background:linear-gradient(135deg,var(--hd) 0%,var(--hd2) 100%);border:0;box-shadow:0 1px 0 rgba(255,255,255,.06) inset}
+.top{padding-top:14px;align-items:center}
+.br{gap:13px;padding-bottom:12px}.br b{font-size:21px;letter-spacing:-.01em}.br span{font-size:12.5px;letter-spacing:.01em}
+.br svg{width:44px;height:38px;padding:9px 8px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.14);border-radius:11px}
+nav{gap:4px;padding-bottom:12px;scrollbar-width:none}nav::-webkit-scrollbar{display:none}
+nav a{display:flex;align-items:center;gap:7px;padding:8px 15px;border:0;border-radius:999px;color:#b9cadb;transition:background .15s,color .15s}
+nav a:hover{background:rgba(255,255,255,.08);color:#fff}nav a.on{background:rgba(255,255,255,.16);color:#fff}
+nav .ic{display:none;width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+main{padding-top:26px}
+main>section:not([hidden]){animation:up .28s ease both}
+@keyframes up{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+#fb{background:color-mix(in srgb,var(--bg) 86%,transparent);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);padding:12px 0;margin:-12px 0 20px}
+#fb select{font-weight:600;padding:7px 12px}
+.chips button{background:var(--sf);color:var(--fg);font-weight:600;border-color:var(--ln)}.chips button:hover{border-color:var(--ac);color:var(--ac)}
+.chips button.sel{background:var(--ac);border-color:var(--ac);color:var(--sf)}.chips button.sel:hover{color:var(--sf)}
+button.p{font-weight:600}button.p:hover{filter:brightness(1.08);color:var(--sf)}
+input:focus,select:focus,textarea:focus{outline:0;border-color:var(--ac);box-shadow:0 0 0 3px color-mix(in srgb,var(--ac) 22%,transparent)}
+.eyebrow{margin:0 0 4px;font-size:12.5px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--ac)}
+.lead{font-size:clamp(25px,4.2vw,38px);max-width:26em;margin:0 0 20px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:0 0 18px}
+.kp{background:var(--sf);border:1px solid var(--ln);border-radius:var(--r);padding:14px 18px;box-shadow:var(--sh);position:relative;overflow:hidden}
+.kp::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--ac)}
+.kp-ok::before{background:var(--ok)}.kp-ko::before{background:var(--ko)}
+.kp b{display:block;font-family:"Source Serif 4",Georgia,serif;font-size:34px;line-height:1.1;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.kp-ok b{color:var(--ok)}.kp-ko b{color:var(--ko)}.kp span{font-size:13px;color:var(--mut);font-weight:600}
+.ap{max-width:none;margin:0 0 26px}.ap .bar{height:12px}
+.bar{border-radius:999px}.bar i+i{margin-left:1px}
+.pnl{border-radius:var(--r);box-shadow:var(--sh);padding:6px 22px 16px}
+.pnl h2{font-size:18px;margin:16px 0 8px}
+.li{padding:11px 0}.li.cl{margin:0 -12px;padding:11px 12px;border-radius:10px;border-bottom:0;transition:background .12s}.li.cl:hover{background:color-mix(in srgb,var(--ac) 8%,var(--sf))}
+.two{gap:20px;grid-template-columns:repeat(auto-fit,minmax(340px,1fr))}
+th{font-size:11.5px;text-transform:uppercase;letter-spacing:.06em}
+.ses{border-radius:var(--r);box-shadow:var(--sh);margin-top:20px}
+.sh{padding:14px 18px}.sh h3{font-size:20px;letter-spacing:-.01em}
+summary{padding:13px 18px;border-radius:0}details.v+details.v{border-top:1px solid var(--ln)}details.v{border-bottom:0}
+.tag{font-size:12px;letter-spacing:.02em}
+.cp{background:var(--bg);border-color:transparent;padding:3px 12px}.cp b{font-size:12.5px}
+.pv{padding:2px 18px 16px 62px}
+tr.cl td{transition:background .12s}
+.mx td{border-radius:6px}
+.hm{box-shadow:var(--sh);border-radius:var(--r)}
+.lg{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 18px;max-width:760px;margin:-4px 0 16px;font-size:13.5px;color:var(--mut)}
+.lg span{display:inline-flex;align-items:center}.lg b{margin-left:6px;color:var(--fg)}
+dialog{border:0;border-radius:16px;box-shadow:0 24px 70px -20px rgba(0,0,0,.55);padding:26px}
+dialog::backdrop{background:rgba(10,15,20,.6);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+#adminEditor{padding:6px 22px 22px}#adminEditor h2:not(:first-child){border-top:1px solid var(--ln);padding-top:20px;margin-top:22px}
+.e{text-align:center;padding:40px 12px}
+.pnl td:first-child{white-space:nowrap}.pnl td:first-child b{white-space:nowrap}
+footer{margin-top:10px}
+a{text-underline-offset:3px}
+@media(max-width:640px){
+ main{padding:20px 16px 24px}.in{padding:0 16px}
+ .top{padding-top:10px}.br{padding-bottom:10px}.br b{font-size:19px}
+ body{padding-bottom:calc(74px + env(safe-area-inset-bottom,0px))}
+ nav{position:fixed;left:0;right:0;bottom:0;z-index:30;gap:0;padding:0 4px env(safe-area-inset-bottom,0px);background:var(--sf);border-top:1px solid var(--ln);box-shadow:0 -6px 20px -10px rgba(0,0,0,.25);justify-content:space-around;overflow:visible}
+ nav a{flex:1;flex-direction:column;gap:2px;padding:9px 4px 8px;border-radius:0;font-size:11.5px;color:var(--mut);background:none!important;position:relative}
+ nav a.on{color:var(--ac)}nav a.on::before{content:"";position:absolute;top:0;left:28%;right:28%;height:3px;border-radius:0 0 4px 4px;background:var(--ac)}
+ nav .ic{display:block}
+ .kpis{grid-template-columns:repeat(2,1fr)}.kp b{font-size:29px}
+ .pnl{padding:4px 16px 12px}.two{grid-template-columns:1fr}
+ .pv{padding:2px 14px 14px}
+ #fb{gap:8px}#fb select{width:100%}#fb .chips{flex-wrap:nowrap;overflow-x:auto;width:100%;padding-bottom:2px;scrollbar-width:none}#fb .chips::-webkit-scrollbar{display:none}#fb .chips button{flex:none;white-space:nowrap}
+ .sh{padding:12px 14px}summary{padding:12px 14px}
+}
 </style></head><body>
 <header><div class="in top"><a class="br" href="#resumen"><svg width="32" height="21" viewBox="0 0 30 20" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M2 18a13 13 0 0 1 26 0M7 18a8 8 0 0 1 16 0"/><circle cx="15" cy="17" r="1.6" fill="#fff" stroke="none"/></svg><div><b>Observatorio de plenos</b><span>Viladecans · votaciones del pleno municipal</span></div></a><nav id="nv"></nav></div></header>
 <main><div id="fb"></div>
@@ -115,10 +185,10 @@ h+='<div class="chips">'+[""].concat(CT).map(c=>`<button class="${TP==c?"sel":""
 function rs(){const vs=flat(),n=vs.length;if(!n)return'<p class="e">Todavía no hay votaciones registradas con estos filtros.</p>';
 const ap=vs.filter(o=>apr(o.v)).length,un=vs.filter(o=>+o.v.favor&&!+o.v.contra&&!+o.v.abst).length,ses=fp(),
 tight=vs.filter(o=>(+o.v.favor||0)+(+o.v.contra||0)>0).sort((a,b)=>Math.abs(a.v.favor-a.v.contra)-Math.abs(b.v.favor-b.v.contra)).slice(0,5);
-return`<h1 class="lead">${LG?"Legislatura "+esc(LG):"Todas las legislaturas"}: ${n} votaciones en ${ses.length} sesiones. Se aprobó el ${pc(ap,n)} % y el ${pc(un,n)} % fue unánime.</h1><div class="ap"><span class="bar"><i class="f" style="width:${pc(ap,n)}%"></i><i class="c" style="width:${100-pc(ap,n)}%"></i></span><small><b class="ok">${ap} aprobadas</b> y <b class="ko">${n-ap} rechazadas</b></small></div>
+return`<p class="eyebrow">${LG?"Legislatura "+esc(LG):"Todas las legislaturas"}</p><h1 class="lead">Se aprobó el ${pc(ap,n)} % de las votaciones y el ${pc(un,n)} % fue unánime.</h1><div class="kpis"><div class="kp"><b>${n}</b><span>votaciones</span></div><div class="kp"><b>${ses.length}</b><span>sesiones</span></div><div class="kp kp-ok"><b>${ap}</b><span>aprobadas</span></div><div class="kp kp-ko"><b>${n-ap}</b><span>rechazadas</span></div></div><div class="ap"><span class="bar"><i class="f" style="width:${pc(ap,n)}%"></i><i class="c" style="width:${100-pc(ap,n)}%"></i></span><small><b class="ok">${pc(ap,n)} %</b> aprobadas · <b class="ko">${100-pc(ap,n)} %</b> rechazadas</small></div>
 <div class="two"><div class="pnl"><h2>Votaciones más ajustadas</h2>${tight.map(o=>{const d=Math.abs(o.v.favor-o.v.contra);return`<div class="li"><span>${esc(o.v.asunto)}<br><small>${fd(o.p.fecha)}, ${cat(o.p)}. Diferencia de ${d} ${d==1?"voto":"votos"}.</small></span>${vb(o.v)}</div>`}).join("")}</div>
 <div class="pnl"><h2>Posición de cada grupo</h2>${PK.map((k,i)=>{const e=ST.m[k],t=tot(e);return`<div class="li cl" style="cursor:pointer" onclick="PS=PK[${i}];render();location.hash='partidos'"><span>${dot(k)}<b>${esc(k)}</b><br><small>${t} votos. Con el resultado final: ${e.d?pc(e.w,e.d)+" %":"sin datos"}.</small></span>${sb(e,t)}</div>`}).join("")||'<p class="e">Aún no hay votos desglosados por grupo.</p>'}</div></div>
-<div class="pnl" style="margin-top:20px"><h2>Últimas sesiones</h2>${ses.slice(0,4).map(p=>`<div class="li"><span><b>${fd(p.fecha)}</b> <span class="tag t">${cat(p)}</span><br><small>${(p.votaciones||[]).length} votaciones.</small></span><a href="#plenos">Ver sesión</a></div>`).join("")}</div>`}
+<div class="pnl" style="margin-top:20px"><h2>Últimas sesiones</h2>${ses.slice(0,4).map(p=>`<div class="li"><span><b>${fd(p.fecha)}</b> <span class="tag t">${cat(p)}</span><br><small>${(p.votaciones||[]).length} ${(p.votaciones||[]).length==1?"votación":"votaciones"}.</small></span><a href="#plenos">Ver sesión</a></div>`).join("")}</div>`}
 function rp(){const q=$("sq").value.toLowerCase().trim();let h="";
 fp().forEach(p=>{const i=D.indexOf(p),vs=(p.votaciones||[]).map((v,j)=>({v,j})).filter(o=>!q||(o.v.asunto||"").toLowerCase().indexOf(q)>-1||Object.keys(o.v.partidos||{}).join(" ").toLowerCase().indexOf(q)>-1||(o.v.proponente||"").toLowerCase().indexOf(q)>-1);if(q&&!vs.length)return;
 h+=`<div class="ses"><div class="sh"><h3>${fd(p.fecha)}</h3><span class="tag t">${cat(p)}</span><small>${legOf(p.fecha)}</small><span class="x">${p.url?`<a href="${esc(p.url)}" target="_blank" rel="noopener">Ver acta</a> `:""}${IS_ADMIN?`<button class="sm" onclick="eds(${i})">Editar sesión</button> <button class="sm" onclick="edv(${i},-1)">Añadir votación</button> <button class="sm" onclick="dp(${i})">Eliminar</button>`:""}</span></div>`
@@ -139,7 +209,7 @@ function hemi(g){const gr=(g.grupos||[]).filter(x=>+x.concejales>0),N=seats(g);i
 const R=Math.max(2,Math.round(Math.sqrt(N/2.6))),rs=[];for(let i=0;i<R;i++)rs.push(110+160*i/(R-1));const sm=rs.reduce((a,b)=>a+b,0),pts=[];let left=N;
 rs.forEach((r,i)=>{const n=i==R-1?left:Math.round(N*r/sm);left-=n;for(let k=0;k<n;k++)pts.push({a:n>1?Math.PI*(1-k/(n-1)):Math.PI/2,r})});
 pts.sort((x,y)=>y.a-x.a||x.r-y.r);const d=Math.min(17,Math.max(5,160/(R-1)*.4)),own=[];gr.forEach(x=>{for(let i=0;i<+x.concejales;i++)own.push(x.partido)});
-return`<svg class="hm" viewBox="0 0 600 316" role="img" aria-label="Hemiciclo de ${N} concejales">`+pts.map((p,i)=>`<circle cx="${(300+p.r*Math.cos(p.a)).toFixed(1)}" cy="${(300-p.r*Math.sin(p.a)).toFixed(1)}" r="${d}" fill="${col(own[i]||"")}"><title>${esc(own[i]||"")}</title></circle>`).join("")+`<text x="300" y="296" text-anchor="middle" font-family="Source Serif 4,Georgia,serif" font-size="46" font-weight="600" fill="currentColor">${N}</text><text x="300" y="314" text-anchor="middle" font-size="13" fill="var(--mut)">concejales</text></svg>`}
+return`<svg class="hm" viewBox="0 0 600 322" role="img" aria-label="Hemiciclo de ${N} concejales">`+pts.map((p,i)=>`<circle cx="${(300+p.r*Math.cos(p.a)).toFixed(1)}" cy="${(300-p.r*Math.sin(p.a)).toFixed(1)}" r="${d}" fill="${col(own[i]||"")}"><title>${esc(own[i]||"")}</title></circle>`).join("")+`<text x="300" y="296" text-anchor="middle" font-family="Source Serif 4,Georgia,serif" font-size="46" font-weight="600" fill="currentColor">${N}</text><text x="300" y="314" text-anchor="middle" font-size="13" fill="var(--mut)">concejales</text></svg>`+'<div class="lg">'+gr.map(x=>`<span>${dot(x.partido)}${esc(x.partido)}<b>${esc(x.concejales)}</b></span>`).join("")+"</div>"}
 function rc(){const gs=G.slice().sort((a,b)=>b.id.localeCompare(a.id));if(!CG||!G.some(g=>g.id==CG))CG=(gs.find(g=>(g.grupos||[]).length)||gs[0]||{}).id||"";
 const g=G.find(x=>x.id==CG);if(!g)return'<p class="e">No hay legislaturas registradas.</p>';const gi=G.indexOf(g),N=seats(g),ps=D.filter(p=>legOf(p.fecha)==g.id),nvv=ps.reduce((a,p)=>a+(p.votaciones||[]).length,0);
 return'<div class="chips">'+gs.map(x=>`<button class="${x.id==CG?"sel":""}" onclick="CG='${esc(x.id)}';render()">${esc(x.id)}</button>`).join("")+`</div><h2>${esc(g.nombre)}</h2><p class="m">Del ${fd(g.inicio)} al ${fd(g.fin)}. ${ps.length} sesiones y ${nvv} votaciones registradas.`+(N?` Mayoría absoluta: ${Math.floor(N/2)+1} de ${N} concejales.`:"")+"</p>"
@@ -203,6 +273,7 @@ function merge(a){if(!IS_ADMIN)return;a.forEach(n=>{if(!n.fecha)return;const p=D
 function imp(){if(!IS_ADMIN)return;try{const a=JSON.parse($("ij").value);if(Array.isArray(a))merge(a);else{(a.legislaturas||[]).forEach(n=>{const g=G.find(x=>x.id==n.id);if(g)Object.assign(g,n);else G.push(Object.assign({nombre:"Legislatura "+n.id,grupos:[]},n))});merge(a.plenos||[])}$("ij").value=""}catch(e){alert("JSON no válido")}}
 $("if").onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{$("ij").value=r.result;imp()};r.readAsText(f)};
 function exp(){$("ij").value=JSON.stringify({plenos:D,legislaturas:G},null,1)}
-$("nv").innerHTML=TABS.map(t=>`<a href="#${t[0]}">${t[1]}</a>`).join("");window.onhashchange=show;show();render();bootSupabase();
+const IC={resumen:'<rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/>',plenos:'<rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/>',partidos:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/><circle cx="17" cy="9" r="2.5"/><path d="M17.5 14c2.5.3 4 2 4 4.5"/>',consistorio:'<path d="M3 19a9 9 0 0 1 18 0M7.5 19a4.5 4.5 0 0 1 9 0"/><circle cx="12" cy="19" r=".6"/>'};
+$("nv").innerHTML=TABS.map(t=>`<a href="#${t[0]}"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true">${IC[t[0]]||""}</svg><span>${t[1]}</span></a>`).join("");window.onhashchange=show;show();render();bootSupabase();
 if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(e=>console.warn("SW",e)));
 </script></body></html>
