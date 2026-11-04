@@ -184,7 +184,21 @@ const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",
 const res=v=>v.resultado||((+v.favor||0)>(+v.contra||0)?"Aprobado":"Rechazado"),apr=v=>/aprob/i.test(res(v));
 const nov=v=>res(v)=="Sin votación",nvot=p=>(p.votaciones||[]).filter(v=>!nov(v)).length;
 const fd=s=>{const p=String(s).split("-");return p.length==3?p[2]+"/"+p[1]+"/"+p[0]:s};
-function cat(p){const raw=String(p.tipo||"Ordinario").trim(),t=raw.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[’‘´`]/g," ");if(/(?:ple|pleno)\s+(?:de\s+(?:l[’']?)?estat|del?\s+estado|de\s+la\s+(?:ciudad|ciutat))|estat\s+de\s+la\s+ciutat|estado\s+de\s+la\s+ciudad/.test(t))return"Pleno de estado de la ciudad";if(t.indexOf("viqual")>-1)return"VIQUAL";if(t.indexOf("vimed")>-1)return"VIMED";if(t.indexOf("vigem")>-1)return"VIGEM";if(t.indexOf("constit")>-1)return"Pleno de constitución";if(t.indexOf("extra")>-1)return"Extraordinario";if(t.indexOf("ordin")>-1)return"Ordinario";return raw}
+function cat(p){
+ const raw=String(p.tipo||"Ordinario").trim();
+ const norm=x=>String(x||"").toLowerCase().normalize("NFD").replace(/[\\u0300-\\u036f]/g,"").replace(/[’‘´`]/g," ").replace(/[\\s\\u2010-\\u2015-]+/g," ").trim();
+ const t=norm(raw);
+ // Las categorías de empresas públicas solo se reconocen como tipo propio
+ // cuando el registro ya identifica expresamente una Junta General.
+ if(/^(viqual|vimed|vigem)$/i.test(raw))return raw.toUpperCase();
+ if(/^junta\\s*[·:]\\s*/i.test(raw))return raw.replace(/^junta\\s*[·:]\\s*/i,"Junta · ");
+ if(/^(?:pleno|ple)\\s+(?:de\\s+)?(?:l? estat|del estado|de la ciudad|de la ciutat)$/.test(t)||/^(?:estat de la ciutat|estado de la ciudad)$/.test(t))return "Pleno de estado de la ciudad";
+ if(/^(?:pleno de constitucion|ple de constitucio|constitucion del pleno)$/.test(t)||t.indexOf("constitucion del ayuntamiento")>=0||t.indexOf("constitucio de l ajuntament")>=0)return "Pleno de constitución";
+ if(/^(?:(?:sesion|sessio) )?extraordinari[ao]$/.test(t)||t==="extraordinario"||/^pleno extraordinario$/.test(t))return "Extraordinario";
+ if(/^(?:(?:sesion|sessio) )?ordinari[ao]$/.test(t)||t==="ordinario"||/^pleno ordinario$/.test(t))return "Ordinario";
+ // No clasificar por menciones sueltas de nombres empresariales en el título.
+ return raw||"Ordinario";
+}
 function refreshCategories(){const extra=D.map(p=>cat(p)).filter(c=>c&&!CT.includes(c));extra.sort((a,b)=>a.localeCompare(b,"es"));CT.splice(0,CT.length,...["Ordinario","Extraordinario","Pleno de constitución","Pleno de estado de la ciudad","VIQUAL","VIMED","VIGEM"],...extra)}
 const legOf=f=>{const g=G.find(x=>f>=x.inicio&&f<=x.fin);return g?g.id:""};
 function col(n){const c=PC[String(n).toLowerCase()];if(c)return c;let h=0;for(let i=0;i<n.length;i++)h=(h*31+n.charCodeAt(i))%1000;return PAL[h%PAL.length]}
@@ -224,7 +238,7 @@ function analytics(vs,ses){
  </div>`;
 }
 function latestPlenarySummary(ses){
- const p=ses.find(x=>!/^Junta\s*[·]/i.test(cat(x))&&!/^VIQUAL|^VIMED|^VIGEM$/i.test(cat(x)));
+ const p=ses.find(x=>!/^Junta\s*[·]/i.test(cat(x))&&!/^(?:VIQUAL|VIMED|VIGEM)$/i.test(cat(x)));
  if(!p)return '<div class="pnl latest"><h2>Último pleno municipal</h2><p class="e">Todavía no hay un pleno municipal registrado. Las juntas de empresas públicas se muestran en sus propias categorías.</p></div>';
  const vs=p.votaciones||[],withVote=vs.filter(v=>!nov(v)),info=vs.filter(nov),topics=vs.map(v=>({a:v.asunto||"Punto sin título",r:res(v),v}));
  const counts={Aprobado:withVote.filter(v=>apr(v)).length,Rechazado:withVote.filter(v=>!apr(v)).length};
@@ -321,7 +335,20 @@ function parseActa(text,extra,filename){
  constit=constit||["2011-06-11","2015-06-13","2019-06-15","2023-06-17"].indexOf(fecha)>=0;
  var estadoCiudad=/(?:ple|pleno)\s+(?:de\s+(?:l\s*)?estat|del?\s+estado|de\s+la\s+(?:ciudad|ciutat))|estat\s+de\s+la\s+ciutat|estado\s+de\s+la\s+ciudad/.test(cabecera);
  var tipo=estadoCiudad?"Pleno de estado de la ciudad":(constit?"Pleno de constitución":(ses&&/^extra/i.test(ses[1])?"Extraordinario":"Ordinario"));
- if(jg){if(/MEDITERR[ÀA]NIA/i.test(cab))tipo="VIMED";else if(/QUALITAT/i.test(cab))tipo="VIQUAL";else if(/GRUP D.EMPRESES/i.test(cab))tipo="VIGEM";else{var cm=cab.match(/Junta\\s+General(?:\\s+(?:de|d[’']))?\\s*([^.;]{3,100})/i),company=cm?cm[1].replace(/\\s+/g," ").trim():"Empresa pública";company=company.replace(/^(de|d[’'])\\s*/i,"").replace(/\\s+(?:acta|data|sessió).*$/i,"").trim();tipo="Junta · "+(company||"Empresa pública");aviso.push("Se ha creado una categoría propia para esta junta/empresa pública: "+tipo+".")}}
+  if(jg){
+   // La categoría empresarial depende de la Junta General que encabeza el acta,
+   // no de menciones incidentales a las sociedades en el cuerpo del documento.
+   if(/MEDITERR[ÀA]NIA|MEDITERRANIA/i.test(cabecera))tipo="VIMED";
+   else if(/QUALITAT/i.test(cabecera))tipo="VIQUAL";
+   else if(/GRUP D.EMPRESES/i.test(cabecera))tipo="VIGEM";
+   else{
+    var cm=cabecera.match(/junta\\s+general(?:\\s+(?:de|d\\s*))?\\s*([^.;]{3,100})/i),
+        company=cm?cm[1].replace(/\\s+/g," ").trim():"Empresa pública";
+    company=company.replace(/^(?:de|d)\\s*/i,"").replace(/\\s+(?:acta|data|sessio).*$/i,"").trim();
+    tipo="Junta · "+(company||"Empresa pública");
+    aviso.push("Se ha creado una categoría propia para esta junta/empresa pública: "+tipo+".");
+   }
+  }
  var um=(jg&&T.match(/https?:\/\/videoacta\.viladecans\.cat\?pleno=\d+&punto=\d+/))||T.match(/https?:\/\/videoacta\.viladecans\.cat\?pleno=\d+/),url=um?um[0]:"";
  var i0=T.indexOf("MEMBRES ASSISTENTS"),blk=i0<0?"":T.slice(i0,(function(){var j=T.slice(i0).search(/NO ASSISTENTS?|Tamb[ée] hi assisteixen/);return j<0?i0+3000:i0+j})()),re=/(?:Alcalde-president|tinent[a]?\s+d.alcalde|Regidor[a]?)\s+([A-ZÇ][A-Za-zÇ]*(?:-[A-Z]{1,3})?)(?=\s)/g,tot=0;
  while((m=re.exec(blk))){seats[m[1]]=(seats[m[1]]||0)+1;tot++}
