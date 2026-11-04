@@ -55,6 +55,7 @@ dialog{border:1px solid var(--ln);border-radius:10px;padding:22px;width:min(560p
 .gr{display:grid;grid-template-columns:1fr repeat(3,62px);gap:6px 8px;align-items:center;padding:6px 0;border-bottom:1px solid var(--ln)}
 .gr input{padding:4px 6px;text-align:center}.gr.h{border:0;padding:0;font-size:12px;color:var(--mut);text-align:center}
 .dd{color:var(--ac)}
+.ar{display:grid;grid-template-columns:26px 1fr;gap:4px 10px;padding:12px 0;border-bottom:1px solid var(--ln)}.ar input{width:18px;height:18px;margin-top:3px}.ar .pv{padding:6px 0 0}.ar .vb{max-width:220px;margin-top:6px}.wn{font-size:13px;color:var(--ab);margin:4px 0 0}
 
 /* ===== Refresco visual v2 ===== */
 :root{--r:14px;--sh:0 1px 2px rgba(16,32,48,.05),0 8px 24px -12px rgba(16,32,48,.18);--hd2:#21496b}
@@ -137,17 +138,18 @@ a{text-underline-offset:3px}
 <div id="loginBox"><form class="fm" onsubmit="login(event)"><input id="adminEmail" class="x" type="email" autocomplete="username" placeholder="Correo electrónico" required><input id="adminPassword" class="x" type="password" autocomplete="current-password" placeholder="Contraseña" required><button class="p" type="submit">Entrar</button></form></div>
 <div id="sessionBox" hidden class="fm"><span id="signedAs" class="x"></span><button onclick="logout()">Cerrar sesión</button></div>
 <div id="adminEditor" class="pnl" hidden>
-<h2>Añadir sesión</h2><div class="fm"><input type="date" id="pf"><select id="pt"><option>Ordinario</option><option>Extraordinario</option><option>VIQUAL</option><option>VIMED</option></select><input id="pu" class="x" placeholder="Enlace al acta (opcional)"><button class="p" onclick="addP()">Añadir sesión</button></div>
+<h2>Añadir sesión</h2><div class="fm"><input type="date" id="pf"><select id="pt"><option>Ordinario</option><option>Extraordinario</option><option>VIQUAL</option><option>VIMED</option><option>VIGEM</option></select><input id="pu" class="x" placeholder="Enlace al acta (opcional)"><button class="p" onclick="addP()">Añadir sesión</button></div>
 <h2>Añadir votación</h2><div class="fm"><select id="vp"></select><input id="vn" placeholder="Punto" style="width:80px"><input id="va" class="x" placeholder="Asunto"><input type="number" id="vf" placeholder="Sí" min="0" style="width:75px"><input type="number" id="vc" placeholder="No" min="0" style="width:75px"><input type="number" id="vb" placeholder="Abst." min="0" style="width:75px"><input id="vq" class="x" placeholder="Grupos: PSC:si, ERC:no, PP:abst" style="flex-basis:100%"><select id="vk"><option>Moción</option><option>Propuesta</option><option>Otro</option></select><input id="vr" class="x" placeholder="Presentada por (grupos, separados por comas)"><button class="p" onclick="addV()">Añadir votación</button></div>
 <h2>Añadir grupo a una legislatura</h2><div class="fm"><select id="gl"></select><input id="gp" placeholder="Grupo" style="width:110px"><input type="number" id="gn" placeholder="Concejales" min="0" style="width:110px"><input id="gr" class="x" placeholder="Representantes, separados por comas"><button class="p" onclick="addG()">Añadir grupo</button></div><p class="m">Si el grupo ya existe en esa legislatura, se sustituye.</p>
 <h2>Renombrar grupo</h2><div class="fm"><select id="rno" aria-label="Grupo actual"></select><input id="rnn" class="x" placeholder="Nuevo nombre"><button class="p" onclick="renameParty()">Renombrar</button></div><p class="m">El cambio se aplica en todas las sesiones, votaciones, proponentes y legislaturas. Si el nuevo nombre ya existe, se fusionan los dos grupos.</p>
+<h2>Importar acta (PDF)</h2><p class="m">Sube el acta de la sesión en PDF. La aplicación lee la fecha, los acuerdos, los recuentos y el voto de cada grupo. Antes de guardar podrás revisar y desmarcar lo que no quieras.</p><div class="fm"><input type="file" id="af" accept="application/pdf,.pdf"><button class="p" onclick="actaRun()">Analizar acta</button></div><div id="actaOut"></div>
 <h2>Importar y exportar JSON</h2><p class="m">Admite una lista de sesiones o un objeto con «plenos» y «legislaturas». Cada sesión se identifica por fecha y tipo.</p><textarea id="ij"></textarea><div class="fm"><input type="file" id="if" accept=".json"><button class="p" onclick="imp()">Importar</button><button onclick="exp()">Exportar</button></div>
 </div></section></main>
 <footer><div class="in"><span>Datos transcritos de las actas del pleno; cada sesión enlaza a su acta. <span id="lu"></span></span><a href="#datos">Administración</a></div></footer>
 <dialog id="dlg"></dialog><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="./js/config.js"></script><script>
 const $=i=>document.getElementById(i);
 var K="plenos-viladecans",K2="leg-viladecans",LG="",TP="",PS="",CG="",PP="favor",tab="resumen",PK=[],ST={m:{},A:{}};
-const TABS=[["resumen","Resumen"],["plenos","Sesiones"],["partidos","Grupos"],["consistorio","Consistorio"]],L={favor:"A favor",contra:"En contra",abst:"Abstención",dv:"Voto dividido",mo:"Mociones presentadas"},S={favor:"Sí",contra:"No",abst:"Abst."},CL={favor:"ok",contra:"ko",abst:"ab"},CT=["Ordinario","Extraordinario","VIQUAL","VIMED"],
+const TABS=[["resumen","Resumen"],["plenos","Sesiones"],["partidos","Grupos"],["consistorio","Consistorio"]],L={favor:"A favor",contra:"En contra",abst:"Abstención",dv:"Voto dividido",mo:"Mociones presentadas"},S={favor:"Sí",contra:"No",abst:"Abst."},CL={favor:"ok",contra:"ko",abst:"ab"},CT=["Ordinario","Extraordinario","VIQUAL","VIMED","VIGEM"],
 DEF=[["2011-2015","2011-06-11","2015-06-12"],["2015-2019","2015-06-13","2019-06-14"],["2019-2023","2019-06-15","2023-06-16"],["2023-2027","2023-06-17","2027-06-30"]],
 PC={psc:"#c8363f","psc-cp":"#c8363f",erc:"#e2a21b","erc-am":"#e2a21b",pp:"#2a6db5",vox:"#5b8c2a",junts:"#1fa39c",comuns:"#7b4a9c","vecp-c":"#7b4a9c",cs:"#e8702a",cup:"#c9b81c"},PAL=["#1f5fa8","#8e6e53","#117a8b","#b03a77","#5d6d7e","#d68910","#4a7c1f","#7d3c98"];
 function ld(k,d){try{return JSON.parse(localStorage.getItem(k)||"null")||d}catch(e){return d}}
@@ -164,7 +166,7 @@ function bootSupabase(){if(!window.supabase||!window.OBS_CONFIG||!OBS_CONFIG.url
 const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const res=v=>v.resultado||((+v.favor||0)>(+v.contra||0)?"Aprobado":"Rechazado"),apr=v=>/aprob/i.test(res(v));
 const fd=s=>{const p=String(s).split("-");return p.length==3?p[2]+"/"+p[1]+"/"+p[0]:s};
-function cat(p){const t=(p.tipo||"").toLowerCase();return t.indexOf("viqual")>-1?"VIQUAL":t.indexOf("vimed")>-1?"VIMED":t.indexOf("extra")>-1?"Extraordinario":"Ordinario"}
+function cat(p){const t=(p.tipo||"").toLowerCase();return t.indexOf("viqual")>-1?"VIQUAL":t.indexOf("vimed")>-1?"VIMED":t.indexOf("vigem")>-1?"VIGEM":t.indexOf("extra")>-1?"Extraordinario":"Ordinario"}
 const legOf=f=>{const g=G.find(x=>f>=x.inicio&&f<=x.fin);return g?g.id:""};
 function col(n){const c=PC[String(n).toLowerCase()];if(c)return c;let h=0;for(let i=0;i<n.length;i++)h=(h*31+n.charCodeAt(i))%1000;return PAL[h%PAL.length]}
 function nv(x){const s=String(x).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim();if(/^(si|s$|f|a favor)/.test(s))return"favor";if(/^(n|c|en contra)/.test(s))return"contra";if(/^(ab|a$)/.test(s))return"abst";return""}
@@ -230,6 +232,70 @@ const mv=obj=>{if(!obj)return obj;const r={};Object.keys(obj).forEach(k=>{if(!sa
 D.forEach(p=>(p.votaciones||[]).forEach(v=>{v.partidos=mv(v.partidos);if(v.desglose)v.desglose=mv(v.desglose);if(v.proponente){const a=[];String(v.proponente).split(",").map(x=>x.trim()).filter(Boolean).forEach(x=>{x=same(x)?n:x;if(a.indexOf(x)<0)a.push(x)});v.proponente=a.join(", ")}}));
 G.forEach(g=>{const r=[];(g.grupos||[]).forEach(x=>{const nm=same(x.partido)?n:x.partido,e=r.find(y=>y.partido==nm);if(e){e.concejales=(+e.concejales||0)+(+x.concejales||0);(x.representantes||[]).forEach(q=>{if((e.representantes=e.representantes||[]).indexOf(q)<0)e.representantes.push(q)})}else r.push(Object.assign({},x,{partido:nm}))});r.sort((a,b)=>b.concejales-a.concejales);g.grupos=r});
 if(PS&&same(PS))PS=n;$("rnn").value="";sv();render();st("Grupo «"+o+"» renombrado a «"+n+"».")}
+/* ===== Lector de actas (PDF del pleno) ===== */
+function actaTitulo(t,K){var u=t.toLowerCase();u=u.charAt(0).toUpperCase()+u.slice(1);K.forEach(function(k){u=u.replace(new RegExp("\\b"+k.replace(/[-]/g,"\\-")+"\\b","gi"),k)});return u.replace(/\b(sl|sa|sau|spm|pgm|rlt|pes|paif|pef|iva|boe|dogc|femp|viqual|vimed|vigem|rom|rtdg|pee|urbaser)\b/gi,function(x){return x.toUpperCase()}).replace(/\b(viladecans|ajuntament|generalitat|catalunya|barcelona)\b/g,function(x){return x.charAt(0).toUpperCase()+x.slice(1)})}
+function actaGrupos(txt,seats,known){
+ /* txt: "13 vots a favor (PSC-CP i VECP-C-F. Ramón Espejo-); cap vot en contra; i 12 abstencions (ERC-AM, PP, VOX i VECP-C-E. García)" */
+ var opts={favor:/(?:\d+|un|una)\s+vots?\s+a\s+favor\s*(?:\(([^)]*)\))?/i,contra:/(?:\d+|un|una)\s+vots?\s+en\s+contra\s*(?:\(([^)]*)\))?/i,abst:/(?:\d+|una?)\s+abstenci(?:ó|ons)\s*(?:\(([^)]*)\))?/i};
+ var ks=known.slice().sort(function(a,b){return b.length-a.length}),acc={};
+ ["favor","contra","abst"].forEach(function(o){var m=txt.match(opts[o]);if(!m||!m[1])return;m[1].split(/\s*,\s*|\s+i\s+/).forEach(function(it){it=it.trim();if(!it)return;var p=ks.filter(function(k){return it.indexOf(k)==0})[0],rest="";if(p)rest=it.slice(p.length).replace(/^[\s-]+|[\s-]+$/g,"");else{if(!/^[A-ZÇ][A-Za-zÇ]*(?:-[A-Z]{1,3})?$/.test(it))return;p=it}
+  var a=acc[p]||(acc[p]={f:{favor:0,contra:0,abst:0},w:{},nm:0});if(rest){a.f[o]+=1;a.nm++}else a.w[o]=1})});
+ var part={},des={};
+ Object.keys(acc).forEach(function(p){var a=acc[p],w=Object.keys(a.w),n=a.f.favor+a.f.contra+a.f.abst;
+  if(!a.nm&&w.length==1){part[p]=w[0];return}
+  if(a.nm&&!w.length&&n==1){part[p]=["favor","contra","abst"].filter(function(o){return a.f[o]})[0];return}
+  var f={favor:a.f.favor,contra:a.f.contra,abst:a.f.abst};if(w.length==1&&seats[p]){var r=seats[p]-n;if(r>0)f[w[0]]+=r}
+  var nz=["favor","contra","abst"].filter(function(o){return f[o]>0});if(nz.length==1)part[p]=nz[0];else if(nz.length>1){part[p]="dividido";des[p]=f}});
+ return{partidos:part,desglose:des}}
+function parseActa(text,extra){
+ var T=text.replace(/\s+/g," "),aviso=[],seats={},m;
+ var d=T.match(/DATA:\s*(\d\d)\/(\d\d)\/(\d{4})/);if(!d)return{error:"No se ha encontrado la fecha de la sesión (campo «DATA:»). ¿Es un acta del pleno?"};
+ var fecha=d[3]+"-"+d[2]+"-"+d[1],ses=T.match(/Sessi[óo]\s+(ordin[àa]ria|extraordin[àa]ria)/i),tipo=ses&&/^extra/i.test(ses[1])?"Extraordinario":"Ordinario",cab=T.slice(0,T.indexOf("DATA:")),jg=/Junta General/i.test(cab);
+ if(jg){if(/MEDITERR[ÀA]NIA/i.test(cab))tipo="VIMED";else if(/QUALITAT/i.test(cab))tipo="VIQUAL";else if(/GRUP D.EMPRESES/i.test(cab))tipo="VIGEM";else aviso.push("Es una junta general, pero no se ha podido identificar la sociedad (VIMED, VIQUAL o VIGEM).")}
+ var um=(jg&&T.match(/https?:\/\/videoacta\.viladecans\.cat\?pleno=\d+&punto=\d+/))||T.match(/https?:\/\/videoacta\.viladecans\.cat\?pleno=\d+/),url=um?um[0]:"";
+ var i0=T.indexOf("MEMBRES ASSISTENTS"),blk=i0<0?"":T.slice(i0,(function(){var j=T.slice(i0).search(/NO ASSISTENTS?|Tamb[ée] hi assisteixen/);return j<0?i0+3000:i0+j})()),re=/(?:Alcalde-president|tinent[a]?\s+d.alcalde|Regidor[a]?)\s+([A-ZÇ][A-Za-zÇ]*(?:-[A-Z]{1,3})?)(?=\s)/g,tot=0;
+ while((m=re.exec(blk))){seats[m[1]]=(seats[m[1]]||0)+1;tot++}
+ if(!tot)aviso.push("No se ha podido leer la lista de concejales asistentes; se usarán solo los grupos citados en las votaciones.");
+ var known=Object.keys(seats);(extra||[]).forEach(function(k){if(known.indexOf(k)<0)known.push(k)});
+ var hr=/ACORD NÚM\.\s*(\d+)\.-\s*(.+?)\.-(?=\s)/g,hs=[];while((m=hr.exec(T)))hs.push({n:m[1],t:m[2],a:m.index,b:hr.lastIndex});
+ var vots=[],omit=[];
+ hs.forEach(function(h,i){var sec=T.slice(h.b,i+1<hs.length?hs[i+1].a:T.length),all=[],rr=/Resultat de la votació:\s*/g,x;
+  while((x=rr.exec(sec))){var s=sec.slice(rr.lastIndex),cut=s.search(/Hi va haver|Es fa constar|https?:|ACORD NÚM|\bEl secretari\b|\bL.alcalde\b/);all.push((cut<0?s:s.slice(0,cut)).slice(0,700).trim())}
+  var title=h.t.trim();
+  if(!all.length){omit.push(h.n+". "+actaTitulo(title,known).slice(0,70)+" (sin votación)");return}
+  var r=all[all.length-1],kind=(r.match(/^(Aprovat|Aprovada|Rebutjat|Rebutjada)/i)||[])[1];
+  if(!kind){omit.push(h.n+". "+actaTitulo(title,known).slice(0,70)+" ("+r.split(/[.\-]/)[0].trim().toLowerCase()+")");return}
+  var apro=/^aprov/i.test(kind),v={punto:h.n,asunto:actaTitulo(title,known),favor:0,contra:0,abst:0,partidos:{},resultado:apro?"Aprobado":"Rechazado"},warn=[];
+  if(/unanimitat/i.test(r)){v.favor=tot;known.filter(function(k){return seats[k]}).forEach(function(k){v.partidos[k]="favor"});if(!tot)warn.push("unanimidad sin lista de asistentes")}
+  else{var n=function(o){var q=r.match(o);if(!q)return 0;return/^(cap|ning)/i.test(q[1])?0:/^una?$/i.test(q[1])?1:+q[1]};
+   v.favor=n(/(\d+|un|una)\s+vots?\s+a\s+favor/i);v.contra=n(/(\d+|un|una|cap)\s+vots?\s+en\s+contra/i);v.abst=n(/(\d+|una?|cap)\s+abstenci(?:ó|ons)/i);
+   var g=actaGrupos(r,seats,known);v.partidos=g.partidos;if(Object.keys(g.desglose).length)v.desglose=g.desglose;
+   if(!v.favor&&!v.contra&&!v.abst)warn.push("no se han podido leer los recuentos")}
+  if(!Object.keys(v.partidos).length)warn.push("sin desglose por grupos");
+  else if(tot&&!/unanimitat/i.test(r)){var c={favor:0,contra:0,abst:0};Object.keys(v.partidos).forEach(function(p){var s=v.partidos[p];if(s=="dividido"){var dd=v.desglose[p];c.favor+=dd.favor;c.contra+=dd.contra;c.abst+=dd.abst}else c[s]+=seats[p]||0});if(c.favor!=v.favor||c.contra!=v.contra||c.abst!=v.abst)warn.push("la suma por grupos ("+c.favor+"/"+c.contra+"/"+c.abst+") no cuadra con el total")}
+  if(/^MOCI[ÓO]/i.test(title)){v.clase="Moción";var ps=/TOTS (ELS )?GRUPS/i.test(title)?known.filter(function(k){return seats[k]}):known.filter(function(k){return new RegExp("(^|[^A-Za-z-])"+k.replace(/-/g,"\\-")+"(?![A-Za-z-])").test(title)}).sort(function(a,b){return title.indexOf(a)-title.indexOf(b)});v.proponente=ps.join(", ");if(!v.proponente)warn.push("no se ha detectado quién presenta la moción")}
+  v.aviso=warn;vots.push(v)});
+ if(!hs.length)aviso.push("No se han encontrado acuerdos («ACORD NÚM. …»). Puede que el PDF sea una imagen escaneada.");
+ return{fecha:fecha,tipo:tipo,url:url,votaciones:vots,omitidas:omit,aviso:aviso,asistentes:tot}}
+
+var ACTA=null;
+function loadPdfJs(){return window.pdfjsLib?Promise.resolve():new Promise(function(ok,ko){var s=document.createElement("script");s.src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js";s.onload=function(){pdfjsLib.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";ok()};s.onerror=function(){ko(new Error("no se pudo cargar el lector de PDF; comprueba la conexión"))};document.head.appendChild(s)})}
+async function actaText(f){await loadPdfJs();const doc=await pdfjsLib.getDocument({data:new Uint8Array(await f.arrayBuffer())}).promise,out=[];
+ for(let i=1;i<=doc.numPages;i++){const c=await(await doc.getPage(i)).getTextContent(),it=c.items.filter(x=>x.str!=="").map(x=>({s:x.str,x:x.transform[4],y:x.transform[5],w:x.width})).sort((a,b)=>b.y-a.y||a.x-b.x),ln=[];
+  it.forEach(t=>{const l=ln[ln.length-1];if(l&&Math.abs(l.y-t.y)<=3)l.it.push(t);else ln.push({y:t.y,it:[t]})});
+  out.push(ln.map(l=>{l.it.sort((a,b)=>a.x-b.x);let s="",e=null;l.it.forEach(t=>{if(e!==null&&t.x-e>1.5&&!/\s$/.test(s)&&!/^\s/.test(t.s))s+=" ";s+=t.s;e=t.x+t.w});return{y:l.y,t:s.trim()}}).filter(l=>l.t&&l.t!="Ajuntament de Viladecans"&&!(/^\d+$/.test(l.t)&&l.y<70)).map(l=>l.t).join("\n"))}
+ return out.join("\n")}
+async function actaRun(){if(!IS_ADMIN)return;const f=$("af").files[0],o=$("actaOut");if(!f){o.innerHTML='<p class="m">Elige primero un archivo PDF.</p>';return}
+ o.innerHTML='<p class="m">Leyendo el acta…</p>';try{const r=parseActa(await actaText(f),names());if(r.error){ACTA=null;o.innerHTML='<p class="m ko">'+esc(r.error)+"</p>";return}ACTA=r;actaView()}catch(e){ACTA=null;o.innerHTML='<p class="m ko">No se pudo leer el PDF: '+esc(e.message||e)+"</p>"}}
+function actaView(){const r=ACTA,o=$("actaOut"),p=D.find(x=>x.fecha==r.fecha&&cat(x)==r.tipo),dup=v=>p&&(p.votaciones||[]).some(w=>String(w.punto)==String(v.punto));
+ o.innerHTML=`<div class="pnl" style="margin-top:6px"><h2>${fd(r.fecha)} <span class="tag t">${r.tipo}</span></h2><p class="m">${r.votaciones.length} votaciones detectadas${r.asistentes?" · "+r.asistentes+" concejales presentes":""}.${p?" Esta sesión ya existe: solo se añadirán los puntos que no estén ya registrados.":""}</p>`+r.aviso.map(a=>`<p class="wn">${esc(a)}</p>`).join("")
+ +(r.votaciones.map((v,i)=>`<label class="ar"><input type="checkbox" data-i="${i}"${dup(v)?"":" checked"}><span><b>${esc(v.punto)}.</b> ${esc(v.asunto)} ${tg(v)}${v.proponente?`<br><small class="m">${esc(v.clase)} de ${esc(v.proponente)}</small>`:""}${dup(v)?'<br><small class="wn">Ya existe el punto '+esc(v.punto)+' en esta sesión.</small>':""}${v.aviso.map(a=>`<br><small class="wn">Revisar: ${esc(a)}</small>`).join("")}<span class="vb" style="display:grid">${vb(v).replace(/^<span class="vb">|<\/span>$/g,"")}</span><span class="pv">${pv(v)}</span></span></label>`).join("")||'<p class="e">No se ha detectado ninguna votación con recuento.</p>')
+ +(r.omitidas.length?`<details style="margin-top:10px"><summary style="display:block;padding:6px 0"><span class="m">Puntos sin votación (${r.omitidas.length})</span></summary><ul class="m">${r.omitidas.map(x=>"<li>"+esc(x)+"</li>").join("")}</ul></details>`:"")
+ +'<div class="fm" style="margin-top:12px"><button class="p" onclick="actaImport()">Importar seleccionadas</button><button onclick="ACTA=null;$(\'actaOut\').innerHTML=\'\'">Cancelar</button></div></div>'}
+function actaImport(){if(!IS_ADMIN||!ACTA)return;const sel=[...document.querySelectorAll("#actaOut input[data-i]:checked")].map(x=>+x.dataset.i);if(!sel.length)return;
+ let p=D.find(x=>x.fecha==ACTA.fecha&&cat(x)==ACTA.tipo);if(!p){p={fecha:ACTA.fecha,tipo:ACTA.tipo,url:ACTA.url,votaciones:[]};D.push(p)}else if(!p.url&&ACTA.url)p.url=ACTA.url;
+ let a=0,s=0;sel.forEach(i=>{const v=Object.assign({},ACTA.votaciones[i]);delete v.aviso;if((p.votaciones||[]).some(w=>String(w.punto)==String(v.punto))){s++;return}(p.votaciones=p.votaciones||[]).push(v);a++});
+ $("actaOut").innerHTML='<p class="m ok">'+a+" votaciones importadas"+(s?" ("+s+" omitidas porque ese punto ya existía)":"")+".</p>";ACTA=null;$("af").value="";sv();render()}
 function dg(i,j){if(!IS_ADMIN)return;G[i].grupos.splice(j,1);sv();render()}
 function dv(i,j){if(!IS_ADMIN)return;D[i].votaciones.splice(j,1);sv();render()}
 function dlg(t,f,cb){const d=$("dlg");d.innerHTML=`<form method="dialog"><h3>${t}</h3>`+f.map((x,k)=>`<label>${x[0]}`+(x[2]=="select"?`<select name="f${k}">${x[3].map(o=>`<option${o==x[1]?" selected":""}>${o}</option>`).join("")}</select>`:`<input name="f${k}" type="${x[2]||"text"}" value="${esc(x[1])}">`)+"</label>").join("")+'<div class="fm"><button class="p" value="ok">Guardar</button><button value="x" formnovalidate>Cancelar</button></div></form>';d.querySelector("form").onsubmit=e=>{if(e.submitter&&e.submitter.value=="ok")cb(f.map((x,k)=>d.querySelector("[name=f"+k+"]").value))};d.showModal()}
