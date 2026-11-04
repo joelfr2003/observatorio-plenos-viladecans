@@ -330,20 +330,24 @@ function parseActa(text,extra,filename){
   if(fn){var fy=fn[3];if(fy.length===2)fy=(+fy>=70?"19":"20")+fy;fecha=fy+"-"+fn[2]+"-"+fn[1];aviso.push("La fecha se ha deducido del nombre del archivo ("+fn[1]+"/"+fn[2]+"/"+fy+"). Comprueba que sea correcta.")}
  }
  if(!fecha)return{error:"No se ha podido identificar la fecha. Se ha buscado DATA/FECHA y fechas dd/mm/aaaa; revisa el nombre del PDF o introduce la sesión manualmente."};
- var ses=T.match(/(?:Sessi[óo]\s+(?:plen[àa]ria\s+)?|(?:Ple|Pleno)\s+)(ordin[àa]ria|extraordin[àa]ria)/i),cab=T.slice(0,5000),cabecera=head,jg=/Junta\s+General/i.test(cabecera);
+ var ses=T.match(/(?:Sessi[óo]\s+(?:plen[àa]ria\s+)?|(?:Ple|Pleno)\s+)(ordin[àa]ria|extraordin[àa]ria)/i),cab=T.slice(0,5000),cabecera=head;
  var constit=/(?:sessio|sesion)\s+(?:de\s+)?(?:constitucio|constitutiva)|ple\s+(?:de\s+)?constitucio|constitucio(?:n)?\s+(?:de\s+)?(?:l\s*ajuntament|del?\s+ayuntamiento|del?\s+consistorio|ajuntament|ayuntamiento|consistorio)|(?:ajuntament|ayuntamiento|consistorio)\s+(?:de\s+)?constitucio(?:n)?|constitucio(?:n)?\s+(?:del?\s+)?(?:nou\s+)?(?:ajuntament|ayuntamiento|consistorio)|(?:nou\s+)?(?:ajuntament|ayuntamiento|consistorio)\s+constituit|constitucion\s+del\s+pleno|pleno\s+constituyente/.test(cabecera);
  constit=constit||["2011-06-11","2015-06-13","2019-06-15","2023-06-17"].indexOf(fecha)>=0;
  var estadoCiudad=/(?:ple|pleno)\s+(?:de\s+(?:l\s*)?estat|del?\s+estado|de\s+la\s+(?:ciudad|ciutat))|estat\s+de\s+la\s+ciutat|estado\s+de\s+la\s+ciudad/.test(cabecera);
- // Primero se comprueba si el encabezado identifica inequívocamente una
- // Junta General de una sociedad. Solo después se clasifica como pleno.
- // Así, la palabra "ordinària/extraordinària" de otro apartado no pisa VIMED.
- var empresaJunta = jg && /MEDITERR[ÀA]NIA|MEDITERRANIA|VIMED/i.test(cabecera) ? "VIMED"
-   : jg && /QUALITAT|VIQUAL/i.test(cabecera) ? "VIQUAL"
-   : jg && /GRUP D[’' .]?EMPRESES|VIGEM/i.test(cabecera) ? "VIGEM" : "";
- var tipo = empresaJunta || (estadoCiudad ? "Pleno de estado de la ciudad"
+ // Una sesión plenaria explícita siempre prevalece sobre menciones incidentales
+ // a sociedades que puedan aparecer en el encabezado o en el orden del día.
+ // Solo se reconoce una sociedad cuando su nombre está junto a "Junta General".
+ var jgMatch=cabecera.match(/junta\s+general.{0,180}/i),jgInversa=cabecera.match(/.{0,100}(?:vimed|viqual|vigem|mediterrania|qualitat|grup d.?empreses).{0,100}junta\s+general/i);
+ var jg=!!(jgMatch||jgInversa);
+ var bloqueJG=jg?(jgMatch?jgMatch[0]:jgInversa[0]):"";
+ var empresaJunta = /vimed|mediterrania/i.test(bloqueJG) ? "VIMED"
+   : /viqual|qualitat/i.test(bloqueJG) ? "VIQUAL"
+   : /vigem|grup d.?empreses/i.test(bloqueJG) ? "VIGEM" : "";
+ var tipo = ses ? (/^extra/i.test(ses[1]) ? "Extraordinario" : "Ordinario")
+   : estadoCiudad ? "Pleno de estado de la ciudad"
    : constit ? "Pleno de constitución"
-   : ses && /^extra/i.test(ses[1]) ? "Extraordinario" : "Ordinario");
- if(jg && !empresaJunta && !ses && !constit && !estadoCiudad){
+   : empresaJunta || "Ordinario";
+ if(!ses && !constit && !estadoCiudad && jg && !empresaJunta){
    var cm=cabecera.match(/junta\s+general(?:\s+(?:de|d\s*))?\s*([^.;]{3,100})/i),
        company=cm?cm[1].replace(/\s+/g," ").trim():"Empresa pública";
    company=company.replace(/^(?:de|d)\s*/i,"").replace(/\s+(?:acta|data|sessio).*$/i,"").trim();
