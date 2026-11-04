@@ -186,13 +186,13 @@ const nov=v=>res(v)=="Sin votación",nvot=p=>(p.votaciones||[]).filter(v=>!nov(v
 const fd=s=>{const p=String(s).split("-");return p.length==3?p[2]+"/"+p[1]+"/"+p[0]:s};
 function cat(p){
  const raw=String(p.tipo||"Ordinario").trim();
- const norm=x=>String(x||"").toLowerCase().normalize("NFD").replace(/[\\u0300-\\u036f]/g,"").replace(/[’‘´`]/g," ").replace(/[\\s\\u2010-\\u2015-]+/g," ").trim();
+ const norm=x=>String(x||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[’‘´`]/g," ").replace(/[\s\u2010-\u2015-]+/g," ").trim();
  const t=norm(raw);
  // Las categorías de empresas públicas solo se reconocen como tipo propio
  // cuando el registro ya identifica expresamente una Junta General.
  if(/^(viqual|vimed|vigem)$/i.test(raw))return raw.toUpperCase();
- if(/^junta\\s*[·:]\\s*/i.test(raw))return raw.replace(/^junta\\s*[·:]\\s*/i,"Junta · ");
- if(/^(?:pleno|ple)\\s+(?:de\\s+)?(?:l? estat|del estado|de la ciudad|de la ciutat)$/.test(t)||/^(?:estat de la ciutat|estado de la ciudad)$/.test(t))return "Pleno de estado de la ciudad";
+ if(/^junta\s*[·:]\s*/i.test(raw))return raw.replace(/^junta\s*[·:]\s*/i,"Junta · ");
+ if(/^(?:pleno|ple)\s+(?:de\s+)?(?:l? estat|del estado|de la ciudad|de la ciutat)$/.test(t)||/^(?:estat de la ciutat|estado de la ciudad)$/.test(t))return "Pleno de estado de la ciudad";
  if(/^(?:pleno de constitucion|ple de constitucio|constitucion del pleno)$/.test(t)||t.indexOf("constitucion del ayuntamiento")>=0||t.indexOf("constitucio de l ajuntament")>=0)return "Pleno de constitución";
  if(/^(?:(?:sesion|sessio) )?extraordinari[ao]$/.test(t)||t==="extraordinario"||/^pleno extraordinario$/.test(t))return "Extraordinario";
  if(/^(?:(?:sesion|sessio) )?ordinari[ao]$/.test(t)||t==="ordinario"||/^pleno ordinario$/.test(t))return "Ordinario";
@@ -330,21 +330,21 @@ function parseActa(text,extra,filename){
   if(fn){var fy=fn[3];if(fy.length===2)fy=(+fy>=70?"19":"20")+fy;fecha=fy+"-"+fn[2]+"-"+fn[1];aviso.push("La fecha se ha deducido del nombre del archivo ("+fn[1]+"/"+fn[2]+"/"+fy+"). Comprueba que sea correcta.")}
  }
  if(!fecha)return{error:"No se ha podido identificar la fecha. Se ha buscado DATA/FECHA y fechas dd/mm/aaaa; revisa el nombre del PDF o introduce la sesión manualmente."};
- var ses=T.match(/Sessi[óo]\s+(ordin[àa]ria|extraordin[àa]ria)/i),cab=T.slice(0,5000),cabecera=head,jg=/Junta\s+General/i.test(cabecera);
+ var ses=T.match(/(?:Sessi[óo]\s+(?:plen[àa]ria\s+)?|(?:Ple|Pleno)\s+)(ordin[àa]ria|extraordin[àa]ria)/i),cab=T.slice(0,5000),cabecera=head,jg=/Junta\s+General/i.test(cabecera);
  var constit=/(?:sessio|sesion)\s+(?:de\s+)?(?:constitucio|constitutiva)|ple\s+(?:de\s+)?constitucio|constitucio(?:n)?\s+(?:de\s+)?(?:l\s*ajuntament|del?\s+ayuntamiento|del?\s+consistorio|ajuntament|ayuntamiento|consistorio)|(?:ajuntament|ayuntamiento|consistorio)\s+(?:de\s+)?constitucio(?:n)?|constitucio(?:n)?\s+(?:del?\s+)?(?:nou\s+)?(?:ajuntament|ayuntamiento|consistorio)|(?:nou\s+)?(?:ajuntament|ayuntamiento|consistorio)\s+constituit|constitucion\s+del\s+pleno|pleno\s+constituyente/.test(cabecera);
  constit=constit||["2011-06-11","2015-06-13","2019-06-15","2023-06-17"].indexOf(fecha)>=0;
  var estadoCiudad=/(?:ple|pleno)\s+(?:de\s+(?:l\s*)?estat|del?\s+estado|de\s+la\s+(?:ciudad|ciutat))|estat\s+de\s+la\s+ciutat|estado\s+de\s+la\s+ciudad/.test(cabecera);
  var tipo=estadoCiudad?"Pleno de estado de la ciudad":(constit?"Pleno de constitución":(ses&&/^extra/i.test(ses[1])?"Extraordinario":"Ordinario"));
-  if(jg){
+  if(jg&&!ses&&!constit&&!estadoCiudad){
    // La categoría empresarial depende de la Junta General que encabeza el acta,
    // no de menciones incidentales a las sociedades en el cuerpo del documento.
    if(/MEDITERR[ÀA]NIA|MEDITERRANIA/i.test(cabecera))tipo="VIMED";
    else if(/QUALITAT/i.test(cabecera))tipo="VIQUAL";
    else if(/GRUP D.EMPRESES/i.test(cabecera))tipo="VIGEM";
    else{
-    var cm=cabecera.match(/junta\\s+general(?:\\s+(?:de|d\\s*))?\\s*([^.;]{3,100})/i),
-        company=cm?cm[1].replace(/\\s+/g," ").trim():"Empresa pública";
-    company=company.replace(/^(?:de|d)\\s*/i,"").replace(/\\s+(?:acta|data|sessio).*$/i,"").trim();
+    var cm=cabecera.match(/junta\s+general(?:\s+(?:de|d\s*))?\s*([^.;]{3,100})/i),
+        company=cm?cm[1].replace(/\s+/g," ").trim():"Empresa pública";
+    company=company.replace(/^(?:de|d)\s*/i,"").replace(/\s+(?:acta|data|sessio).*$/i,"").trim();
     tipo="Junta · "+(company||"Empresa pública");
     aviso.push("Se ha creado una categoría propia para esta junta/empresa pública: "+tipo+".");
    }
