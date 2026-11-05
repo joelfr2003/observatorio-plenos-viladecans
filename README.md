@@ -40,3 +40,10 @@ Abre la URL publicada desde Chrome/Edge en Android y elige **Instalar aplicació
 
 ## Limitación de esta primera versión
 La aplicación conserva el flujo actual: crear la sesión, añadir el enlace al acta y registrar manualmente cada votación y el voto por grupo. Todavía no extrae automáticamente las votaciones de un PDF ni almacena los PDF en Supabase Storage.
+
+## Novedades v6: usuarios y accesos
+1. Ejecuta `supabase-schema-v2.sql` en el SQL Editor (después del esquema original).
+2. Sube `index.html` y `sw.js` a GitHub (sustituyen a los anteriores).
+3. En **Authentication → Providers → Email** decide si exiges confirmar el correo (recomendado) o la desactivas para que el alta sea inmediata.
+4. Para ver los datos hay que registrarse. Solo las cuentas de `observatorio_admins` pueden editar; el resto es solo lectura.
+5. El administrador ve en **Mi cuenta → Usuarios** quién está conectado, cuándo entró por última vez y su última actividad.
