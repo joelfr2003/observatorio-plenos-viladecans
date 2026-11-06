@@ -1,4 +1,4 @@
-const CACHE = "observatorio-viladecans-v9";
+const CACHE = "observatorio-viladecans-v10";
 
 const APP_SHELL = [
   "./",
@@ -7,7 +7,8 @@ const APP_SHELL = [
   "./icons/icon.svg",
   "./icons/icon-192.png",
   "./icons/icon-512.png",
-  "./js/config.js"
+  "./js/config.js",
+  "./js/analisis.js"
 ];
 
 self.addEventListener("install", event => {
