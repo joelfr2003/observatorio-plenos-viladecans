@@ -282,7 +282,7 @@ function cat(p){
  // No clasificar por menciones sueltas de nombres empresariales en el título.
  return raw||"Ordinario";
 }
-function refreshCategories(){const extra=D.map(p=>cat(p)).filter(c=>c&&!CT.includes(c));extra.sort((a,b)=>a.localeCompare(b,"es"));CT.splice(0,CT.length,...["Ordinario","Extraordinario","Pleno de constitución","Pleno de estado de la ciudad","VIQUAL","VIMED","VIGEM"],...extra)}
+function refreshCategories(){const extra=[...new Set(D.map(p=>cat(p)))].filter(c=>c&&!CT.includes(c));extra.sort((a,b)=>a.localeCompare(b,"es"));CT.splice(0,CT.length,...["Ordinario","Extraordinario","Pleno de constitución","Pleno de estado de la ciudad","VIQUAL","VIMED","VIGEM"],...extra)}
 const legOf=f=>{const g=G.find(x=>f>=x.inicio&&f<=x.fin);return g?g.id:""};
 function col(n){const c=PC[String(n).toLowerCase()];if(c)return c;let h=0;for(let i=0;i<n.length;i++)h=(h*31+n.charCodeAt(i))%1000;return PAL[h%PAL.length]}
 function nv(x){const s=String(x).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim();if(/^(si|s$|f|a favor)/.test(s))return"favor";if(/^(n|c|en contra)/.test(s))return"contra";if(/^(ab|a$)/.test(s))return"abst";return""}
