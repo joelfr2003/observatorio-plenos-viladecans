@@ -178,6 +178,116 @@ a{text-underline-offset:3px}
 .inf-top{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
 @media(max-width:640px){.inf-hero{padding:20px 18px}.inf-g{grid-template-columns:1fr 84px}.inf-g>.bar{grid-column:1/3;grid-row:2}.inf-pt{grid-template-columns:26px 1fr}.inf-pt>.bar,.inf-pt>.vb{grid-column:2}.inf-cmp{grid-template-columns:1fr}.inf-cmp small{grid-column:1}.inf-grid{grid-template-columns:1fr}}
 @media print{header,#fb,.inf-nav,footer{display:none!important}.inf-pts{max-height:none}}
+
+/* ===== Optimización responsive v3 (PC · tablet · móvil) ===== */
+:root{--gut:clamp(14px,3vw,32px);--maxw:1240px}
+@media(min-width:1500px){:root{--maxw:1360px}}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 72px);scroll-behavior:smooth}
+body{min-height:100vh;min-height:100dvh;overflow-wrap:break-word;-webkit-tap-highlight-color:transparent}
+button,a,summary,select,input{touch-action:manipulation}
+img,svg,canvas,video{max-width:100%}
+.in{max-width:var(--maxw);padding-inline:max(var(--gut),env(safe-area-inset-left),env(safe-area-inset-right))}
+main{max-width:var(--maxw);padding-inline:max(var(--gut),env(safe-area-inset-left),env(safe-area-inset-right))}
+.w{overflow-x:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
+.pnl,.chartbox,.kp,.ses,.inf-hero{min-width:0}
+.hm{margin-inline:auto}
+#gate{align-items:flex-start;min-height:100vh;min-height:100dvh}.gcard{margin:auto}
+
+/* --- Escritorio --- */
+@media(min-width:901px){
+ #fb{top:env(safe-area-inset-top,0px)}
+ .analytics{grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+ .inf-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+ .kpis{grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
+ .two{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .pnl{padding-inline:26px}
+ .lead{max-width:30em}
+}
+@media(min-width:1200px){.kp b{font-size:38px}.pnl{padding-inline:28px}}
+
+/* --- Tablet --- */
+@media(min-width:641px) and (max-width:900px){
+ .two,.analytics,.inf-grid{grid-template-columns:1fr}
+ summary{grid-template-columns:34px 1fr 120px 88px 14px}
+ .top{align-items:flex-end}
+ nav{max-width:100%}
+ .inf-hero{padding:22px 22px 18px}
+}
+
+/* --- Tablas: scroll horizontal cómodo y primera columna fija --- */
+.w>table{min-width:520px}
+.w>table.mx,.w>table.inf-mx{min-width:0}
+.mx td,.mx th{min-width:54px}.mx th{white-space:nowrap}
+@media(max-width:900px){
+ .w>table th:first-child,.w>table td:first-child{position:sticky;left:0;z-index:1;background:var(--sf);box-shadow:1px 0 0 var(--ln)}
+ .w>table.mx th:first-child{background:var(--sf)}
+ .inf-pts{max-height:none;overflow:visible;margin-inline:0;padding-inline:0}
+}
+
+/* --- Móvil --- */
+@media(max-width:640px){
+ body{font-size:15px}
+ input,select,textarea{font-size:16px}
+ textarea{min-height:110px}
+ h2{font-size:19px;margin:26px 0 8px}
+ .lead{font-size:clamp(22px,7vw,28px);margin-bottom:16px}
+ .br svg{width:40px;height:34px}
+ .br span{font-size:12px;line-height:1.3}
+ #fb{position:static;margin:0 0 16px;padding:0;background:none;border:0;backdrop-filter:none;-webkit-backdrop-filter:none}
+ .kpis{gap:10px}.kp{padding:12px 14px}.kp b{font-size:26px}
+ .kpis>.kp:last-child:nth-child(odd){grid-column:1/-1}
+ .latest{padding:14px}.latest-head{align-items:flex-start}
+ .sh h3{font-size:18px}
+ .sh .x{margin-left:0;flex:1 1 100%;min-width:100%;display:flex;flex-wrap:wrap;gap:6px}
+ .pv{gap:5px}
+ .chartbox{padding:14px}.chartbox h2{font-size:17px}
+ .chartlabel,.chartvalue{font-size:12px}
+ .inf-nav{gap:6px}.inf-nav select{flex:1 1 100%;min-width:0;order:-1}.inf-nav .sm{flex:1}
+ .inf-hero{padding:18px 16px}.inf-hero p{font-size:15.5px}
+ .inf-don{justify-content:center}
+ .inf-g{grid-template-columns:1fr 84px}
+ .inf-mx td,.inf-mx th{padding:5px 5px;font-size:12px}
+ .hm{padding:14px 4% 6px}
+ .lg{font-size:13px;gap:6px 14px}
+ .tools .x{flex:1 1 100%}.tools button{flex:1}
+ .fm>input,.fm>select{flex:1 1 150px;min-width:0;width:auto!important}
+ .fm>button{flex:1 1 auto}
+ .fm>.x{flex:1 1 100%}
+ #adminEditor{padding:4px 14px 18px}
+ footer .in{flex-direction:column}
+ /* Formulario de votación: reparto por grupo en 3 columnas */
+ .gr{grid-template-columns:repeat(3,1fr)}.gr>span:first-child{grid-column:1/-1}.gr.h>span:first-child{display:none}
+ .gr input{padding:8px 6px}
+ /* Diálogos como hoja inferior */
+ dialog{width:100vw;max-width:100vw;max-height:92vh;max-height:92dvh;margin:auto 0 0;border-radius:18px 18px 0 0;padding:20px 16px calc(20px + env(safe-area-inset-bottom,0px))}
+ #welcome{margin:auto 0 0}
+ #reader{width:100vw;max-width:100vw;height:100vh;height:100dvh;max-height:100dvh;margin:0;border-radius:0;padding:10px 10px calc(10px + env(safe-area-inset-bottom,0px))}
+ #rdPt{flex:1 1 100%}
+ .gcard{padding:20px}
+ /* Barra inferior más cómoda */
+ nav a{min-height:56px;font-size:11px}
+}
+@media(max-width:380px){.br b{font-size:17px}.kp b{font-size:23px}.kp span{font-size:12px}nav a{font-size:10.5px}}
+
+/* --- Táctil: objetivos de 44px, sin estados hover pegados --- */
+@media(pointer:coarse){
+ button,select,input:not([type=checkbox]):not([type=radio]):not([type=file]){min-height:44px}
+ .sm{min-height:38px;padding:6px 14px}
+ .chips button{min-height:40px}
+ summary{min-height:48px}
+ .ar input{min-width:22px;min-height:22px}
+}
+@media(hover:none){
+ button:hover{border-color:var(--ln)}button.sel:hover,button.p:hover{border-color:var(--ac)}
+ summary:hover,tr.cl:hover td{background:none}
+}
+
+/* --- Móvil en horizontal / pantallas bajas --- */
+@media(max-height:480px) and (orientation:landscape){
+ #fb{position:static}
+ nav a{flex-direction:row;min-height:44px;gap:8px}
+ body{padding-bottom:calc(52px + env(safe-area-inset-bottom,0px))}
+}
 </style></head><body>
 <div id="gate"><div class="gcard"><h1>Observatorio de plenos</h1><p class="m">Viladecans · votaciones del pleno municipal. Crea una cuenta o inicia sesión para consultar los datos.</p><div class="gtabs"><button id="gTabL" class="on" type="button" onclick="gmode('login')">Entrar</button><button id="gTabR" type="button" onclick="gmode('reg')">Crear cuenta</button></div><form onsubmit="gateSubmit(event)"><input id="gName" hidden placeholder="Nombre" autocomplete="name"><input id="gEmail" type="email" placeholder="Correo electrónico" autocomplete="username" required><input id="gPass" type="password" placeholder="Contraseña (mínimo 6 caracteres)" autocomplete="current-password" required><button id="gSubmit" class="p" type="submit">Entrar</button></form><p id="gMsg" class="m" style="margin-top:10px"></p><p class="m" style="font-size:12px;margin:0">Proyecto de TFG de Joel Fernández (UAB) · <a href="https://www.instagram.com/joelfr2003/" target="_blank" rel="noopener">@joelfr2003</a></p></div></div>
 <dialog id="reader"><div class="rdh"><b id="rdT"></b><button class="sm" onclick="$('reader').close()">Cerrar ✕</button></div><div class="rdb"><select id="rdPt" onchange="rdPick()"></select><button class="sm" onclick="rdGo(RD.page-1)">◀</button><input id="rdN" type="number" min="1" onchange="rdGo(this.value)"><span id="rdTot" class="m"></span><button class="sm" onclick="rdGo(RD.page+1)">▶</button><button class="sm" onclick="rdZ(1/1.2)">−</button><button class="sm" onclick="rdZ(1.2)">+</button><a id="rdOpen" target="_blank" rel="noopener">Abrir PDF</a></div><p id="rdMsg" class="m"></p><div id="rdBox"><canvas id="rdC"></canvas></div></dialog>
