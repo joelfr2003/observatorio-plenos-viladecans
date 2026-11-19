@@ -1,4 +1,4 @@
-# Observatorio de plenos municipales · Viladecans (PWA) · v7
+# Observatorio de plenos municipales · Viladecans (PWA) · v8
 
 Aplicación web instalable (PWA) para seguir y analizar las votaciones del pleno de Viladecans.
 Datos en Supabase, publicación en GitHub Pages.
@@ -6,14 +6,23 @@ Datos en Supabase, publicación en GitHub Pages.
 ## Estructura del repositorio
 ```
 index.html                      aplicación principal
-manifest.webmanifest, sw.js     PWA (el service worker es v11)
+manifest.webmanifest, sw.js     PWA (el service worker es v12)
 icons/                          icon.svg, icon-192.png, icon-512.png
 js/config.js                    URL y clave pública de Supabase
 js/analisis.js                  pestaña «Análisis» y noticias
-js/estudio2.js                  NUEVO v7: pestaña «Estudio» profesional
+js/estudio2.js                  v7: pestaña «Estudio» profesional
+js/pro2.js                      NUEVO v8: portada, pestaña «Explorar», copiar con cita
+css/v8.css                      NUEVO v8: capa visual
 supabase-schema-v3.sql          NUEVO v7: esquema completo (úsalo en lugar de los anteriores)
 .github/workflows/pages.yml     despliegue automático en GitHub Pages
 ```
+
+## Novedades v8
+Inspiradas en Voteview (mapas de votación), Parlameter/Parlacards (tarjetas compartibles), Qué hacen los diputados (buscador, fichas, seguimiento), el análisis de votaciones del Ayuntamiento de Brno, Wahl-O-Mat/VoteMatch (test de afinidad) y HowTheyVote (datos descargables).
+- **Portada nueva** con titular dinámico, contadores animados, curiosidades automáticas y tarjetas de cada grupo (peso real, cohesión, mociones y evolución).
+- **Pestaña Explorar:** mapa político (escalado multidimensional), test «¿con quién votarías?», buscador con filtros y descarga CSV, curiosidades y novedades con seguimiento de grupos y temas.
+- **Copiar con cita:** cada gráfico, tabla y tarjeta tiene un botón ⧉ Copiar con: copiar como imagen, copiar tabla para Excel/Word, descargar PNG, SVG o CSV, y copiar la cita APA. La cita (fuente, filtros activos y fecha de consulta) va siempre incluida.
+- Modo oscuro, móvil y animaciones respetando «reducir movimiento».
 
 ## Novedades v7
 **Estudio profesional** (pestaña *Estudio*), con filtros de legislatura y tipo:
@@ -37,7 +46,7 @@ supabase-schema-v3.sql          NUEVO v7: esquema completo (úsalo en lugar de l
 2. Comprueba que tu usuario sigue en `observatorio_admins` (si no: `insert into public.observatorio_admins (user_id) values ('TU-UUID');`).
 3. **GitHub:** sube todo el contenido de esta carpeta a la raíz de `joelfr2003/observatorio-plenos-viladecans` (incluida la carpeta oculta `.github`). Con *Add file → Upload files* los archivos ocultos a veces no se suben: si pasa, crea a mano `.github/workflows/pages.yml` con el contenido incluido.
 4. **Settings → Pages:** *Deploy from a branch* → `main` → `/ (root)`.
-5. Abre la web y recarga con Ctrl+F5 una vez (el service worker se actualiza a v11).
+5. Abre la web y recarga con Ctrl+F5 una vez (el service worker se actualiza a v12).
 6. Entra como administrador → **Estudio → Calidad de datos** y revisa lo que marque.
 7. En **Estudio → Gobierno y oposición** marca qué grupos gobiernan en cada legislatura (activa los análisis de poder).
 
@@ -60,3 +69,8 @@ select public.restaurar_version_obs(<id>);
 ## Limitaciones conocidas
 - El lector de PDF está ajustado al formato de las actas de Viladecans (catalán, «ACORD NÚM.») y no hace OCR de PDF escaneados. Revisa siempre la vista previa antes de guardar.
 - Los datos viven en una única fila JSON; el historial protege frente a pisadas, pero dos administradores guardando a la vez se sobrescriben.
+
+## Notas v8
+- Copiar imágenes al portapapeles requiere HTTPS (GitHub Pages lo es) y un navegador reciente (Chrome, Edge, Safari 16+). Si el navegador lo bloquea, usa «Descargar imagen PNG».
+- La cita APA del TFG usa «Fernández, J.»: ajústala en `js/pro2.js` (función `citaApa`/`citaCorta`) y en `js/estudio2.js` si quieres otro formato.
+- El test y el mapa usan solo votaciones con desglose por grupo; si hay pocas, salen avisos en lugar de gráficos engañosos.

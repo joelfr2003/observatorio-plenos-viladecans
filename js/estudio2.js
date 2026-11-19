@@ -538,7 +538,8 @@ window.ObsPro = {
   setTema: function (i, j, t) { if (!IS_ADMIN || !D[i] || !D[i].votaciones[j]) return; if (t) D[i].votaciones[j].tema = t; else delete D[i].votaciones[j].tema; sv(); if (typeof window.render === "function") window.render(); else render(); },
   csvVot: csvVot, csvGrp: csvGrp, csvInd: csvInd, json: json,
   /* funciones puras expuestas para pruebas */
-  _t: { wilson: wilson, z2: z2, recs: recs, summary: summary, groupStats: groupStats, affinity: affinity, blocks: blocks, quality: quality, topic: topic, polar: polar, govDir: govDir }
+  _t: { wilson: wilson, z2: z2, recs: recs, summary: summary, groupStats: groupStats, affinity: affinity, blocks: blocks, quality: quality, topic: topic, polar: polar, govDir: govDir,
+    scope: scope, tight: tight, prop: prop, fP: fP, fCI: fCI, isGov: isGov, gobOf: gobOf, seatOf: seatOf, isSolo: function () { return S.solo; }, TEMAS: TEMAS }
 };
 
 /* ====================== Importación de actas: más cómoda ====================== */
